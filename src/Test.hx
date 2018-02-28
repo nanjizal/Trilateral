@@ -83,8 +83,8 @@ class Test extends WebGLSetup {
                         ,   Poly.circle( { x: 0.3, y: 0.3 }, 0.1 )
                         ,   6 );
         triangles.addPair(  1
-                        ,  Line.create( { x: 0., y: 0. }, { x: 0.5, y: 0.5 }, 0.01 )
-                        ,  1 );
+                        ,   Line.create( { x: 0., y: 0. }, { x: 0.5, y: 0.5 }, 0.01 )
+                        ,   1 );
         setupProgram( vertex, fragment );
         modelViewProjection = Matrix4.identity();
         AnimateTimer.create();
