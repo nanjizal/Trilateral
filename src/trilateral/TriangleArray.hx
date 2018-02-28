@@ -27,13 +27,13 @@ abstract TriangleArray(Array<Triangle>) from Array<Triangle> to Array<Triangle> 
         return tri;
     }
     public inline
-    function drawTrilateral( id: Int, tri: Trilateral, colorID: Int ): Triangle {
+    function add( id: Int, tri: Trilateral, colorID: Int ): Triangle {
         var tri = Triangle.fromTrilateral( id, tri, 0, colorID );
         this[ this.length ] = tri;
         return tri;
     }
     public inline
-    function drawTrilateralPair( id: Int, tri: TrilateralPair, colorID: Int ) {
+    function addPair( id: Int, tri: TrilateralPair, colorID: Int ) {
         var tri0 = Triangle.fromTrilateral( id, tri.t0, 0, colorID );
         this[ this.length ] = tri0;
         var tri1 = Triangle.fromTrilateral( id, tri.t1, 0, colorID );
@@ -41,7 +41,7 @@ abstract TriangleArray(Array<Triangle>) from Array<Triangle> to Array<Triangle> 
         return tri;
     }
     public inline
-    function drawArrayTrilateral( id: Int, triArr: Array<Trilateral>, colorID: Int ) {
+    function addArray( id: Int, triArr: Array<Trilateral>, colorID: Int ) {
         var tri: Triangle;
         for( t in triArr ) {
             tri = Triangle.fromTrilateral( id, t, 0, colorID );

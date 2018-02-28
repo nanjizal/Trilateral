@@ -11,10 +11,8 @@ import trilateral.Triangle;
 import trilateral.TriangleArray;
 import trilateral.Algebra;
 import trilateral.pairs.Star;
-import trilateral.pairs.Square;
-import trilateral.pairs.Diamond;
+import trilateral.pairs.Quad;
 import trilateral.pairs.Line;
-import trilateral.pairs.Rectangle;
 import trilateral.polys.Poly;
 using htmlHelper.webgl.WebGLSetup;
 @:enum
@@ -63,21 +61,30 @@ class Test extends WebGLSetup {
         '}';
     public static function main(){ new Test(); }
     public function new(){
-        super(570*2, 570*2 );
-        bgRed = 0x18/256;
-        bgGreen = 0x18/256;
-        bgBlue = 0x18/256;
+        super( 570*2, 570*2 );
+        var dark = 0x18/256;
+        bgRed   = dark;
+        bgGreen = dark;
+        bgBlue  = dark;
         triangles = new TriangleArray();
-        var trilateralPair = Line.create( { x: 0., y: 0. }, { x: 0.5, y: 0.5 }, 0.01 );
-        triangles.drawTrilateralPair( 1, trilateralPair, 1 );
-        var trilateralPair = Star.create( {x:-0.3, y:-0.3}, 0.2 );
-        triangles.drawTrilateralPair( 1, trilateralPair, 2 );
-        var trilateralPair = Diamond.create( {x:-0.3, y:0.3}, 0.2 );
-        triangles.drawTrilateralPair( 1, trilateralPair, 3 );
-        var trilateralPair = Square.create( {x:0.3, y:-0.3}, 0.1 );
-        triangles.drawTrilateralPair( 1, trilateralPair, 4 );
-        var circle = Poly.circle( { x: 0.3, y: 0.3 }, 0.1 );
-        triangles.drawArrayTrilateral( 1, circle, 5 );
+        triangles.addPair(  1
+                        ,   Star.create( { x: -0.3, y: -0.3 }, 0.2 )
+                        ,   2 );
+        triangles.addPair(  1
+                        ,   Quad.diamond( { x: -0.3, y: 0.3 }, 0.15 )
+                        ,   3 );
+        triangles.addPair(  1
+                        ,   Quad.square( { x: 0.3, y: -0.3 }, 0.15 )
+                        ,   4 );
+        triangles.addPair(  1
+                        ,   Quad.rectangle( { x: -0.15, y: -0.1 }, { x: 0.3, y: 0.2 } )
+                        ,   5 );
+        triangles.addArray( 1
+                        ,   Poly.circle( { x: 0.3, y: 0.3 }, 0.1 )
+                        ,   6 );
+        triangles.addPair(  1
+                        ,  Line.create( { x: 0., y: 0. }, { x: 0.5, y: 0.5 }, 0.01 )
+                        ,  1 );
         setupProgram( vertex, fragment );
         modelViewProjection = Matrix4.identity();
         AnimateTimer.create();
@@ -122,7 +129,7 @@ class Test extends WebGLSetup {
         render();
     }
     override public function render(){
-        modelViewProjection = spin();
+        //modelViewProjection = spin();
         vertices = new Array<Float>();
         indices = new Array<Int>();
         colors = new Array<Float>();
