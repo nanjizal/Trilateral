@@ -17,6 +17,10 @@ abstract TrilateralArray(Array<Trilateral>) from Array<Trilateral> to Array<Tril
         this = new TrilateralArray();
     }
     public inline
+    function add( tri: Trilateral ){
+        this[ this.length ] = tri;
+    }
+    public inline
     function addPair( tp: TrilateralPair ){
         this[ this.length ] = tp.t0;
         this[ this.length ] = tp.t1;

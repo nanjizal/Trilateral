@@ -4,12 +4,12 @@ import trilateral.TrilateralArray;
 import trilateral.Algebra;
 import trilateral.pairs.Line;
 import trilateral.path.Lines;
-class Crude extends Base {
+class Fine extends Base {
     public function new( ?lines_: Lines, ?trilateralArray_: TrilateralArray ){
         super( lines_, trilateralArray_ );
     }
     override inline
     function line( x_: Float, y_: Float ){
-        trilateralArray.addPair( lines.line( x, y, x_, y_, width ) );
+       lines.triangleJoin( trilateralArray, x, y, x_, y_, width );
     }
 }

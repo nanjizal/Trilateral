@@ -6,8 +6,8 @@ import trilateral.pairs.Line;
 import trilateral.path.Lines;
 class Base implements IPathContext {
     public var trilateralArray:     TrilateralArray;
-    var x:                          Float = 0;
-    var y:                          Float = 0;
+    var x:                          Float = 0.;
+    var y:                          Float = 0.;
     public var width:               Float = 0.01;
     public var widthFunction:       Float->Float->Float->Float->Float->Float;
     var tempArr:                    Array<Float>;
@@ -23,13 +23,13 @@ class Base implements IPathContext {
     public inline 
     function lineTo( x_: Float, y_: Float ): Void{
         if( widthFunction != null ) width = widthFunction( width, x, x, x_, y_ );
-        trilateralArray.addPair( line( x, y, x_, y_ ) );
+        line( x, y );
         x = x_;
         y = y_;
     }
-    function line( ax: Float, ay: Float, bx: Float, by: Float ): TrilateralPair {
-        trace( 'lineTo( $ax, $ay, $bx, $by, width )' );
-        return lines.line( ax, ay, bx, by, width );
+    function line( x_: Float, y_: Float ) {
+        trace( 'lineTo( $x, $y, $x_, $y_, width )' );
+        trilateralArray.addPair( lines.line( x, y, x_, y_, width ) );
     }
     public inline
     function quadTo( x1: Float, y1: Float, x2: Float, y2: Float ): Void {

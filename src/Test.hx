@@ -15,6 +15,7 @@ import trilateral.pairs.Quad;
 import trilateral.pairs.Line;
 import trilateral.polys.Poly;
 import trilateral.path.Crude;
+import trilateral.path.Fine;
 import justPath.SvgPath;
 import justPath.PathContextTrace;
 using htmlHelper.webgl.WebGLSetup;
@@ -107,19 +108,19 @@ class Test extends WebGLSetup {
                             ,   line
                             ,   1 );
         }
-        var crudePath = new Crude();
-        crudePath.width = 0.001;
-        crudePath.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
+        var path = new Crude();
+        path.width = 0.001;
+        path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
             return width+0.0001;
         }
-        var p = new SvgPath( crudePath );
+        var p = new SvgPath( path );
         p.parse( cubictest_d, -1., -0.6, 0.002, 0.002 );
         triangles.addArray( 6
-                        ,   crudePath.trilateralArray
+                        ,   path.trilateralArray
                         ,   1 );
-        crudePath.trilateralArray = [];
-        crudePath.width = 0.001;
-        crudePath.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
+        path.trilateralArray = [];
+        path.width = 0.001;
+        path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
             return width+0.001*y;
         }
         p.parse( quadtest_d, -1.2, -0.6, 0.002, 0.002 );
@@ -128,8 +129,9 @@ class Test extends WebGLSetup {
         // you can trace out svg points.
         // var p = new SvgPath( new PathContextTrace() );
         // p.parse( quadtest_d, -1., -0.6, 0.002, 0.002 );
+        trace( path.trilateralArray );
         triangles.addArray( 6
-                        ,   crudePath.trilateralArray
+                        ,   path.trilateralArray
                         ,   7 );
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
@@ -168,7 +170,7 @@ class Test extends WebGLSetup {
         render();
     }
     override public function render(){
-        modelViewProjection = spin();
+        //modelViewProjection = spin();
         vertices = new Array<Float>();
         indices = new Array<Int>();
         colors = new Array<Float>();
