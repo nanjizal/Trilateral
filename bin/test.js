@@ -1701,34 +1701,38 @@ trilateral__$TrilateralArray_TrilateralArray_$Impl_$.__name__ = true;
 trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new = function(t) {
 	return t == null ? trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new([]) : t;
 };
-var trilateral_path_Crude = function(lines_,trilateralArray_) {
+var trilateral_path_Base = function(lines_,trilateralArray_) {
 	this.width = 0.01;
 	this.y = 0;
 	this.x = 0;
 	this.trilateralArray = trilateralArray_ == null ? trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new([]) : trilateralArray_;
 	this.lines = lines_ == null ? new trilateral_path_Lines() : lines_;
 };
-trilateral_path_Crude.__name__ = true;
-trilateral_path_Crude.__interfaces__ = [justPath_IPathContext];
-trilateral_path_Crude.prototype = {
+trilateral_path_Base.__name__ = true;
+trilateral_path_Base.__interfaces__ = [justPath_IPathContext];
+trilateral_path_Base.prototype = {
 	moveTo: function(x_,y_) {
 		this.x = x_;
 		this.y = y_;
 	}
 	,lineTo: function(x_,y_) {
-		var tp_t1;
-		var tp_t0;
 		if(this.widthFunction != null) {
 			this.width = this.widthFunction(this.width,this.x,this.x,x_,y_);
 		}
 		var this1 = this.trilateralArray;
+		var tp = this.line(this.x,this.y,x_,y_);
+		this1[this1.length] = tp.t0;
+		this1[this1.length] = tp.t1;
+		this.x = x_;
+		this.y = y_;
+	}
+	,line: function(ax,ay,bx,by) {
+		console.log("lineTo( " + ax + ", " + ay + ", " + bx + ", " + by + ", width )");
 		var _this = this.lines;
-		var ax_ = this.x;
-		var ay_ = this.y;
-		_this.ax = x_;
-		_this.ay = y_;
-		_this.bx = ax_;
-		_this.by = ay_;
+		_this.ax = bx;
+		_this.ay = by;
+		_this.bx = ax;
+		_this.by = ay;
 		_this.halfA = Math.PI / 2;
 		_this.beta = Math.PI / 2 - _this.halfA;
 		_this.r = this.width / 2 * Math.cos(_this.beta);
@@ -1768,10 +1772,10 @@ trilateral_path_Crude.prototype = {
 		var d_y_ = _this.dy;
 		var e_x_ = _this.ex;
 		var e_y_ = _this.ey;
-		_this.ax = ax_;
-		_this.ay = ay_;
-		_this.bx = x_;
-		_this.by = y_;
+		_this.ax = ax;
+		_this.ay = ay;
+		_this.bx = bx;
+		_this.by = by;
 		_this._theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
 		if(_this._theta > 0) {
 			if(_this.halfA < 0) {
@@ -1804,12 +1808,7 @@ trilateral_path_Crude.prototype = {
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
 		_this.ex = _this.bx + _this.r * Math.cos(_this.angle2);
 		_this.ey = _this.by + _this.r * Math.sin(_this.angle2);
-		tp_t0 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,e_x_,e_y_);
-		tp_t1 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,_this.ex,_this.ey);
-		this1[this1.length] = tp_t0;
-		this1[this1.length] = tp_t1;
-		this.x = x_;
-		this.y = y_;
+		return { t0 : new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,e_x_,e_y_), t1 : new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,_this.ex,_this.ey)};
 	}
 	,quadTo: function(x1,y1,x2,y2) {
 		this.tempArr = [];
@@ -1876,10 +1875,6 @@ trilateral_path_Crude.prototype = {
 		this.y = y3;
 	}
 	,plotCoord: function(arr) {
-		var tp_t1;
-		var tp_t0;
-		var tp_t11;
-		var tp_t01;
 		var l = arr.length;
 		var i = 2;
 		var x_ = arr[2];
@@ -1888,13 +1883,40 @@ trilateral_path_Crude.prototype = {
 			this.width = this.widthFunction(this.width,this.x,this.x,x_,y_);
 		}
 		var this1 = this.trilateralArray;
+		var tp = this.line(this.x,this.y,x_,y_);
+		this1[this1.length] = tp.t0;
+		this1[this1.length] = tp.t1;
+		this.x = x_;
+		this.y = y_;
+		while(i < l) {
+			var x_1 = arr[i];
+			var y_1 = arr[i + 1];
+			if(this.widthFunction != null) {
+				this.width = this.widthFunction(this.width,this.x,this.x,x_1,y_1);
+			}
+			var this2 = this.trilateralArray;
+			var tp1 = this.line(this.x,this.y,x_1,y_1);
+			this2[this2.length] = tp1.t0;
+			this2[this2.length] = tp1.t1;
+			this.x = x_1;
+			this.y = y_1;
+			i += 2;
+		}
+	}
+	,__class__: trilateral_path_Base
+};
+var trilateral_path_Crude = function(lines_,trilateralArray_) {
+	trilateral_path_Base.call(this,this.lines,trilateralArray_);
+};
+trilateral_path_Crude.__name__ = true;
+trilateral_path_Crude.__super__ = trilateral_path_Base;
+trilateral_path_Crude.prototype = $extend(trilateral_path_Base.prototype,{
+	line: function(ax,ay,bx,by) {
 		var _this = this.lines;
-		var ax_ = this.x;
-		var ay_ = this.y;
-		_this.ax = x_;
-		_this.ay = y_;
-		_this.bx = ax_;
-		_this.by = ay_;
+		_this.ax = bx;
+		_this.ay = by;
+		_this.bx = ax;
+		_this.by = ay;
 		_this.halfA = Math.PI / 2;
 		_this.beta = Math.PI / 2 - _this.halfA;
 		_this.r = this.width / 2 * Math.cos(_this.beta);
@@ -1934,10 +1956,10 @@ trilateral_path_Crude.prototype = {
 		var d_y_ = _this.dy;
 		var e_x_ = _this.ex;
 		var e_y_ = _this.ey;
-		_this.ax = ax_;
-		_this.ay = ay_;
-		_this.bx = x_;
-		_this.by = y_;
+		_this.ax = ax;
+		_this.ay = ay;
+		_this.bx = bx;
+		_this.by = by;
 		_this._theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
 		if(_this._theta > 0) {
 			if(_this.halfA < 0) {
@@ -1970,112 +1992,10 @@ trilateral_path_Crude.prototype = {
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
 		_this.ex = _this.bx + _this.r * Math.cos(_this.angle2);
 		_this.ey = _this.by + _this.r * Math.sin(_this.angle2);
-		tp_t01 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,e_x_,e_y_);
-		tp_t11 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,_this.ex,_this.ey);
-		this1[this1.length] = tp_t01;
-		this1[this1.length] = tp_t11;
-		this.x = x_;
-		this.y = y_;
-		while(i < l) {
-			var x_1 = arr[i];
-			var y_1 = arr[i + 1];
-			if(this.widthFunction != null) {
-				this.width = this.widthFunction(this.width,this.x,this.x,x_1,y_1);
-			}
-			var this2 = this.trilateralArray;
-			var _this1 = this.lines;
-			var ax_1 = this.x;
-			var ay_1 = this.y;
-			_this1.ax = x_1;
-			_this1.ay = y_1;
-			_this1.bx = ax_1;
-			_this1.by = ay_1;
-			_this1.halfA = Math.PI / 2;
-			_this1.beta = Math.PI / 2 - _this1.halfA;
-			_this1.r = this.width / 2 * Math.cos(_this1.beta);
-			_this1._theta = Math.atan2(_this1.ay - _this1.by,_this1.ax - _this1.bx);
-			if(_this1._theta > 0) {
-				if(_this1.halfA < 0) {
-					_this1.angle2 = _this1._theta + _this1.halfA + Math.PI / 2;
-					_this1.angle1 = _this1._theta - _this1.halfA;
-				} else {
-					_this1.angle1 = _this1._theta + _this1.halfA - Math.PI;
-					_this1.angle2 = _this1._theta + _this1.halfA;
-				}
-			} else if(_this1.halfA > 0) {
-				_this1.angle1 = _this1._theta + _this1.halfA - Math.PI;
-				_this1.angle2 = _this1._theta + _this1.halfA;
-			} else {
-				_this1.angle2 = _this1._theta + _this1.halfA + Math.PI / 2;
-				_this1.angle1 = _this1._theta - _this1.halfA;
-			}
-			if(_this1.d_x != null) {
-				_this1.d_2x = _this1.d_x;
-			}
-			if(_this1.e_x != null) {
-				_this1.e_2x = _this1.e_x;
-			}
-			if(_this1.dx != null) {
-				_this1.e_x = _this1.dx;
-			}
-			if(_this1.ex != null) {
-				_this1.e_x = _this1.ex;
-			}
-			_this1.dx = _this1.bx + _this1.r * Math.cos(_this1.angle1);
-			_this1.dy = _this1.by + _this1.r * Math.sin(_this1.angle1);
-			_this1.ex = _this1.bx + _this1.r * Math.cos(_this1.angle2);
-			_this1.ey = _this1.by + _this1.r * Math.sin(_this1.angle2);
-			var d_x_1 = _this1.dx;
-			var d_y_1 = _this1.dy;
-			var e_x_1 = _this1.ex;
-			var e_y_1 = _this1.ey;
-			_this1.ax = ax_1;
-			_this1.ay = ay_1;
-			_this1.bx = x_1;
-			_this1.by = y_1;
-			_this1._theta = Math.atan2(_this1.ay - _this1.by,_this1.ax - _this1.bx);
-			if(_this1._theta > 0) {
-				if(_this1.halfA < 0) {
-					_this1.angle2 = _this1._theta + _this1.halfA + Math.PI / 2;
-					_this1.angle1 = _this1._theta - _this1.halfA;
-				} else {
-					_this1.angle1 = _this1._theta + _this1.halfA - Math.PI;
-					_this1.angle2 = _this1._theta + _this1.halfA;
-				}
-			} else if(_this1.halfA > 0) {
-				_this1.angle1 = _this1._theta + _this1.halfA - Math.PI;
-				_this1.angle2 = _this1._theta + _this1.halfA;
-			} else {
-				_this1.angle2 = _this1._theta + _this1.halfA + Math.PI / 2;
-				_this1.angle1 = _this1._theta - _this1.halfA;
-			}
-			if(_this1.d_x != null) {
-				_this1.d_2x = _this1.d_x;
-			}
-			if(_this1.e_x != null) {
-				_this1.e_2x = _this1.e_x;
-			}
-			if(_this1.dx != null) {
-				_this1.e_x = _this1.dx;
-			}
-			if(_this1.ex != null) {
-				_this1.e_x = _this1.ex;
-			}
-			_this1.dx = _this1.bx + _this1.r * Math.cos(_this1.angle1);
-			_this1.dy = _this1.by + _this1.r * Math.sin(_this1.angle1);
-			_this1.ex = _this1.bx + _this1.r * Math.cos(_this1.angle2);
-			_this1.ey = _this1.by + _this1.r * Math.sin(_this1.angle2);
-			tp_t0 = new trilateral_Trilateral(d_x_1,d_y_1,_this1.dx,_this1.dy,e_x_1,e_y_1);
-			tp_t1 = new trilateral_Trilateral(d_x_1,d_y_1,_this1.dx,_this1.dy,_this1.ex,_this1.ey);
-			this2[this2.length] = tp_t0;
-			this2[this2.length] = tp_t1;
-			this.x = x_1;
-			this.y = y_1;
-			i += 2;
-		}
+		return { t0 : new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,e_x_,e_y_), t1 : new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,_this.ex,_this.ey)};
 	}
 	,__class__: trilateral_path_Crude
-};
+});
 var trilateral_path_Lines = function() {
 };
 trilateral_path_Lines.__name__ = true;

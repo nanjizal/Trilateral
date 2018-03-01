@@ -4,54 +4,12 @@ import trilateral.TrilateralArray;
 import trilateral.Algebra;
 import trilateral.pairs.Line;
 import trilateral.path.Lines;
-class Crude implements IPathContext {
-    public var trilateralArray:     TrilateralArray;
-    var x:                          Float = 0;
-    var y:                          Float = 0;
-    public var width:               Float = 0.01;
-    public var widthFunction:       Float->Float->Float->Float->Float->Float;
-    var tempArr:                    Array<Float>;
-    var lines:                      Lines;
+class Crude extends Base {
     public function new( ?lines_: Lines, ?trilateralArray_: TrilateralArray ){
-        trilateralArray = ( trilateralArray_ == null )? new TrilateralArray(): trilateralArray_;
-        lines = ( lines_ == null )? new Lines(): lines_;
+        super( lines, trilateralArray_ );
     }
-    public function moveTo( x_: Float, y_: Float ): Void{
-        x = x_;
-        y = y_;
-    }
-    public inline 
-    function lineTo( x_: Float, y_: Float ): Void{
-        if( widthFunction != null ) width = widthFunction( width, x, x, x_, y_ );
-        trilateralArray.addPair( lines.line( x, y, x_, y_, width ) );
-        x = x_;
-        y = y_;
-    }
-    public inline
-    function quadTo( x1: Float, y1: Float, x2: Float, y2: Float ): Void {
-        tempArr = [];
-        Algebra.quadCurve( tempArr, x, y, x1, y1, x2, y2 );
-        plotCoord( tempArr );
-        x = x2;
-        y = y2;
-    }
-    public inline
-    function curveTo( x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float ): Void {
-        tempArr = [];
-        Algebra.cubicCurve( tempArr, x, y, x1, y1, x2, y2, x3, y3 );
-        plotCoord( tempArr );
-        x = x3;
-        y = y3;
-    }
-    public
-    function plotCoord( arr: Array<Float> ): Void {
-        var l = arr.length;
-        var i = 2;
-        lineTo( arr[ i ], arr[ i + 1 ] );
-        var line: TrilateralPair;
-        while( i < l ){
-            lineTo( arr[ i ], arr[ i + 1 ] );
-            i += 2;
-        }
+    override inline
+    function line( ax, ay, bx, by ): TrilateralPair {
+        return lines.line( ax, ay, bx, by, width );
     }
 }
