@@ -23,7 +23,7 @@ class Base implements IPathContext {
     public inline 
     function lineTo( x_: Float, y_: Float ): Void{
         if( widthFunction != null ) width = widthFunction( width, x, x, x_, y_ );
-        line( x, y );
+        line( x_, y_ );
         x = x_;
         y = y_;
     }
