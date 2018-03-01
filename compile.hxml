@@ -3,6 +3,7 @@
 
 -lib htmlHelper
 -lib khaMath
+-lib justPath
 -main Test
 -D js-flatten 
 -dce full

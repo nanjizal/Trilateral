@@ -49,6 +49,56 @@ class Algebra {
         var u = 1 - t;
         return  Math.pow( u, 3 )*s + 3*Math.pow( u, 2 )*t*c1 + 3*u*Math.pow( t, 2 )*c2 + Math.pow( t, 3 )*e;
     }
+    public static
+    var quadStep: Float = 0.03;
+    // Create Quadratic Curve
+    public static inline
+    function quadCurve( p: Array<Float>, ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float ): Array<Float> {
+        var step = calculateQuadStep( ax, ay, bx, by, cx, cy );
+        var l = p.length;
+        p[ l++ ] = ax;
+        p[ l++ ] = ay;
+        var t = step;
+        while( t < 1. ){
+            p[ l++ ] = quadratic( t, ax, bx, cx );
+            p[ l++ ] = quadratic( t, ay, by, cy );
+            t += step;
+        }
+        p[ l++ ] =  cx;
+        p[ l++ ] =  cy;
+        return p;
+    }
+    public static
+    var cubicStep: Float = 0.03;
+    // Create Cubic Curve
+    public static inline 
+    function cubicCurve( p: Array<Float>, ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float, dx: Float, dy: Float ): Array<Float> {
+        var step = calculateCubicStep( ax, ay, bx, by, cx, cy, dx, dy );
+        var l = p.length;
+        p[ l++ ] = ax;
+        p[ l++ ] = ay;
+        var t = step;
+        while( t < 1. ){
+            p[ l++ ] = cubic( t, ax, bx, cx, dx );
+            p[ l++ ] = cubic( t, ay, by, cy, dy );
+            t += step;
+        }
+        p[ l++ ] =  dx;
+        p[ l++ ] =  dy;
+        return p;
+    }
+    public static inline
+    function calculateQuadStep( ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float ): Float {
+        var approxDistance = distance( ax, ay, bx, by ) + distance( bx, by, cx, cy );
+        if( approxDistance == 0 ) approxDistance = 0.000001;
+        return Math.min( 1/( approxDistance*0.707 ), quadStep );
+    }
+    public static inline
+    function calculateCubicStep( ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float, dx: Float, dy: Float ): Float {
+        var approxDistance = distance( ax, ay, bx, by ) + distance( bx, by, cx, cy ) + distance( cx, cy, dx, dy );
+        if( approxDistance == 0 ) approxDistance = 0.000001;
+        return Math.min( 1/( approxDistance*0.707 ), cubicStep );
+    }
     // may not be most optimal
     public inline static
     function lineAB( A: Point, B: Point, width: Float ){
@@ -59,6 +109,17 @@ class Algebra {
         var dim: Point = { x: width, y: distCheap( dx, dy ) };
         return rotateVectorLine( P, dim, omega, A.x + width/2, A.y );
     }
+    // may not be most optimal
+    public inline static
+    function lineABCoord( ax: Float, ay: Float, bx: Float, by: Float, width: Float ){
+        var dx: Float = ax - bx;
+        var dy: Float = ay - by;
+        var P = { x:ax - width/2, y:ay };
+        var omega = thetaCheap( dx, dy ); // may need angle correction.
+        var dim: Point = { x: width, y: distCheap( dx, dy ) };
+        return rotateVectorLine( P, dim, omega, ax + width/2, ay );
+    }
+    
     public inline static
     function rotateVectorLine( pos: Point, dim: Point, omega: Float, pivotX: Float, pivotY: Float ): QuadPoint {
         //   A   B
@@ -104,5 +165,11 @@ class Algebra {
     public static inline
     function distCheap( dx: Float, dy: Float  ): Float {
         return dx*dx + dy*dy;
+    }
+    public static inline
+    function distance(  px: Float, py: Float, qx: Float, qy: Float ): Float {
+        var x = px - qx;
+        var y = py - qy;
+        return Math.sqrt( x*x + y*y );
     }
 }
