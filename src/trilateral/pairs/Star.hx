@@ -2,6 +2,7 @@ package trilateral.pairs;
 import trilateral.geom.Algebra;
 import trilateral.geom.Point;
 import trilateral.tri.Trilateral;
+import trilateral.tri.TrilateralPair;
 // use two overlapping triangles to create a quick star, lighter than say a circle for denoting a point.
 class Star{
     public inline static

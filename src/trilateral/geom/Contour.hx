@@ -2,6 +2,7 @@ package trilateral.geom;
 import trilateral.tri.Trilateral;
 import trilateral.geom.Algebra;
 import trilateral.tri.TrilateralArray;
+import trilateral.tri.TrilateralPair;
 // Rethink name!
 @:enum
 abstract EndLineCurve( Int ){
@@ -109,16 +110,16 @@ class Contour {
             var dif = Math.abs( angle1 - oldAngle );
             if( dif > 0.1 ) { // protect against angles where not worth drawing arc which fails due to distance calculations?
                 var oldWidth = width_;
-                width_ = width_/2;
+                //width_ = width_/2;
                 var omega = if( clockWise ) {
                                 angle1;
                             } else {
                                 dif = -dif;
                                 angle2;
                             }
-                var p = Algebra.arc_internal( x, y, width_, omega, dif, 240 );
-                outerPoly( triArr, x, y, width_, p );
-                width_ = oldWidth;
+                var p = Algebra.arc_internal( x, y, width_/2, omega, dif, 240 );
+                outerPoly( triArr, x, y, width_/2, p );
+                //width_ = oldWidth;
             }
         }
     }

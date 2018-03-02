@@ -9,6 +9,7 @@ import htmlHelper.tools.AnimateTimer;
 
 import trilateral.tri.Triangle;
 import trilateral.tri.TriangleArray;
+import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
 import trilateral.pairs.Star;
 import trilateral.pairs.Quad;

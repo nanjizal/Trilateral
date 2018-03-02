@@ -2,9 +2,8 @@ package trilateral.geom;
 import trilateral.tri.Triangle;
 import trilateral.geom.Point;
 import trilateral.tri.Trilateral;
+import trilateral.tri.TrilateralPair;
 typedef QuadPoint = { A: Point, B: Point, C: Point, D: Point };
-typedef TrianglePair = { t0: Triangle, t1: Triangle };
-typedef TrilateralPair = { t0: Trilateral, t1: Trilateral }
 class Algebra {
     public inline static
     function theta( p0: Point, p1: Point ): Float {

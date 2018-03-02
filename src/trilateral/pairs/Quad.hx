@@ -2,6 +2,7 @@ package trilateral.pairs;
 import trilateral.geom.Algebra;
 import trilateral.geom.Point;
 import trilateral.tri.Trilateral;
+import trilateral.tri.TrilateralPair;
 // defines a Rectangle without a colour.
 class Quad {
     // TODO: add support for rotated rectangle

@@ -1,7 +1,7 @@
 package trilateral.path;
 import justPath.IPathContext;
 import trilateral.tri.TrilateralArray;
-import trilateral.geom.Algebra;
+import trilateral.tri.TrilateralPair;
 import trilateral.geom.Contour;
 class Medium extends Base {
     public function new( ?contour_: Contour, ?trilateralArray_: TrilateralArray ){

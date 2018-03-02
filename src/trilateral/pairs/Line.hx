@@ -2,6 +2,7 @@ package trilateral.pairs;
 import trilateral.geom.Algebra;
 import trilateral.geom.Point;
 import trilateral.tri.Trilateral;
+import trilateral.tri.TrilateralPair;
 // defines a line without a colour, limited does not work for short lines use path.Contour.line
 class Line {
     public inline static
