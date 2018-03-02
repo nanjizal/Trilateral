@@ -109,27 +109,33 @@ class Algebra {
         var nextAngle: Float;
         var l = 0;
         if( dA < 0 ){
+            
             var i = -1;
             while( true ){
                 angle = i*angleInc;
                 i--;
                 nextAngle = angle + start; 
                 if( angle <= ( dA ) ) break; //dA
+                
                 p[ l++ ] = dx + radius * Math.cos( nextAngle );
                 p[ l++ ] = dy + radius * Math.sin( nextAngle );
             } 
+            
         } else {
+            
             var i = -1;
             while( true ){
                 angle = i*angleInc;
                 i++;
                 nextAngle = angle + start; 
                 if( angle >=  ( dA + angleInc ) ) break; 
+                
                 p[ l++ ] = dy + radius * Math.sin( nextAngle );
                 // after so that reverse works..
                 p[ l++ ] = dx + radius * Math.cos( nextAngle );
             } 
             p.reverse();
+            
         }
         return p;
     }

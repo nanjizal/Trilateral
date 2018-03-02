@@ -87,6 +87,7 @@ htmlHelper_webgl_WebGLSetup.prototype = {
 var Test = function() {
 	this.cubictest_d = "M100,200 C100,100 250,100 250,200S400,300 400,200";
 	this.quadtest_d = "M200,300 Q400,50 600,300 T1000,300";
+	this.theta = 0;
 	this.appColors = [0,16711680,16744192,16776960,65280,255,4915330,9699539,4473924,3355443,789516,1118481,16777215,255,65280,16711680];
 	htmlHelper_webgl_WebGLSetup.call(this,1140,1140);
 	var dark = 0.09375;
@@ -150,6 +151,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t.by = tri1.by;
 		t.cx = tri1.cx;
 		t.cy = tri1.cy;
+		t.mark = tri1.mark;
 		t.depth = 0;
 		t.alpha = 1.;
 		t.colorID = 2;
@@ -167,6 +169,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t1.by = tri2.by;
 		t1.cx = tri2.cx;
 		t1.cy = tri2.cy;
+		t1.mark = tri2.mark;
 		t1.depth = 0;
 		t1.alpha = 1.;
 		t1.colorID = 2;
@@ -221,6 +224,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t2.by = tri4.by;
 		t2.cx = tri4.cx;
 		t2.cy = tri4.cy;
+		t2.mark = tri4.mark;
 		t2.depth = 0;
 		t2.alpha = 1.;
 		t2.colorID = 3;
@@ -238,6 +242,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t3.by = tri5.by;
 		t3.cx = tri5.cx;
 		t3.cy = tri5.cy;
+		t3.mark = tri5.mark;
 		t3.depth = 0;
 		t3.alpha = 1.;
 		t3.colorID = 3;
@@ -257,6 +262,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t4.by = tri7.by;
 		t4.cx = tri7.cx;
 		t4.cy = tri7.cy;
+		t4.mark = tri7.mark;
 		t4.depth = 0;
 		t4.alpha = 1.;
 		t4.colorID = 4;
@@ -274,6 +280,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t5.by = tri8.by;
 		t5.cx = tri8.cx;
 		t5.cy = tri8.cy;
+		t5.mark = tri8.mark;
 		t5.depth = 0;
 		t5.alpha = 1.;
 		t5.colorID = 4;
@@ -293,6 +300,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t6.by = tri10.by;
 		t6.cx = tri10.cx;
 		t6.cy = tri10.cy;
+		t6.mark = tri10.mark;
 		t6.depth = 0;
 		t6.alpha = 1.;
 		t6.colorID = 5;
@@ -310,6 +318,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t7.by = tri11.by;
 		t7.cx = tri11.cx;
 		t7.cy = tri11.cy;
+		t7.mark = tri11.mark;
 		t7.depth = 0;
 		t7.alpha = 1.;
 		t7.colorID = 5;
@@ -349,6 +358,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			t9.by = t8.by;
 			t9.cx = t8.cx;
 			t9.cy = t8.cy;
+			t9.mark = t8.mark;
 			t9.depth = 0;
 			t9.alpha = 1.;
 			t9.colorID = 6;
@@ -417,6 +427,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			t10.by = tri12.by;
 			t10.cx = tri12.cx;
 			t10.cy = tri12.cy;
+			t10.mark = tri12.mark;
 			t10.depth = 0;
 			t10.alpha = 1.;
 			t10.colorID = 1;
@@ -434,6 +445,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			t11.by = tri13.by;
 			t11.cx = tri13.cx;
 			t11.cy = tri13.cy;
+			t11.mark = tri13.mark;
 			t11.depth = 0;
 			t11.alpha = 1.;
 			t11.colorID = 1;
@@ -443,7 +455,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			t11.windingAdjusted = tri13.windingAdjusted;
 			this6[this6.length] = t11;
 		}
-		var path = new trilateral_path_Crude();
+		var path = new trilateral_path_Medium();
 		path.width = 0.001;
 		path.widthFunction = function(width1,x,y,x_,y_) {
 			return width1 + 0.0001;
@@ -464,6 +476,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			t13.by = t12.by;
 			t13.cx = t12.cx;
 			t13.cy = t12.cy;
+			t13.mark = t12.mark;
 			t13.depth = 0;
 			t13.alpha = 1.;
 			t13.colorID = 1;
@@ -479,7 +492,6 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			return width2 + 0.001 * y1;
 		};
 		p.parse(this.quadtest_d,-1.2,-0.6,0.002,0.002);
-		console.log(path.trilateralArray);
 		var this8 = this.triangles;
 		var triArr1 = path.trilateralArray;
 		var _g3 = 0;
@@ -494,6 +506,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			t15.by = t14.by;
 			t15.cx = t14.cx;
 			t15.cy = t14.cy;
+			t15.mark = t14.mark;
 			t15.depth = 0;
 			t15.alpha = 1.;
 			t15.colorID = 7;
@@ -523,8 +536,13 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			this.vertices[i++] = tri.cx;
 			this.vertices[i++] = tri.cy + 0.3;
 			this.vertices[i++] = tri.depth;
-			var $int = triangleColors[tri.colorID];
-			rgb = { r : ($int >> 16 & 255) / 255, g : ($int >> 8 & 255) / 255, b : ($int & 255) / 255};
+			if(tri.mark) {
+				var $int = triangleColors[12];
+				rgb = { r : ($int >> 16 & 255) / 255, g : ($int >> 8 & 255) / 255, b : ($int & 255) / 255};
+			} else {
+				var int1 = triangleColors[tri.colorID];
+				rgb = { r : (int1 >> 16 & 255) / 255, g : (int1 >> 8 & 255) / 255, b : (int1 & 255) / 255};
+			}
 			var _g1 = 0;
 			while(_g1 < 3) {
 				++_g1;
@@ -556,6 +574,69 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		this.render();
 	}
 	,render: function() {
+		var m__33;
+		var m__23;
+		var m__13;
+		var m__03;
+		var m__32;
+		var m__12;
+		var m__02;
+		var m__31;
+		var m__21;
+		var m__11;
+		var m__01;
+		var m__30;
+		var m__10;
+		var _this__33;
+		var _this__23;
+		var _this__13;
+		var _this__03;
+		var _this__32;
+		var _this__22;
+		var _this__12;
+		var _this__02;
+		var _this__31;
+		var _this__21;
+		var _this__30;
+		var _this__20;
+		var _this__10;
+		if(this.theta > Math.PI / 2) {
+			this.theta = -Math.PI / 2;
+		}
+		var alpha = this;
+		var alpha1 = alpha.theta += Math.PI / 100;
+		var ca = Math.cos(alpha1);
+		var sa = Math.sin(alpha1);
+		_this__10 = -sa;
+		_this__20 = 0;
+		_this__30 = 0;
+		_this__21 = 0;
+		_this__31 = 0;
+		_this__02 = 0;
+		_this__12 = 0;
+		_this__22 = 1;
+		_this__32 = 0;
+		_this__03 = 0;
+		_this__13 = 0;
+		_this__23 = 0;
+		_this__33 = 1;
+		var alpha2 = this.theta;
+		var ca1 = Math.cos(alpha2);
+		var sa1 = Math.sin(alpha2);
+		m__10 = 0;
+		m__30 = 0;
+		m__01 = 0;
+		m__11 = 1;
+		m__21 = 0;
+		m__31 = 0;
+		m__02 = -sa1;
+		m__12 = 0;
+		m__32 = 0;
+		m__03 = 0;
+		m__13 = 0;
+		m__23 = 0;
+		m__33 = 1;
+		this.modelViewProjection = new khaMath_Matrix4(ca * ca1 + _this__10 * m__01 + _this__20 * m__02 + _this__30 * m__03,ca * m__10 + _this__10 * m__11 + _this__20 * m__12 + _this__30 * m__13,ca * sa1 + _this__10 * m__21 + _this__20 * ca1 + _this__30 * m__23,ca * m__30 + _this__10 * m__31 + _this__20 * m__32 + _this__30 * m__33,sa * ca1 + ca * m__01 + _this__21 * m__02 + _this__31 * m__03,sa * m__10 + ca * m__11 + _this__21 * m__12 + _this__31 * m__13,sa * sa1 + ca * m__21 + _this__21 * ca1 + _this__31 * m__23,sa * m__30 + ca * m__31 + _this__21 * m__32 + _this__31 * m__33,_this__02 * ca1 + _this__12 * m__01 + _this__22 * m__02 + _this__32 * m__03,_this__02 * m__10 + _this__12 * m__11 + _this__22 * m__12 + _this__32 * m__13,_this__02 * sa1 + _this__12 * m__21 + _this__22 * ca1 + _this__32 * m__23,_this__02 * m__30 + _this__12 * m__31 + _this__22 * m__32 + _this__32 * m__33,_this__03 * ca1 + _this__13 * m__01 + _this__23 * m__02 + _this__33 * m__03,_this__03 * m__10 + _this__13 * m__11 + _this__23 * m__12 + _this__33 * m__13,_this__03 * sa1 + _this__13 * m__21 + _this__23 * ca1 + _this__33 * m__23,_this__03 * m__30 + _this__13 * m__31 + _this__23 * m__32 + _this__33 * m__33);
 		this.vertices = [];
 		this.indices = [];
 		this.colors = [];
@@ -1581,6 +1662,7 @@ khaMath_Matrix4.prototype = {
 var trilateral_Algebra = function() { };
 trilateral_Algebra.__name__ = true;
 var trilateral_Trilateral = function(ax_,ay_,bx_,by_,cx_,cy_) {
+	this.mark = false;
 	this.ax = ax_;
 	this.ay = ay_;
 	this.bx = bx_;
@@ -1615,6 +1697,7 @@ trilateral_Triangle.fromTrilateral = function(id_,tri,depth_,colorID_) {
 	t.by = tri.by;
 	t.cx = tri.cx;
 	t.cy = tri.cy;
+	t.mark = tri.mark;
 	t.depth = depth_;
 	t.alpha = 1.;
 	t.colorID = colorID_;
@@ -1716,14 +1799,26 @@ trilateral_path_Base.prototype = {
 		if(_this.d_x != null) {
 			_this.d_2x = _this.d_x;
 		}
+		if(_this.d_y != null) {
+			_this.d_2y = _this.d_y;
+		}
 		if(_this.e_x != null) {
 			_this.e_2x = _this.e_x;
 		}
+		if(_this.e_y != null) {
+			_this.e_2y = _this.e_y;
+		}
 		if(_this.dx != null) {
-			_this.e_x = _this.dx;
+			_this.d_x = _this.dx;
+		}
+		if(_this.dy != null) {
+			_this.d_y = _this.dy;
 		}
 		if(_this.ex != null) {
 			_this.e_x = _this.ex;
+		}
+		if(_this.ey != null) {
+			_this.e_y = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
@@ -1756,14 +1851,26 @@ trilateral_path_Base.prototype = {
 		if(_this.d_x != null) {
 			_this.d_2x = _this.d_x;
 		}
+		if(_this.d_y != null) {
+			_this.d_2y = _this.d_y;
+		}
 		if(_this.e_x != null) {
 			_this.e_2x = _this.e_x;
 		}
+		if(_this.e_y != null) {
+			_this.e_2y = _this.e_y;
+		}
 		if(_this.dx != null) {
-			_this.e_x = _this.dx;
+			_this.d_x = _this.dx;
+		}
+		if(_this.dy != null) {
+			_this.d_y = _this.dy;
 		}
 		if(_this.ex != null) {
 			_this.e_x = _this.ex;
+		}
+		if(_this.ey != null) {
+			_this.e_y = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
@@ -1863,24 +1970,28 @@ trilateral_path_Base.prototype = {
 	}
 	,__class__: trilateral_path_Base
 };
-var trilateral_path_Crude = function(lines_,trilateralArray_) {
+var trilateral_path_Lines = function() {
+};
+trilateral_path_Lines.__name__ = true;
+trilateral_path_Lines.prototype = {
+	__class__: trilateral_path_Lines
+};
+var trilateral_path_Medium = function(lines_,trilateralArray_) {
 	trilateral_path_Base.call(this,lines_,trilateralArray_);
 };
-trilateral_path_Crude.__name__ = true;
-trilateral_path_Crude.__super__ = trilateral_path_Base;
-trilateral_path_Crude.prototype = $extend(trilateral_path_Base.prototype,{
+trilateral_path_Medium.__name__ = true;
+trilateral_path_Medium.__super__ = trilateral_path_Base;
+trilateral_path_Medium.prototype = $extend(trilateral_path_Base.prototype,{
 	line: function(x_,y_) {
-		var tp_t1;
-		var tp_t0;
-		var this1 = this.trilateralArray;
 		var _this = this.lines;
+		var trilateralArray = this.trilateralArray;
 		var ax_ = this.x;
 		var ay_ = this.y;
+		_this.halfA = Math.PI / 2;
 		_this.ax = x_;
 		_this.ay = y_;
 		_this.bx = ax_;
 		_this.by = ay_;
-		_this.halfA = Math.PI / 2;
 		_this.beta = Math.PI / 2 - _this.halfA;
 		_this.r = this.width / 2 * Math.cos(_this.beta);
 		_this._theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
@@ -1902,23 +2013,31 @@ trilateral_path_Crude.prototype = $extend(trilateral_path_Base.prototype,{
 		if(_this.d_x != null) {
 			_this.d_2x = _this.d_x;
 		}
+		if(_this.d_y != null) {
+			_this.d_2y = _this.d_y;
+		}
 		if(_this.e_x != null) {
 			_this.e_2x = _this.e_x;
 		}
+		if(_this.e_y != null) {
+			_this.e_2y = _this.e_y;
+		}
 		if(_this.dx != null) {
-			_this.e_x = _this.dx;
+			_this.d_x = _this.dx;
+		}
+		if(_this.dy != null) {
+			_this.d_y = _this.dy;
 		}
 		if(_this.ex != null) {
 			_this.e_x = _this.ex;
+		}
+		if(_this.ey != null) {
+			_this.e_y = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
 		_this.ex = _this.bx + _this.r * Math.cos(_this.angle2);
 		_this.ey = _this.by + _this.r * Math.sin(_this.angle2);
-		var d_x_ = _this.dx;
-		var d_y_ = _this.dy;
-		var e_x_ = _this.ex;
-		var e_y_ = _this.ey;
 		_this.ax = ax_;
 		_this.ay = ay_;
 		_this.bx = x_;
@@ -1942,32 +2061,49 @@ trilateral_path_Crude.prototype = $extend(trilateral_path_Base.prototype,{
 		if(_this.d_x != null) {
 			_this.d_2x = _this.d_x;
 		}
+		if(_this.d_y != null) {
+			_this.d_2y = _this.d_y;
+		}
 		if(_this.e_x != null) {
 			_this.e_2x = _this.e_x;
 		}
+		if(_this.e_y != null) {
+			_this.e_2y = _this.e_y;
+		}
 		if(_this.dx != null) {
-			_this.e_x = _this.dx;
+			_this.d_x = _this.dx;
+		}
+		if(_this.dy != null) {
+			_this.d_y = _this.dy;
 		}
 		if(_this.ex != null) {
 			_this.e_x = _this.ex;
+		}
+		if(_this.ey != null) {
+			_this.e_y = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
 		_this.ex = _this.bx + _this.r * Math.cos(_this.angle2);
 		_this.ey = _this.by + _this.r * Math.sin(_this.angle2);
-		tp_t0 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,e_x_,e_y_);
-		tp_t1 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,_this.ex,_this.ey);
-		this1[this1.length] = tp_t0;
-		this1[this1.length] = tp_t1;
+		var x = _this.d_2x - x_;
+		var y = _this.d_2y - y_;
+		var x1 = _this.e_2x - x_;
+		var y1 = _this.e_2y - y_;
+		if(x * x + y * y > x1 * x1 + y1 * y1) {
+			var tri = new trilateral_Trilateral(_this.d_2x,_this.d_2y,_this.e_x,_this.e_y,ax_,ay_);
+			trilateralArray[trilateralArray.length] = tri;
+		} else {
+			var tri1 = new trilateral_Trilateral(_this.e_2x,_this.e_2y,_this.d_x,_this.d_y,ax_,ay_);
+			trilateralArray[trilateralArray.length] = tri1;
+		}
+		var t0 = new trilateral_Trilateral(_this.d_x,_this.d_y,_this.dx,_this.dy,_this.e_x,_this.e_y);
+		trilateralArray[trilateralArray.length] = t0;
+		var t1 = new trilateral_Trilateral(_this.d_x,_this.d_y,_this.dx,_this.dy,_this.ex,_this.ey);
+		trilateralArray[trilateralArray.length] = t1;
 	}
-	,__class__: trilateral_path_Crude
+	,__class__: trilateral_path_Medium
 });
-var trilateral_path_Lines = function() {
-};
-trilateral_path_Lines.__name__ = true;
-trilateral_path_Lines.prototype = {
-	__class__: trilateral_path_Lines
-};
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 String.prototype.__class__ = String;

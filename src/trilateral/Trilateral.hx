@@ -3,6 +3,7 @@ import trilateral.Algebra;
 // Triangle coordinates without color.
 class Trilateral {
     public var windingAdjusted: Bool;
+    public var mark: Bool = false; // used to allow trilaterals to be marked for alternate coloring.
     public var ax: Float;
     public var bx: Float;
     public var cx: Float;

@@ -87,9 +87,9 @@ class Lines {
     function triangleJoin( trilateralArray: TrilateralArray, ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false ){
         var oldAngle = ( dx != null )? angle1: null;
         halfA = Math.PI/2;
-        if( d_2x != null  ){  ///!!!!!!! thickSame    && thickSame( thick ) ???
-            
-        } else {
+        //  if( d_2x != null ){  ///!!!!!!! thickSame    && thickSame( thick ) ???
+            // dx dy ex ey
+        // } else {
             // only calculate p3, p4 if missing - not sure if there are any strange cases this misses, seems to work and reduces calculations
             ax = bx_;
             ay = by_;
@@ -100,14 +100,14 @@ class Lines {
             r = ( width_/2 )*Math.cos( beta );
             // 
             de();
-        }
+        // }
         //switch lines round to get other side but make sure you finish on p1 so that p3 and p4 are useful
         ax = ax_;
         ay = ay_;
         bx = bx_;
         by = by_;
         de();
-        if( d_2x != null ){
+        //if( d_2x != null ){ //d_2x != null
             var clockWise = dist( d_2x, d_2y, bx_, by_ ) > dist( e_2x, e_2y, bx_, by_ );
             if( curveEnds ){
                 // arc between lines
@@ -122,21 +122,24 @@ class Lines {
                                         dif = -dif;
                                         angle2;
                                     }
-                        var p = Algebra.arc_internal( ax_, ay_, width_/2, omega, dif, 240 );
-                        outerPoly( trilateralArray, ax_, ay_, width_, p );
+                        var p = Algebra.arc_internal( ax_, ay_, width_, omega, -dif, 240 );
+                        outerPoly( trilateralArray, ax_, ay_, width_, p );  // TODO: Draw the inverse pie shape instead.
                         width_ = oldWidth;
                     }
                 }
-            } else { /* should be in here, but there are some gaps when using curve so use the next part to fill.*/ }
+            }
+            //} else { /* should be in here, but there are some gaps when using curve so use the next part to fill.*/ }
             // straight line between lines    
             if( clockWise ){
-               trilateralArray.add( new Trilateral( d_2x, d_2y, d_x, d_y, ax_, ay_ ) );
+                   trilateralArray.add( new Trilateral( d_2x, d_2y, e_x, e_y, ax_, ay_ ) );
             } else {
-               trilateralArray.add( new Trilateral( e_2x, e_2y, e_x, e_y, ax_, ay_ ) ); 
+                   trilateralArray.add( new Trilateral( e_2x, e_2y, d_x, d_y, ax_, ay_ ) );
             }
-        }
-        trilateralArray.add( new Trilateral( d_x, d_y, dx, dy, e_x, e_y ) );
-        trilateralArray.add( new Trilateral( d_x, d_y, dx, dy, ex, ey ) );
+         ///  }
+        var t0 = new Trilateral( d_x, d_y, dx, dy, e_x, e_y );
+        trilateralArray.add( t0 );
+        var t1 = new Trilateral( d_x, d_y, dx, dy,  ex, ey );
+        trilateralArray.add( t1 );
         return TrilateralArray;
     }
     public inline
@@ -192,7 +195,9 @@ class Lines {
         rebuildAsPoly( p[ i*2 ], p[ i*2 + 1 ] );
         var _x = cx;
         var _y = cy;
-        trilateralArray.add( new Trilateral(  fx, fy, _x, _y, centreX, centreY ) );
+        var t = new Trilateral(  fx, fy, _x, _y, centreX, centreY );
+        t.mark = true;
+        trilateralArray.add( t );
         fx = _x;
         fy = _y;
     }
@@ -264,9 +269,13 @@ class Lines {
             }
         }
         if( d_x != null ) d_2x = d_x;
+        if( d_y != null ) d_2y = d_y;
         if( e_x != null ) e_2x = e_x;
-        if( dx != null ) e_x = dx;
+        if( e_y != null ) e_2y = e_y;
+        if( dx != null ) d_x = dx;
+        if( dy != null ) d_y = dy;
         if( ex != null ) e_x = ex;
+        if( ey != null ) e_y = ey;
         dx = bx + r * Math.cos( angle1 );
         dy = by + r * Math.sin( angle1 );
         ex = bx + r * Math.cos( angle2 );

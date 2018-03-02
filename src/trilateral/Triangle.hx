@@ -34,6 +34,7 @@ class Triangle extends Trilateral {
         t.by = tri.by;
         t.cx = tri.cx;
         t.cy = tri.cy;
+        t.mark = tri.mark;
         t.depth = depth_;
         t.alpha = 1.;
         t.colorID = colorID_;

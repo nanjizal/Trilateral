@@ -15,6 +15,7 @@ import trilateral.pairs.Quad;
 import trilateral.pairs.Line;
 import trilateral.polys.Poly;
 import trilateral.path.Crude;
+import trilateral.path.Medium;
 import trilateral.path.Fine;
 import justPath.SvgPath;
 import justPath.PathContextTrace;
@@ -108,7 +109,7 @@ class Test extends WebGLSetup {
                             ,   line
                             ,   1 );
         }
-        var path = new Crude();
+        var path = new Medium();
         path.width = 0.001;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
             return width+0.0001;
@@ -129,7 +130,7 @@ class Test extends WebGLSetup {
         // you can trace out svg points.
         // var p = new SvgPath( new PathContextTrace() );
         // p.parse( quadtest_d, -1., -0.6, 0.002, 0.002 );
-        trace( path.trilateralArray );
+        //trace( path.trilateralArray );
         triangles.addArray( 6
                         ,   path.trilateralArray
                         ,   7 );
@@ -155,7 +156,11 @@ class Test extends WebGLSetup {
             vertices[ i++ ] = tri.cx + ox;
             vertices[ i++ ] = tri.cy + oy;
             vertices[ i++ ] = tri.depth;
-            rgb = WebGLSetup.toRGB( triangleColors[ tri.colorID ] );
+            if( tri.mark ){
+                rgb = WebGLSetup.toRGB( triangleColors[ 12 ] );
+            } else {
+                rgb = WebGLSetup.toRGB( triangleColors[ tri.colorID ] );
+            }
             for( k in 0...3 ){
                 colors[ c++ ] = rgb.r;
                 colors[ c++ ] = rgb.g;
@@ -170,7 +175,7 @@ class Test extends WebGLSetup {
         render();
     }
     override public function render(){
-        //modelViewProjection = spin();
+        modelViewProjection = spin();
         vertices = new Array<Float>();
         indices = new Array<Int>();
         colors = new Array<Float>();
