@@ -1,5 +1,5 @@
-package trilateral;
-import trilateral.Algebra;
+package trilateral.tri;
+import trilateral.geom.Algebra;
 // Triangle coordinates without color.
 class Trilateral {
     public var windingAdjusted: Bool;

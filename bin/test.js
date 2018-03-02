@@ -120,7 +120,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		var q_A;
 		var dim_y;
 		var P_x;
-		this.triangles = trilateral__$TriangleArray_TriangleArray_$Impl_$._new([]);
+		this.triangles = trilateral_tri__$TriangleArray_TriangleArray_$Impl_$._new([]);
 		var this1 = this.triangles;
 		var pi = Math.PI;
 		var omega = -pi;
@@ -141,9 +141,9 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		omega += pi / 3;
 		var c1x = -0.3 + 0.2 * Math.sin(omega);
 		var c1y = -0.3 + 0.2 * Math.cos(omega);
-		var tri = { t0 : new trilateral_Trilateral(a0x,a0y,b0x,b0y,c0x,c0y), t1 : new trilateral_Trilateral(a1x,a1y,b1x,b1y,c1x,c1y)};
+		var tri = { t0 : new trilateral_tri_Trilateral(a0x,a0y,b0x,b0y,c0x,c0y), t1 : new trilateral_tri_Trilateral(a1x,a1y,b1x,b1y,c1x,c1y)};
 		var tri1 = tri.t0;
-		var t = Type.createEmptyInstance(trilateral_Triangle);
+		var t = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t.id = 0;
 		t.ax = tri1.ax;
 		t.ay = tri1.ay;
@@ -161,7 +161,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t.windingAdjusted = tri1.windingAdjusted;
 		this1[this1.length] = t;
 		var tri2 = tri.t1;
-		var t1 = Type.createEmptyInstance(trilateral_Triangle);
+		var t1 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t1.id = 0;
 		t1.ax = tri2.ax;
 		t1.ay = tri2.ay;
@@ -214,9 +214,9 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			dx = -0.449999999999999956;
 			dy = 0.449999999999999956;
 		}
-		var tri3 = { t0 : new trilateral_Trilateral(ax,ay,bx,by,dx,dy), t1 : new trilateral_Trilateral(bx,by,cx,cy,dx,dy)};
+		var tri3 = { t0 : new trilateral_tri_Trilateral(ax,ay,bx,by,dx,dy), t1 : new trilateral_tri_Trilateral(bx,by,cx,cy,dx,dy)};
 		var tri4 = tri3.t0;
-		var t2 = Type.createEmptyInstance(trilateral_Triangle);
+		var t2 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t2.id = 1;
 		t2.ax = tri4.ax;
 		t2.ay = tri4.ay;
@@ -234,7 +234,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t2.windingAdjusted = tri4.windingAdjusted;
 		this2[this2.length] = t2;
 		var tri5 = tri3.t1;
-		var t3 = Type.createEmptyInstance(trilateral_Triangle);
+		var t3 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t3.id = 1;
 		t3.ax = tri5.ax;
 		t3.ay = tri5.ay;
@@ -252,9 +252,9 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t3.windingAdjusted = tri5.windingAdjusted;
 		this2[this2.length] = t3;
 		var this3 = this.triangles;
-		var tri6 = { t0 : new trilateral_Trilateral(0.15,-0.449999999999999956,0.449999999999999956,-0.449999999999999956,0.15,-0.149999999999999967), t1 : new trilateral_Trilateral(0.449999999999999956,-0.449999999999999956,0.449999999999999956,-0.149999999999999967,0.15,-0.149999999999999967)};
+		var tri6 = { t0 : new trilateral_tri_Trilateral(0.15,-0.449999999999999956,0.449999999999999956,-0.449999999999999956,0.15,-0.149999999999999967), t1 : new trilateral_tri_Trilateral(0.449999999999999956,-0.449999999999999956,0.449999999999999956,-0.149999999999999967,0.15,-0.149999999999999967)};
 		var tri7 = tri6.t0;
-		var t4 = Type.createEmptyInstance(trilateral_Triangle);
+		var t4 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t4.id = 2;
 		t4.ax = tri7.ax;
 		t4.ay = tri7.ay;
@@ -272,7 +272,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t4.windingAdjusted = tri7.windingAdjusted;
 		this3[this3.length] = t4;
 		var tri8 = tri6.t1;
-		var t5 = Type.createEmptyInstance(trilateral_Triangle);
+		var t5 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t5.id = 2;
 		t5.ax = tri8.ax;
 		t5.ay = tri8.ay;
@@ -290,9 +290,9 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t5.windingAdjusted = tri8.windingAdjusted;
 		this3[this3.length] = t5;
 		var this4 = this.triangles;
-		var tri9 = { t0 : new trilateral_Trilateral(-0.15,-0.1,0.15,-0.1,-0.15,0.1), t1 : new trilateral_Trilateral(0.15,-0.1,0.15,0.1,-0.15,0.1)};
+		var tri9 = { t0 : new trilateral_tri_Trilateral(-0.15,-0.1,0.15,-0.1,-0.15,0.1), t1 : new trilateral_tri_Trilateral(0.15,-0.1,0.15,0.1,-0.15,0.1)};
 		var tri10 = tri9.t0;
-		var t6 = Type.createEmptyInstance(trilateral_Triangle);
+		var t6 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t6.id = 3;
 		t6.ax = tri10.ax;
 		t6.ay = tri10.ay;
@@ -310,7 +310,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t6.windingAdjusted = tri10.windingAdjusted;
 		this4[this4.length] = t6;
 		var tri11 = tri9.t1;
-		var t7 = Type.createEmptyInstance(trilateral_Triangle);
+		var t7 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t7.id = 3;
 		t7.ax = tri11.ax;
 		t7.ay = tri11.ay;
@@ -328,7 +328,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t7.windingAdjusted = tri11.windingAdjusted;
 		this4[this4.length] = t7;
 		var this5 = this.triangles;
-		var out = [];
+		var out = trilateral_tri__$TrilateralArray_TrilateralArray_$Impl_$._new([]);
 		var pi2 = Math.PI;
 		var theta1 = pi2 / 2;
 		var step = pi2 * 2 / 36;
@@ -344,13 +344,15 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			theta1 += step;
 			cx1 = 0.3 + 0.1 * Math.sin(theta1);
 			cy1 = 0.3 + 0.1 * Math.cos(theta1);
-			out[out.length] = new trilateral_Trilateral(0.3,0.3,bx1,by1,cx1,cy1);
+			var tri12 = new trilateral_tri_Trilateral(0.3,0.3,bx1,by1,cx1,cy1);
+			out[out.length] = tri12;
 		}
+		var triArr = out;
 		var _g = 0;
-		while(_g < out.length) {
-			var t8 = out[_g];
+		while(_g < triArr.length) {
+			var t8 = triArr[_g];
 			++_g;
-			var t9 = Type.createEmptyInstance(trilateral_Triangle);
+			var t9 = Type.createEmptyInstance(trilateral_tri_Triangle);
 			t9.id = 4;
 			t9.ax = t8.ax;
 			t9.ay = t8.ay;
@@ -416,43 +418,43 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			q_B = B_;
 			q_C = C_;
 			q_D = D_;
-			line = { t0 : new trilateral_Trilateral(q_A.x,q_A.y,q_B.x,q_B.y,q_D.x,q_D.y), t1 : new trilateral_Trilateral(q_B.x,q_B.y,q_C.x,q_C.y,q_D.x,q_D.y)};
+			line = { t0 : new trilateral_tri_Trilateral(q_A.x,q_A.y,q_B.x,q_B.y,q_D.x,q_D.y), t1 : new trilateral_tri_Trilateral(q_B.x,q_B.y,q_C.x,q_C.y,q_D.x,q_D.y)};
 			var this6 = this.triangles;
-			var tri12 = line.t0;
-			var t10 = Type.createEmptyInstance(trilateral_Triangle);
+			var tri13 = line.t0;
+			var t10 = Type.createEmptyInstance(trilateral_tri_Triangle);
 			t10.id = 5;
-			t10.ax = tri12.ax;
-			t10.ay = tri12.ay;
-			t10.bx = tri12.bx;
-			t10.by = tri12.by;
-			t10.cx = tri12.cx;
-			t10.cy = tri12.cy;
-			t10.mark = tri12.mark;
+			t10.ax = tri13.ax;
+			t10.ay = tri13.ay;
+			t10.bx = tri13.bx;
+			t10.by = tri13.by;
+			t10.cx = tri13.cx;
+			t10.cy = tri13.cy;
+			t10.mark = tri13.mark;
 			t10.depth = 0;
 			t10.alpha = 1.;
 			t10.colorID = 1;
 			t10.colorA = 1;
 			t10.colorB = 1;
 			t10.colorC = 1;
-			t10.windingAdjusted = tri12.windingAdjusted;
+			t10.windingAdjusted = tri13.windingAdjusted;
 			this6[this6.length] = t10;
-			var tri13 = line.t1;
-			var t11 = Type.createEmptyInstance(trilateral_Triangle);
+			var tri14 = line.t1;
+			var t11 = Type.createEmptyInstance(trilateral_tri_Triangle);
 			t11.id = 5;
-			t11.ax = tri13.ax;
-			t11.ay = tri13.ay;
-			t11.bx = tri13.bx;
-			t11.by = tri13.by;
-			t11.cx = tri13.cx;
-			t11.cy = tri13.cy;
-			t11.mark = tri13.mark;
+			t11.ax = tri14.ax;
+			t11.ay = tri14.ay;
+			t11.bx = tri14.bx;
+			t11.by = tri14.by;
+			t11.cx = tri14.cx;
+			t11.cy = tri14.cy;
+			t11.mark = tri14.mark;
 			t11.depth = 0;
 			t11.alpha = 1.;
 			t11.colorID = 1;
 			t11.colorA = 1;
 			t11.colorB = 1;
 			t11.colorC = 1;
-			t11.windingAdjusted = tri13.windingAdjusted;
+			t11.windingAdjusted = tri14.windingAdjusted;
 			this6[this6.length] = t11;
 		}
 		var path = new trilateral_path_Medium();
@@ -463,12 +465,12 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		var p = new justPath_SvgPath(path);
 		p.parse(this.cubictest_d,-1.,-0.6,0.002,0.002);
 		var this7 = this.triangles;
-		var triArr = path.trilateralArray;
+		var triArr1 = path.trilateralArray;
 		var _g2 = 0;
-		while(_g2 < triArr.length) {
-			var t12 = triArr[_g2];
+		while(_g2 < triArr1.length) {
+			var t12 = triArr1[_g2];
 			++_g2;
-			var t13 = Type.createEmptyInstance(trilateral_Triangle);
+			var t13 = Type.createEmptyInstance(trilateral_tri_Triangle);
 			t13.id = 6;
 			t13.ax = t12.ax;
 			t13.ay = t12.ay;
@@ -493,12 +495,12 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		};
 		p.parse(this.quadtest_d,-1.2,-0.6,0.002,0.002);
 		var this8 = this.triangles;
-		var triArr1 = path.trilateralArray;
+		var triArr2 = path.trilateralArray;
 		var _g3 = 0;
-		while(_g3 < triArr1.length) {
-			var t14 = triArr1[_g3];
+		while(_g3 < triArr2.length) {
+			var t14 = triArr2[_g3];
 			++_g3;
-			var t15 = Type.createEmptyInstance(trilateral_Triangle);
+			var t15 = Type.createEmptyInstance(trilateral_tri_Triangle);
 			t15.id = 6;
 			t15.ax = t14.ax;
 			t15.ay = t14.ay;
@@ -1659,96 +1661,20 @@ khaMath_Matrix4.__name__ = true;
 khaMath_Matrix4.prototype = {
 	__class__: khaMath_Matrix4
 };
-var trilateral_Algebra = function() { };
-trilateral_Algebra.__name__ = true;
-var trilateral_Trilateral = function(ax_,ay_,bx_,by_,cx_,cy_) {
-	this.mark = false;
-	this.ax = ax_;
-	this.ay = ay_;
-	this.bx = bx_;
-	this.by = by_;
-	this.cx = cx_;
-	this.cy = cy_;
-	this.windingAdjusted = this.adjustWinding();
-	if(this.windingAdjusted) {
-		this.ax = ax_;
-		this.ay = ay_;
-		this.bx = cx_;
-		this.by = cy_;
-		this.cx = bx_;
-		this.cy = by_;
-	}
+var trilateral_geom_Algebra = function() { };
+trilateral_geom_Algebra.__name__ = true;
+var trilateral_geom_Contour = function() {
 };
-trilateral_Trilateral.__name__ = true;
-trilateral_Trilateral.prototype = {
-	adjustWinding: function() {
-		return this.ax * this.by - this.bx * this.ay + (this.bx * this.cy - this.cx * this.by) + (this.cx * this.ay - this.ax * this.cy) < 0;
-	}
-	,__class__: trilateral_Trilateral
+trilateral_geom_Contour.__name__ = true;
+trilateral_geom_Contour.prototype = {
+	__class__: trilateral_geom_Contour
 };
-var trilateral_Triangle = function() { };
-trilateral_Triangle.__name__ = true;
-trilateral_Triangle.fromTrilateral = function(id_,tri,depth_,colorID_) {
-	var t = Type.createEmptyInstance(trilateral_Triangle);
-	t.id = id_;
-	t.ax = tri.ax;
-	t.ay = tri.ay;
-	t.bx = tri.bx;
-	t.by = tri.by;
-	t.cx = tri.cx;
-	t.cy = tri.cy;
-	t.mark = tri.mark;
-	t.depth = depth_;
-	t.alpha = 1.;
-	t.colorID = colorID_;
-	t.colorA = colorID_;
-	t.colorB = colorID_;
-	t.colorC = colorID_;
-	t.windingAdjusted = tri.windingAdjusted;
-	return t;
-};
-trilateral_Triangle.__super__ = trilateral_Trilateral;
-trilateral_Triangle.prototype = $extend(trilateral_Trilateral.prototype,{
-	__class__: trilateral_Triangle
-});
-var trilateral__$TriangleArray_TriangleArray_$Impl_$ = {};
-trilateral__$TriangleArray_TriangleArray_$Impl_$.__name__ = true;
-trilateral__$TriangleArray_TriangleArray_$Impl_$._new = function(t) {
-	return t == null ? trilateral__$TriangleArray_TriangleArray_$Impl_$._new([]) : t;
-};
-var trilateral__$TrilateralArray_TrilateralArray_$Impl_$ = {};
-trilateral__$TrilateralArray_TrilateralArray_$Impl_$.__name__ = true;
-trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new = function(t) {
-	return t == null ? trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new([]) : t;
-};
-trilateral__$TrilateralArray_TrilateralArray_$Impl_$.getEmpty = function() {
-	return trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new([]);
-};
-trilateral__$TrilateralArray_TrilateralArray_$Impl_$.clear = function(this1) {
-	this1 = trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new([]);
-};
-trilateral__$TrilateralArray_TrilateralArray_$Impl_$.add = function(this1,tri) {
-	this1[this1.length] = tri;
-};
-trilateral__$TrilateralArray_TrilateralArray_$Impl_$.addPair = function(this1,tp) {
-	this1[this1.length] = tp.t0;
-	this1[this1.length] = tp.t1;
-};
-trilateral__$TrilateralArray_TrilateralArray_$Impl_$.addArray = function(this1,triArr) {
-	var _g = 0;
-	while(_g < triArr.length) {
-		var t = triArr[_g];
-		++_g;
-		this1[this1.length] = t;
-	}
-	return triArr;
-};
-var trilateral_path_Base = function(lines_,trilateralArray_) {
+var trilateral_path_Base = function(contour_,trilateralArray_) {
 	this.width = 0.01;
 	this.y = 0.;
 	this.x = 0.;
-	this.trilateralArray = trilateralArray_ == null ? trilateral__$TrilateralArray_TrilateralArray_$Impl_$._new([]) : trilateralArray_;
-	this.lines = lines_ == null ? new trilateral_path_Lines() : lines_;
+	this.trilateralArray = trilateralArray_ == null ? trilateral_tri__$TrilateralArray_TrilateralArray_$Impl_$._new([]) : trilateralArray_;
+	this.contour = contour_ == null ? new trilateral_geom_Contour() : contour_;
 };
 trilateral_path_Base.__name__ = true;
 trilateral_path_Base.__interfaces__ = [justPath_IPathContext];
@@ -1770,7 +1696,7 @@ trilateral_path_Base.prototype = {
 		var tp_t0;
 		console.log("lineTo( " + this.x + ", " + this.y + ", " + x_ + ", " + y_ + ", width )");
 		var this1 = this.trilateralArray;
-		var _this = this.lines;
+		var _this = this.contour;
 		var ax_ = this.x;
 		var ay_ = this.y;
 		_this.ax = x_;
@@ -1780,104 +1706,104 @@ trilateral_path_Base.prototype = {
 		_this.halfA = Math.PI / 2;
 		_this.beta = Math.PI / 2 - _this.halfA;
 		_this.r = this.width / 2 * Math.cos(_this.beta);
-		_this._theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
-		if(_this._theta > 0) {
+		_this.theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
+		if(_this.theta > 0) {
 			if(_this.halfA < 0) {
-				_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-				_this.angle1 = _this._theta - _this.halfA;
+				_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+				_this.angle1 = _this.theta - _this.halfA;
 			} else {
-				_this.angle1 = _this._theta + _this.halfA - Math.PI;
-				_this.angle2 = _this._theta + _this.halfA;
+				_this.angle1 = _this.theta + _this.halfA - Math.PI;
+				_this.angle2 = _this.theta + _this.halfA;
 			}
 		} else if(_this.halfA > 0) {
-			_this.angle1 = _this._theta + _this.halfA - Math.PI;
-			_this.angle2 = _this._theta + _this.halfA;
+			_this.angle1 = _this.theta + _this.halfA - Math.PI;
+			_this.angle2 = _this.theta + _this.halfA;
 		} else {
-			_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-			_this.angle1 = _this._theta - _this.halfA;
+			_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+			_this.angle1 = _this.theta - _this.halfA;
 		}
-		if(_this.d_x != null) {
-			_this.d_2x = _this.d_x;
+		if(_this.dxPrev != null) {
+			_this.dxOld = _this.dxPrev;
 		}
-		if(_this.d_y != null) {
-			_this.d_2y = _this.d_y;
+		if(_this.dyPrev != null) {
+			_this.dyOld = _this.dyPrev;
 		}
-		if(_this.e_x != null) {
-			_this.e_2x = _this.e_x;
+		if(_this.exPrev != null) {
+			_this.exOld = _this.exPrev;
 		}
-		if(_this.e_y != null) {
-			_this.e_2y = _this.e_y;
+		if(_this.eyPrev != null) {
+			_this.eyOld = _this.eyPrev;
 		}
 		if(_this.dx != null) {
-			_this.d_x = _this.dx;
+			_this.dxPrev = _this.dx;
 		}
 		if(_this.dy != null) {
-			_this.d_y = _this.dy;
+			_this.dyPrev = _this.dy;
 		}
 		if(_this.ex != null) {
-			_this.e_x = _this.ex;
+			_this.exPrev = _this.ex;
 		}
 		if(_this.ey != null) {
-			_this.e_y = _this.ey;
+			_this.eyPrev = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
 		_this.ex = _this.bx + _this.r * Math.cos(_this.angle2);
 		_this.ey = _this.by + _this.r * Math.sin(_this.angle2);
-		var d_x_ = _this.dx;
-		var d_y_ = _this.dy;
-		var e_x_ = _this.ex;
-		var e_y_ = _this.ey;
+		var dxPrev_ = _this.dx;
+		var dyPrev_ = _this.dy;
+		var exPrev_ = _this.ex;
+		var eyPrev_ = _this.ey;
 		_this.ax = ax_;
 		_this.ay = ay_;
 		_this.bx = x_;
 		_this.by = y_;
-		_this._theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
-		if(_this._theta > 0) {
+		_this.theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
+		if(_this.theta > 0) {
 			if(_this.halfA < 0) {
-				_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-				_this.angle1 = _this._theta - _this.halfA;
+				_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+				_this.angle1 = _this.theta - _this.halfA;
 			} else {
-				_this.angle1 = _this._theta + _this.halfA - Math.PI;
-				_this.angle2 = _this._theta + _this.halfA;
+				_this.angle1 = _this.theta + _this.halfA - Math.PI;
+				_this.angle2 = _this.theta + _this.halfA;
 			}
 		} else if(_this.halfA > 0) {
-			_this.angle1 = _this._theta + _this.halfA - Math.PI;
-			_this.angle2 = _this._theta + _this.halfA;
+			_this.angle1 = _this.theta + _this.halfA - Math.PI;
+			_this.angle2 = _this.theta + _this.halfA;
 		} else {
-			_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-			_this.angle1 = _this._theta - _this.halfA;
+			_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+			_this.angle1 = _this.theta - _this.halfA;
 		}
-		if(_this.d_x != null) {
-			_this.d_2x = _this.d_x;
+		if(_this.dxPrev != null) {
+			_this.dxOld = _this.dxPrev;
 		}
-		if(_this.d_y != null) {
-			_this.d_2y = _this.d_y;
+		if(_this.dyPrev != null) {
+			_this.dyOld = _this.dyPrev;
 		}
-		if(_this.e_x != null) {
-			_this.e_2x = _this.e_x;
+		if(_this.exPrev != null) {
+			_this.exOld = _this.exPrev;
 		}
-		if(_this.e_y != null) {
-			_this.e_2y = _this.e_y;
+		if(_this.eyPrev != null) {
+			_this.eyOld = _this.eyPrev;
 		}
 		if(_this.dx != null) {
-			_this.d_x = _this.dx;
+			_this.dxPrev = _this.dx;
 		}
 		if(_this.dy != null) {
-			_this.d_y = _this.dy;
+			_this.dyPrev = _this.dy;
 		}
 		if(_this.ex != null) {
-			_this.e_x = _this.ex;
+			_this.exPrev = _this.ex;
 		}
 		if(_this.ey != null) {
-			_this.e_y = _this.ey;
+			_this.eyPrev = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
 		_this.ex = _this.bx + _this.r * Math.cos(_this.angle2);
 		_this.ey = _this.by + _this.r * Math.sin(_this.angle2);
-		tp_t0 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,e_x_,e_y_);
-		tp_t1 = new trilateral_Trilateral(d_x_,d_y_,_this.dx,_this.dy,_this.ex,_this.ey);
+		tp_t0 = new trilateral_tri_Trilateral(dxPrev_,dyPrev_,_this.dx,_this.dy,exPrev_,eyPrev_);
+		tp_t1 = new trilateral_tri_Trilateral(dxPrev_,dyPrev_,_this.dx,_this.dy,_this.ex,_this.ey);
 		this1[this1.length] = tp_t0;
 		this1[this1.length] = tp_t1;
 	}
@@ -1894,7 +1820,7 @@ trilateral_path_Base.prototype = {
 		if(approxDistance == 0) {
 			approxDistance = 0.000001;
 		}
-		var step = Math.min(1 / (approxDistance * 0.707),trilateral_Algebra.quadStep);
+		var step = Math.min(1 / (approxDistance * 0.707),trilateral_geom_Algebra.quadStep);
 		var l = p.length;
 		p[l++] = ax;
 		p[l++] = ay;
@@ -1927,7 +1853,7 @@ trilateral_path_Base.prototype = {
 		if(approxDistance == 0) {
 			approxDistance = 0.000001;
 		}
-		var step = Math.min(1 / (approxDistance * 0.707),trilateral_Algebra.cubicStep);
+		var step = Math.min(1 / (approxDistance * 0.707),trilateral_geom_Algebra.cubicStep);
 		var l = p.length;
 		p[l++] = ax;
 		p[l++] = ay;
@@ -1970,21 +1896,15 @@ trilateral_path_Base.prototype = {
 	}
 	,__class__: trilateral_path_Base
 };
-var trilateral_path_Lines = function() {
-};
-trilateral_path_Lines.__name__ = true;
-trilateral_path_Lines.prototype = {
-	__class__: trilateral_path_Lines
-};
-var trilateral_path_Medium = function(lines_,trilateralArray_) {
-	trilateral_path_Base.call(this,lines_,trilateralArray_);
+var trilateral_path_Medium = function(contour_,trilateralArray_) {
+	trilateral_path_Base.call(this,contour_,trilateralArray_);
 };
 trilateral_path_Medium.__name__ = true;
 trilateral_path_Medium.__super__ = trilateral_path_Base;
 trilateral_path_Medium.prototype = $extend(trilateral_path_Base.prototype,{
 	line: function(x_,y_) {
-		var _this = this.lines;
-		var trilateralArray = this.trilateralArray;
+		var _this = this.contour;
+		var triArr = this.trilateralArray;
 		var ax_ = this.x;
 		var ay_ = this.y;
 		_this.halfA = Math.PI / 2;
@@ -1994,45 +1914,45 @@ trilateral_path_Medium.prototype = $extend(trilateral_path_Base.prototype,{
 		_this.by = ay_;
 		_this.beta = Math.PI / 2 - _this.halfA;
 		_this.r = this.width / 2 * Math.cos(_this.beta);
-		_this._theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
-		if(_this._theta > 0) {
+		_this.theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
+		if(_this.theta > 0) {
 			if(_this.halfA < 0) {
-				_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-				_this.angle1 = _this._theta - _this.halfA;
+				_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+				_this.angle1 = _this.theta - _this.halfA;
 			} else {
-				_this.angle1 = _this._theta + _this.halfA - Math.PI;
-				_this.angle2 = _this._theta + _this.halfA;
+				_this.angle1 = _this.theta + _this.halfA - Math.PI;
+				_this.angle2 = _this.theta + _this.halfA;
 			}
 		} else if(_this.halfA > 0) {
-			_this.angle1 = _this._theta + _this.halfA - Math.PI;
-			_this.angle2 = _this._theta + _this.halfA;
+			_this.angle1 = _this.theta + _this.halfA - Math.PI;
+			_this.angle2 = _this.theta + _this.halfA;
 		} else {
-			_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-			_this.angle1 = _this._theta - _this.halfA;
+			_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+			_this.angle1 = _this.theta - _this.halfA;
 		}
-		if(_this.d_x != null) {
-			_this.d_2x = _this.d_x;
+		if(_this.dxPrev != null) {
+			_this.dxOld = _this.dxPrev;
 		}
-		if(_this.d_y != null) {
-			_this.d_2y = _this.d_y;
+		if(_this.dyPrev != null) {
+			_this.dyOld = _this.dyPrev;
 		}
-		if(_this.e_x != null) {
-			_this.e_2x = _this.e_x;
+		if(_this.exPrev != null) {
+			_this.exOld = _this.exPrev;
 		}
-		if(_this.e_y != null) {
-			_this.e_2y = _this.e_y;
+		if(_this.eyPrev != null) {
+			_this.eyOld = _this.eyPrev;
 		}
 		if(_this.dx != null) {
-			_this.d_x = _this.dx;
+			_this.dxPrev = _this.dx;
 		}
 		if(_this.dy != null) {
-			_this.d_y = _this.dy;
+			_this.dyPrev = _this.dy;
 		}
 		if(_this.ex != null) {
-			_this.e_x = _this.ex;
+			_this.exPrev = _this.ex;
 		}
 		if(_this.ey != null) {
-			_this.e_y = _this.ey;
+			_this.eyPrev = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
@@ -2042,68 +1962,128 @@ trilateral_path_Medium.prototype = $extend(trilateral_path_Base.prototype,{
 		_this.ay = ay_;
 		_this.bx = x_;
 		_this.by = y_;
-		_this._theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
-		if(_this._theta > 0) {
+		_this.theta = Math.atan2(_this.ay - _this.by,_this.ax - _this.bx);
+		if(_this.theta > 0) {
 			if(_this.halfA < 0) {
-				_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-				_this.angle1 = _this._theta - _this.halfA;
+				_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+				_this.angle1 = _this.theta - _this.halfA;
 			} else {
-				_this.angle1 = _this._theta + _this.halfA - Math.PI;
-				_this.angle2 = _this._theta + _this.halfA;
+				_this.angle1 = _this.theta + _this.halfA - Math.PI;
+				_this.angle2 = _this.theta + _this.halfA;
 			}
 		} else if(_this.halfA > 0) {
-			_this.angle1 = _this._theta + _this.halfA - Math.PI;
-			_this.angle2 = _this._theta + _this.halfA;
+			_this.angle1 = _this.theta + _this.halfA - Math.PI;
+			_this.angle2 = _this.theta + _this.halfA;
 		} else {
-			_this.angle2 = _this._theta + _this.halfA + Math.PI / 2;
-			_this.angle1 = _this._theta - _this.halfA;
+			_this.angle2 = _this.theta + _this.halfA + Math.PI / 2;
+			_this.angle1 = _this.theta - _this.halfA;
 		}
-		if(_this.d_x != null) {
-			_this.d_2x = _this.d_x;
+		if(_this.dxPrev != null) {
+			_this.dxOld = _this.dxPrev;
 		}
-		if(_this.d_y != null) {
-			_this.d_2y = _this.d_y;
+		if(_this.dyPrev != null) {
+			_this.dyOld = _this.dyPrev;
 		}
-		if(_this.e_x != null) {
-			_this.e_2x = _this.e_x;
+		if(_this.exPrev != null) {
+			_this.exOld = _this.exPrev;
 		}
-		if(_this.e_y != null) {
-			_this.e_2y = _this.e_y;
+		if(_this.eyPrev != null) {
+			_this.eyOld = _this.eyPrev;
 		}
 		if(_this.dx != null) {
-			_this.d_x = _this.dx;
+			_this.dxPrev = _this.dx;
 		}
 		if(_this.dy != null) {
-			_this.d_y = _this.dy;
+			_this.dyPrev = _this.dy;
 		}
 		if(_this.ex != null) {
-			_this.e_x = _this.ex;
+			_this.exPrev = _this.ex;
 		}
 		if(_this.ey != null) {
-			_this.e_y = _this.ey;
+			_this.eyPrev = _this.ey;
 		}
 		_this.dx = _this.bx + _this.r * Math.cos(_this.angle1);
 		_this.dy = _this.by + _this.r * Math.sin(_this.angle1);
 		_this.ex = _this.bx + _this.r * Math.cos(_this.angle2);
 		_this.ey = _this.by + _this.r * Math.sin(_this.angle2);
-		var x = _this.d_2x - x_;
-		var y = _this.d_2y - y_;
-		var x1 = _this.e_2x - x_;
-		var y1 = _this.e_2y - y_;
+		var x = _this.dxOld - x_;
+		var y = _this.dyOld - y_;
+		var x1 = _this.exOld - x_;
+		var y1 = _this.eyOld - y_;
 		if(x * x + y * y > x1 * x1 + y1 * y1) {
-			var tri = new trilateral_Trilateral(_this.d_2x,_this.d_2y,_this.e_x,_this.e_y,ax_,ay_);
-			trilateralArray[trilateralArray.length] = tri;
+			var tri = new trilateral_tri_Trilateral(_this.dxOld,_this.dyOld,_this.exPrev,_this.eyPrev,ax_,ay_);
+			triArr[triArr.length] = tri;
 		} else {
-			var tri1 = new trilateral_Trilateral(_this.e_2x,_this.e_2y,_this.d_x,_this.d_y,ax_,ay_);
-			trilateralArray[trilateralArray.length] = tri1;
+			var tri1 = new trilateral_tri_Trilateral(_this.exOld,_this.eyOld,_this.dxPrev,_this.dyPrev,ax_,ay_);
+			triArr[triArr.length] = tri1;
 		}
-		var t0 = new trilateral_Trilateral(_this.d_x,_this.d_y,_this.dx,_this.dy,_this.e_x,_this.e_y);
-		trilateralArray[trilateralArray.length] = t0;
-		var t1 = new trilateral_Trilateral(_this.d_x,_this.d_y,_this.dx,_this.dy,_this.ex,_this.ey);
-		trilateralArray[trilateralArray.length] = t1;
+		var tri2 = new trilateral_tri_Trilateral(_this.dxPrev,_this.dyPrev,_this.dx,_this.dy,_this.exPrev,_this.eyPrev);
+		triArr[triArr.length] = tri2;
+		var tri3 = new trilateral_tri_Trilateral(_this.dxPrev,_this.dyPrev,_this.dx,_this.dy,_this.ex,_this.ey);
+		triArr[triArr.length] = tri3;
 	}
 	,__class__: trilateral_path_Medium
 });
+var trilateral_tri_Trilateral = function(ax_,ay_,bx_,by_,cx_,cy_) {
+	this.mark = false;
+	this.ax = ax_;
+	this.ay = ay_;
+	this.bx = bx_;
+	this.by = by_;
+	this.cx = cx_;
+	this.cy = cy_;
+	this.windingAdjusted = this.adjustWinding();
+	if(this.windingAdjusted) {
+		this.ax = ax_;
+		this.ay = ay_;
+		this.bx = cx_;
+		this.by = cy_;
+		this.cx = bx_;
+		this.cy = by_;
+	}
+};
+trilateral_tri_Trilateral.__name__ = true;
+trilateral_tri_Trilateral.prototype = {
+	adjustWinding: function() {
+		return this.ax * this.by - this.bx * this.ay + (this.bx * this.cy - this.cx * this.by) + (this.cx * this.ay - this.ax * this.cy) < 0;
+	}
+	,__class__: trilateral_tri_Trilateral
+};
+var trilateral_tri_Triangle = function() { };
+trilateral_tri_Triangle.__name__ = true;
+trilateral_tri_Triangle.fromTrilateral = function(id_,tri,depth_,colorID_) {
+	var t = Type.createEmptyInstance(trilateral_tri_Triangle);
+	t.id = id_;
+	t.ax = tri.ax;
+	t.ay = tri.ay;
+	t.bx = tri.bx;
+	t.by = tri.by;
+	t.cx = tri.cx;
+	t.cy = tri.cy;
+	t.mark = tri.mark;
+	t.depth = depth_;
+	t.alpha = 1.;
+	t.colorID = colorID_;
+	t.colorA = colorID_;
+	t.colorB = colorID_;
+	t.colorC = colorID_;
+	t.windingAdjusted = tri.windingAdjusted;
+	return t;
+};
+trilateral_tri_Triangle.__super__ = trilateral_tri_Trilateral;
+trilateral_tri_Triangle.prototype = $extend(trilateral_tri_Trilateral.prototype,{
+	__class__: trilateral_tri_Triangle
+});
+var trilateral_tri__$TriangleArray_TriangleArray_$Impl_$ = {};
+trilateral_tri__$TriangleArray_TriangleArray_$Impl_$.__name__ = true;
+trilateral_tri__$TriangleArray_TriangleArray_$Impl_$._new = function(t) {
+	return t == null ? trilateral_tri__$TriangleArray_TriangleArray_$Impl_$._new([]) : t;
+};
+var trilateral_tri__$TrilateralArray_TrilateralArray_$Impl_$ = {};
+trilateral_tri__$TrilateralArray_TrilateralArray_$Impl_$.__name__ = true;
+trilateral_tri__$TrilateralArray_TrilateralArray_$Impl_$._new = function(t) {
+	return t == null ? trilateral_tri__$TrilateralArray_TrilateralArray_$Impl_$._new([]) : t;
+};
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 String.prototype.__class__ = String;
@@ -2127,7 +2107,7 @@ htmlHelper_tools_AnimateTimer.counter = 0;
 js_Boot.__toStr = ({ }).toString;
 js_html_compat_Float32Array.BYTES_PER_ELEMENT = 4;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
-trilateral_Algebra.quadStep = 0.03;
-trilateral_Algebra.cubicStep = 0.03;
+trilateral_geom_Algebra.quadStep = 0.03;
+trilateral_geom_Algebra.cubicStep = 0.03;
 Test.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

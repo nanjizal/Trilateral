@@ -7,16 +7,18 @@ import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 import htmlHelper.tools.AnimateTimer; 
 
-import trilateral.Triangle;
-import trilateral.TriangleArray;
-import trilateral.Algebra;
+import trilateral.tri.Triangle;
+import trilateral.tri.TriangleArray;
+import trilateral.geom.Algebra;
 import trilateral.pairs.Star;
 import trilateral.pairs.Quad;
 import trilateral.pairs.Line;
 import trilateral.polys.Poly;
+
 import trilateral.path.Crude;
 import trilateral.path.Medium;
 import trilateral.path.Fine;
+
 import justPath.SvgPath;
 import justPath.PathContextTrace;
 using htmlHelper.webgl.WebGLSetup;

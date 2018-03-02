@@ -1,9 +1,8 @@
 package trilateral.path;
 import justPath.IPathContext;
-import trilateral.TrilateralArray;
-import trilateral.Algebra;
-import trilateral.pairs.Line;
-import trilateral.path.Lines;
+import trilateral.tri.TrilateralArray;
+import trilateral.geom.Algebra;
+import trilateral.geom.Contour;
 class Base implements IPathContext {
     public var trilateralArray:     TrilateralArray;
     var x:                          Float = 0.;
@@ -11,10 +10,10 @@ class Base implements IPathContext {
     public var width:               Float = 0.01;
     public var widthFunction:       Float->Float->Float->Float->Float->Float;
     var tempArr:                    Array<Float>;
-    var lines:                      Lines;
-    public function new( ?lines_: Lines, ?trilateralArray_: TrilateralArray ){
+    var contour:                    Contour;
+    public function new( ?contour_: Contour, ?trilateralArray_: TrilateralArray ){
         trilateralArray = ( trilateralArray_ == null )? new TrilateralArray(): trilateralArray_;
-        lines = ( lines_ == null )? new Lines(): lines_;
+        contour = ( contour_ == null )? new Contour(): contour_;
     }
     public function moveTo( x_: Float, y_: Float ): Void{
         x = x_;
@@ -28,8 +27,12 @@ class Base implements IPathContext {
         y = y_;
     }
     function line( x_: Float, y_: Float ) {
+        lineTrace( x_, y_ );
+        // Simplest line not connection no ends.
+        trilateralArray.addPair( contour.line( x, y, x_, y_, width ) );
+    }
+    inline function lineTrace( x_: Float, y_: Float ){
         trace( 'lineTo( $x, $y, $x_, $y_, width )' );
-        trilateralArray.addPair( lines.line( x, y, x_, y_, width ) );
     }
     public inline
     function quadTo( x1: Float, y1: Float, x2: Float, y2: Float ): Void {

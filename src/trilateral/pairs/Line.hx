@@ -1,7 +1,8 @@
 package trilateral.pairs;
-import trilateral.Algebra;
-import trilateral.Trilateral;
-// defines a line without a colour, limited does not work for short lines use path.Lines.line
+import trilateral.geom.Algebra;
+import trilateral.geom.Point;
+import trilateral.tri.Trilateral;
+// defines a line without a colour, limited does not work for short lines use path.Contour.line
 class Line {
     public inline static
     function create( A: Point, B: Point, width: Float ): TrilateralPair {

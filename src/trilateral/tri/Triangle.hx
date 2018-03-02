@@ -1,6 +1,6 @@
-package trilateral;
-import trilateral.Point;
-import trilateral.Trilateral;
+package trilateral.tri;
+import trilateral.geom.Point;
+import trilateral.tri.Trilateral;
 class Triangle extends Trilateral {
     public var id: Int;
     public var colorID: Int;

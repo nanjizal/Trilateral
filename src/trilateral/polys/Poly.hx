@@ -1,4 +1,8 @@
 package trilateral.polys;
+import trilateral.tri.Trilateral;
+import trilateral.tri.TrilateralArray;
+import trilateral.geom.Algebra;
+import trilateral.geom.Point;
 @:enum
 abstract PolySides( Int ) from Int to Int {
     var triangle        = 3;
@@ -37,8 +41,8 @@ abstract PolySides( Int ) from Int to Int {
 }
 class Poly {
     public static inline
-    function circle( pos: Point, radius: Float, ?sides: Int = 36 ): Array<Trilateral> {
-        var out = new Array<Trilateral>();
+    function circle( pos: Point, radius: Float, ?sides: Int = 36 ): TrilateralArray {
+        var out = new TrilateralArray();
         var pi = Math.PI;
         var theta = pi/2;
         var step = pi*2/sides;
@@ -54,13 +58,13 @@ class Poly {
             theta += step;
             cx = ax + radius*Math.sin( theta );
             cy = ay + radius*Math.cos( theta );
-            out[ out.length ] = new Trilateral( ax, ay, bx, by, cx, cy );
+            out.add( new Trilateral( ax, ay, bx, by, cx, cy ) );
         }
         return out;
     }
     public static inline
-    function circleOnSide( pos: Point, radius: Float, ?sides: Int = 36 ): Array<Trilateral> {
-        var out = new Array<Trilateral>();
+    function circleOnSide( pos: Point, radius: Float, ?sides: Int = 36 ): TrilateralArray {
+        var out = new TrilateralArray();
         var pi = Math.PI;
         var theta = pi/2;
         var step = pi*2/sides;
@@ -77,7 +81,7 @@ class Poly {
             theta += step;
             cx = ax + radius*Math.sin( theta );
             cy = ay + radius*Math.cos( theta );
-            out[ out.length ] = new Trilateral( ax, ay, bx, by, cx, cy );
+            out.add( new Trilateral( ax, ay, bx, by, cx, cy ) );
         }
         return out;
     }

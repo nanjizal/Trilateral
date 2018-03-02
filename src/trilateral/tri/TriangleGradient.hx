@@ -1,7 +1,7 @@
-package trilateral;
-import trilateral.Triangle;
-import trilateral.TriangleArray;
-import trilateral.Algebra;
+package trilateral.tri;
+import trilateral.tri.Triangle;
+import trilateral.tri.TriangleArray;
+import trilateral.geom.Algebra;
 abstract TriangleGradient( Triangle ) from Triangle to Triangle {
     public inline function new(  id_: Int
                             , outline_: Bool

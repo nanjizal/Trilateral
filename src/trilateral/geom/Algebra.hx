@@ -1,7 +1,7 @@
-package trilateral;
-import trilateral.Triangle;
-import trilateral.Point;
-import trilateral.Trilateral;
+package trilateral.geom;
+import trilateral.tri.Triangle;
+import trilateral.geom.Point;
+import trilateral.tri.Trilateral;
 typedef QuadPoint = { A: Point, B: Point, C: Point, D: Point };
 typedef TrianglePair = { t0: Triangle, t1: Triangle };
 typedef TrilateralPair = { t0: Trilateral, t1: Trilateral }

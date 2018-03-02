@@ -1,6 +1,7 @@
-package trilateral;
-import trilateral.Triangle;
-import trilateral.Algebra;
+package trilateral.tri;
+import trilateral.tri.Triangle;
+import trilateral.geom.Algebra;
+import trilateral.geom.Point;
 @:forward
 abstract TriangleArray(Array<Triangle>) from Array<Triangle> to Array<Triangle> {
     inline public 
