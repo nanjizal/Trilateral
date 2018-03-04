@@ -75,7 +75,7 @@ abstract TriangleGradient( Triangle ) from Triangle to Triangle {
         var top = -y_;
         var wid = wid_;
         var hi = hi_;
-        if( colors.length == 1 ) colors.push( colors[0] );
+        if( colors.length == 1 ) colors.push( colors[ 0 ] );
         var sections = colors.length - 1;
         var loops = colors.length - 1;
         if( horizontal_ ){
@@ -83,14 +83,14 @@ abstract TriangleGradient( Triangle ) from Triangle to Triangle {
             var dim = { x: step, y: -hi };
             for( i in 0...loops ){
                 var pos = { x: left + i*step, y: top };
-                triangles.pushPair( TriangleGradient.quadGradient( id_, false, pos, dim, 0, colors[i], colors[i+1], horizontal_, theta, pivotX, pivotY ) );
+                triangles.pushPair( TriangleGradient.quadGradient( id_, false, pos, dim, 0, colors[ i ], colors[ i + 1 ], horizontal_, theta, pivotX, pivotY ) );
             }
         } else {
             var step: Float = hi/sections;
             var dim = { x: wid, y: -step };
             for( i in 0...loops ){
                 var pos = { x: left, y: top - i*step };
-                triangles.pushPair( TriangleGradient.quadGradient( id_, false, pos, dim, 0, colors[i], colors[i+1], horizontal_, theta, pivotX, pivotY ) );
+                triangles.pushPair( TriangleGradient.quadGradient( id_, false, pos, dim, 0, colors[ i ], colors[ i + 1 ], horizontal_, theta, pivotX, pivotY ) );
             }
         }
     }
