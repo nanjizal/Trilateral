@@ -80,4 +80,39 @@ class Trilateral {
     public function adjustWinding():Bool { // check sign
         return ( (ax * by - bx * ay) + (bx * cy - cx * by) + (cx * ay - ax * cy) )<0;
     }
+    public inline 
+    function rotate( x: Float, y: Float, theta: Float ){
+        var cos = Math.cos( theta );
+        var sin = Math.sin( theta );
+        rotateTrig( x, y, cos, sin );
+    }
+    public inline 
+    function rotateTrig( x: Float, y: Float, cos: Float, sin: Float ){
+        ax -= x;
+        ay -= y;
+        bx -= x;
+        by -= y;
+        cx -= x;
+        cy -= y;
+        var dx: Float;
+        var dy: Float;
+        dx  = ax;
+        dy  = ay;
+        ax  = dx * cos - dy * sin;
+        ay  = dx * sin + dy * cos; 
+        dx  = bx;
+        dy  = by;
+        bx  = dx * cos - dy * sin;
+        by  = dx * sin + dy * cos; 
+        dx  = cx;
+        dy  = cy;
+        cx  = dx * cos - dy * sin;
+        cy  = dx * sin + dy * cos;
+        ax += x;
+        ay += y;
+        bx += x;
+        by += y;
+        cx += x;
+        cy += y;
+    }
 }

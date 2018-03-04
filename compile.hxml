@@ -4,6 +4,7 @@
 -lib htmlHelper
 -lib khaMath
 -lib justPath
+-lib fracs
 -main Test
 -D js-flatten 
 -dce full
