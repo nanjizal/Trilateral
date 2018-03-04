@@ -82,36 +82,64 @@ class Test extends WebGLSetup {
          AnimateTimer.onFrame = render_;
         render();
     }
+    // allow you to reference a shape by an index, ie you can collect all triangles with specific id number.
+    var refCount: Int = 0;
+    inline
+    function star( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
+        triangles.addPair(  refCount++
+                        ,   Star.create( { x: x, y: y }, radius, theta )
+                        ,   appColors.indexOf( color ) );
+    }
+    inline
+    function diamond( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
+        triangles.addPair(  refCount++
+                        ,   Quad.diamond( { x: x, y: y }, radius )
+                        ,   appColors.indexOf( color ) );
+    }
+    inline
+    function square( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
+        triangles.addPair(  refCount++
+                        ,   Quad.square( { x: x, y: y }, radius )
+                        ,   appColors.indexOf( color ) );
+    }
+    inline
+    function rectangle( x: Float, y: Float, width: Float, height: Float, color: AppColors ){
+        triangles.addPair(  refCount++
+                        ,   Quad.rectangle( { x: x, y: y }, { x: width, y: height } )
+                        ,   appColors.indexOf( color ) );
+    }
+    inline
+    // theta not so relevant to circle but for more general poly it is.
+    function circle( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
+        triangles.addArray( refCount++
+                        ,   Poly.circle( { x: x, y: y }, radius )
+                        ,   appColors.indexOf( color ) );
+    }
+    function spiralLines( x: Float, y: Float, radius: Float, nolines: Int, startWid: Float, stepWid: Float, color: AppColors ){
+        var theta = 0.;
+        var line: TrilateralPair;
+        var wid = startWid;
+        for( i in 0...nolines ){
+            var p0 = { x: x, y: y };
+            var p1 = { x: x + radius*Math.sin( theta ), y: y + radius*Math.cos( theta ) };
+            theta += (Math.PI*2)/nolines;
+            line = Line.create( p0, p1, wid+= stepWid );
+            triangles.addPair(  refCount
+                            ,   line
+                            ,   appColors.indexOf( color ) );
+        }
+        refCount++;
+    }
     public function draw(){
         triangles = new TriangleArray();
-        triangles.addPair(  0
-                        ,   Star.create( { x: -0.3, y: -0.3 }, 0.2 )
-                        ,   2 );
-        triangles.addPair(  1
-                        ,   Quad.diamond( { x: -0.3, y: 0.3 }, 0.15 )
-                        ,   3 );
-        triangles.addPair(  2
-                        ,   Quad.square( { x: 0.3, y: -0.3 }, 0.15 )
-                        ,   4 );
-        triangles.addPair(  3
-                        ,   Quad.rectangle( { x: -0.15, y: -0.1 }, { x: 0.3, y: 0.2 } )
-                        ,   5 );
-        triangles.addArray( 4
-                        ,   Poly.circle( { x: 0.3, y: 0.3 }, 0.1 )
-                        ,   6 );
-        var theta = 0.;
-        var lines = 60;
-        var line: TrilateralPair;
-        var wid = 0.0001;
-        for( i in 0...lines ){
-            var px = 0.5*Math.sin( theta );
-            var py = 0.5*Math.cos( theta );
-            theta += (Math.PI*2)/lines;
-            line = Line.create( { x: 0., y: 0. }, { x: px, y: py }, wid+= 0.0003 );
-            triangles.addPair(  5
-                            ,   line
-                            ,   1 );
-        }
+        
+        star(      -0.3,  -0.3, 0.2,       Orange );
+        diamond(   -0.3,   0.3, 0.15,      Yellow );
+        square(     0.3,  -0.3, 0.15,      Green );
+        rectangle( -0.15, -0.1, 0.3, 0.2,  Blue );
+        circle(     0.3,   0.3, 0.1,       Indigo );
+        spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
+        
         var path = new Medium();
         path.width = 0.001;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
