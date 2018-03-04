@@ -11,37 +11,19 @@ import trilateral.tri.Triangle;
 import trilateral.tri.TriangleArray;
 import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
-import trilateral.pairs.Star;
-import trilateral.pairs.Quad;
-import trilateral.pairs.Line;
-import trilateral.polys.Poly;
 
 import trilateral.path.Crude;
 import trilateral.path.Medium;
 import trilateral.path.Fine;
 
+import trilateral.helper.Shapes;
+import trilateral.helper.AppColors;
+
 import justPath.SvgPath;
 import justPath.PathContextTrace;
+
 using htmlHelper.webgl.WebGLSetup;
-@:enum
-abstract AppColors( Int ) to Int from Int {
-    var Violet      = 0x9400D3;
-    var Indigo      = 0x4b0082;
-    var Blue        = 0x0000FF;
-    var Green       = 0x00ff00;
-    var Yellow      = 0xFFFF00;
-    var Orange      = 0xFF7F00;
-    var Red         = 0xFF0000;
-    var Black       = 0x000000;
-    var LightGrey   = 0x444444;
-    var MidGrey     = 0x333333;
-    var DarkGrey    = 0x0c0c0c;
-    var NearlyBlack = 0x111111;
-    var White       = 0xFFFFFF;
-    var BlueAlpha   = 0x0000FF;
-    var GreenAlpha  = 0x00FF00;
-    var RedAlpha    = 0xFF0000;
-}
+
 class Test extends WebGLSetup {
     var webgl: WebGLSetup;
     var appColors:         Array<AppColors> = [ Black, Red, Orange, Yellow, Green, Blue, Indigo, Violet
@@ -82,65 +64,21 @@ class Test extends WebGLSetup {
          AnimateTimer.onFrame = render_;
         render();
     }
-    // allow you to reference a shape by an index, ie you can collect all triangles with specific id number.
-    var refCount: Int = 0;
-    inline
-    function star( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
-        triangles.addPair(  refCount++
-                        ,   Star.create( { x: x, y: y }, radius, theta )
-                        ,   appColors.indexOf( color ) );
+    function addShapes(){
+        var shapes = new Shapes( triangles, appColors ); 
+        shapes.star(      -0.3,  -0.3, 0.2,       Orange );
+        shapes.diamond(   -0.3,   0.3, 0.15,      Yellow );
+        shapes.square(     0.3,  -0.3, 0.15,      Green );
+        shapes.rectangle( -0.15, -0.1, 0.3, 0.2,  Blue );
+        shapes.circle(     0.3,   0.3, 0.1,       Indigo );
+        shapes.spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
     }
-    inline
-    function diamond( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
-        triangles.addPair(  refCount++
-                        ,   Quad.diamond( { x: x, y: y }, radius )
-                        ,   appColors.indexOf( color ) );
-    }
-    inline
-    function square( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
-        triangles.addPair(  refCount++
-                        ,   Quad.square( { x: x, y: y }, radius )
-                        ,   appColors.indexOf( color ) );
-    }
-    inline
-    function rectangle( x: Float, y: Float, width: Float, height: Float, color: AppColors ){
-        triangles.addPair(  refCount++
-                        ,   Quad.rectangle( { x: x, y: y }, { x: width, y: height } )
-                        ,   appColors.indexOf( color ) );
-    }
-    inline
-    // theta not so relevant to circle but for more general poly it is.
-    function circle( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ){
-        triangles.addArray( refCount++
-                        ,   Poly.circle( { x: x, y: y }, radius )
-                        ,   appColors.indexOf( color ) );
-    }
-    function spiralLines( x: Float, y: Float, radius: Float, nolines: Int, startWid: Float, stepWid: Float, color: AppColors ){
-        var theta = 0.;
-        var line: TrilateralPair;
-        var wid = startWid;
-        for( i in 0...nolines ){
-            var p0 = { x: x, y: y };
-            var p1 = { x: x + radius*Math.sin( theta ), y: y + radius*Math.cos( theta ) };
-            theta += (Math.PI*2)/nolines;
-            line = Line.create( p0, p1, wid+= stepWid );
-            triangles.addPair(  refCount
-                            ,   line
-                            ,   appColors.indexOf( color ) );
-        }
-        refCount++;
-    }
-    public function draw(){
-        triangles = new TriangleArray();
+    function addPaths(){
         
-        star(      -0.3,  -0.3, 0.2,       Orange );
-        diamond(   -0.3,   0.3, 0.15,      Yellow );
-        square(     0.3,  -0.3, 0.15,      Green );
-        rectangle( -0.15, -0.1, 0.3, 0.2,  Blue );
-        circle(     0.3,   0.3, 0.1,       Indigo );
-        spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
-        
+        // var path = new Crude();
         var path = new Medium();
+        // var path = new Fine();
+        
         path.width = 0.001;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
             return width+0.0001;
@@ -165,6 +103,11 @@ class Test extends WebGLSetup {
         triangles.addArray( 6
                         ,   path.trilateralArray
                         ,   7 );
+    }
+    public function draw(){
+        triangles = new TriangleArray();
+        addShapes();
+        addPaths();
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;

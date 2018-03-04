@@ -88,7 +88,6 @@ var Test = function() {
 	this.cubictest_d = "M100,200 C100,100 250,100 250,200S400,300 400,200";
 	this.quadtest_d = "M200,300 Q400,50 600,300 T1000,300";
 	this.theta = 0;
-	this.refCount = 0;
 	this.appColors = [0,16711680,16744192,16776960,65280,255,4915330,9699539,4473924,3355443,789516,1118481,16777215,255,65280,16711680];
 	htmlHelper_webgl_WebGLSetup.call(this,1140,1140);
 	var dark = 0.09375;
@@ -114,7 +113,7 @@ Test.main = function() {
 };
 Test.__super__ = htmlHelper_webgl_WebGLSetup;
 Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
-	spiralLines: function(x,y,radius,nolines,startWid,stepWid,color) {
+	addShapes: function() {
 		var q_D;
 		var q_C;
 		var q_B;
@@ -123,101 +122,9 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		var P_x;
 		var p1_y;
 		var p1_x;
-		var theta = 0.;
-		var line;
-		var wid = startWid;
-		var _g1 = 0;
-		while(_g1 < nolines) {
-			++_g1;
-			p1_x = x + radius * Math.sin(theta);
-			p1_y = y + radius * Math.cos(theta);
-			theta += Math.PI * 2 / nolines;
-			var width = wid += stepWid;
-			var dx = x - p1_x;
-			var dy = y - p1_y;
-			P_x = x - width / 2;
-			var omega = Math.atan2(dy,dx);
-			dim_y = dx * dx + dy * dy;
-			var pivotX = x + width / 2;
-			var A_ = { x : P_x, y : y};
-			var B_ = { x : P_x + width, y : y};
-			var C_ = { x : P_x + width, y : y + dim_y};
-			var D_ = { x : P_x, y : y + dim_y};
-			if(omega != 0.) {
-				var sin = Math.sin(omega);
-				var cos = Math.cos(omega);
-				var px = A_.x - pivotX;
-				var py = A_.y - y;
-				var px2 = px * cos - py * sin;
-				py = py * cos + px * sin;
-				A_ = { x : px2 + pivotX, y : py + y};
-				var px1 = B_.x - pivotX;
-				var py1 = B_.y - y;
-				var px21 = px1 * cos - py1 * sin;
-				py1 = py1 * cos + px1 * sin;
-				B_ = { x : px21 + pivotX, y : py1 + y};
-				var px3 = C_.x - pivotX;
-				var py2 = C_.y - y;
-				var px22 = px3 * cos - py2 * sin;
-				py2 = py2 * cos + px3 * sin;
-				C_ = { x : px22 + pivotX, y : py2 + y};
-				var px4 = D_.x - pivotX;
-				var py3 = D_.y - y;
-				var px23 = px4 * cos - py3 * sin;
-				py3 = py3 * cos + px4 * sin;
-				D_ = { x : px23 + pivotX, y : py3 + y};
-			}
-			q_A = A_;
-			q_B = B_;
-			q_C = C_;
-			q_D = D_;
-			line = { t0 : new trilateral_tri_Trilateral(q_A.x,q_A.y,q_B.x,q_B.y,q_D.x,q_D.y), t1 : new trilateral_tri_Trilateral(q_B.x,q_B.y,q_C.x,q_C.y,q_D.x,q_D.y)};
-			var this1 = this.triangles;
-			var id = this.refCount;
-			var colorID = this.appColors.indexOf(color);
-			var tri = line.t0;
-			var t = Type.createEmptyInstance(trilateral_tri_Triangle);
-			t.id = id;
-			t.ax = tri.ax;
-			t.ay = tri.ay;
-			t.bx = tri.bx;
-			t.by = tri.by;
-			t.cx = tri.cx;
-			t.cy = tri.cy;
-			t.mark = tri.mark;
-			t.depth = 0;
-			t.alpha = 1.;
-			t.colorID = colorID;
-			t.colorA = colorID;
-			t.colorB = colorID;
-			t.colorC = colorID;
-			t.windingAdjusted = tri.windingAdjusted;
-			this1[this1.length] = t;
-			var tri1 = line.t1;
-			var t1 = Type.createEmptyInstance(trilateral_tri_Triangle);
-			t1.id = id;
-			t1.ax = tri1.ax;
-			t1.ay = tri1.ay;
-			t1.bx = tri1.bx;
-			t1.by = tri1.by;
-			t1.cx = tri1.cx;
-			t1.cy = tri1.cy;
-			t1.mark = tri1.mark;
-			t1.depth = 0;
-			t1.alpha = 1.;
-			t1.colorID = colorID;
-			t1.colorA = colorID;
-			t1.colorB = colorID;
-			t1.colorC = colorID;
-			t1.windingAdjusted = tri1.windingAdjusted;
-			this1[this1.length] = t1;
-		}
-		this.refCount++;
-	}
-	,draw: function() {
-		this.triangles = trilateral_tri__$TriangleArray_TriangleArray_$Impl_$._new([]);
-		var this1 = this.triangles;
-		var id = this.refCount++;
+		var shapes = new trilateral_helper_Shapes(this.triangles,this.appColors);
+		var this1 = shapes.triangles;
+		var id = shapes.refCount++;
 		var pi = Math.PI;
 		var omega = -pi;
 		var a0x = -0.3 + 0.2 * Math.sin(omega);
@@ -238,7 +145,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		var c1x = -0.3 + 0.2 * Math.sin(omega);
 		var c1y = -0.3 + 0.2 * Math.cos(omega);
 		var tri = { t0 : new trilateral_tri_Trilateral(a0x,a0y,b0x,b0y,c0x,c0y), t1 : new trilateral_tri_Trilateral(a1x,a1y,b1x,b1y,c1x,c1y)};
-		var colorID = this.appColors.indexOf(16744192);
+		var colorID = shapes.colors.indexOf(16744192);
 		var tri1 = tri.t0;
 		var t = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t.id = id;
@@ -275,8 +182,8 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t1.colorC = colorID;
 		t1.windingAdjusted = tri2.windingAdjusted;
 		this1[this1.length] = t1;
-		var this2 = this.triangles;
-		var id1 = this.refCount++;
+		var this2 = shapes.triangles;
+		var id1 = shapes.refCount++;
 		var theta = Math.PI / 4;
 		var ax = 0.;
 		var ay = 0.;
@@ -313,7 +220,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			dy = 0.449999999999999956;
 		}
 		var tri3 = { t0 : new trilateral_tri_Trilateral(ax,ay,bx,by,dx,dy), t1 : new trilateral_tri_Trilateral(bx,by,cx,cy,dx,dy)};
-		var colorID1 = this.appColors.indexOf(16776960);
+		var colorID1 = shapes.colors.indexOf(16776960);
 		var tri4 = tri3.t0;
 		var t2 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t2.id = id1;
@@ -350,10 +257,10 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t3.colorC = colorID1;
 		t3.windingAdjusted = tri5.windingAdjusted;
 		this2[this2.length] = t3;
-		var this3 = this.triangles;
-		var id2 = this.refCount++;
+		var this3 = shapes.triangles;
+		var id2 = shapes.refCount++;
 		var tri6 = { t0 : new trilateral_tri_Trilateral(0.15,-0.449999999999999956,0.449999999999999956,-0.449999999999999956,0.15,-0.149999999999999967), t1 : new trilateral_tri_Trilateral(0.449999999999999956,-0.449999999999999956,0.449999999999999956,-0.149999999999999967,0.15,-0.149999999999999967)};
-		var colorID2 = this.appColors.indexOf(65280);
+		var colorID2 = shapes.colors.indexOf(65280);
 		var tri7 = tri6.t0;
 		var t4 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t4.id = id2;
@@ -390,10 +297,10 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t5.colorC = colorID2;
 		t5.windingAdjusted = tri8.windingAdjusted;
 		this3[this3.length] = t5;
-		var this4 = this.triangles;
-		var id3 = this.refCount++;
+		var this4 = shapes.triangles;
+		var id3 = shapes.refCount++;
 		var tri9 = { t0 : new trilateral_tri_Trilateral(-0.15,-0.1,0.15,-0.1,-0.15,0.1), t1 : new trilateral_tri_Trilateral(0.15,-0.1,0.15,0.1,-0.15,0.1)};
-		var colorID3 = this.appColors.indexOf(255);
+		var colorID3 = shapes.colors.indexOf(255);
 		var tri10 = tri9.t0;
 		var t6 = Type.createEmptyInstance(trilateral_tri_Triangle);
 		t6.id = id3;
@@ -430,8 +337,8 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		t7.colorC = colorID3;
 		t7.windingAdjusted = tri11.windingAdjusted;
 		this4[this4.length] = t7;
-		var this5 = this.triangles;
-		var id4 = this.refCount++;
+		var this5 = shapes.triangles;
+		var id4 = shapes.refCount++;
 		var out = trilateral_tri__$TrilateralArray_TrilateralArray_$Impl_$._new([]);
 		var pi2 = Math.PI;
 		var theta1 = pi2 / 2;
@@ -452,7 +359,7 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			out[out.length] = tri12;
 		}
 		var triArr = out;
-		var colorID4 = this.appColors.indexOf(4915330);
+		var colorID4 = shapes.colors.indexOf(4915330);
 		var _g = 0;
 		while(_g < triArr.length) {
 			var t8 = triArr[_g];
@@ -475,7 +382,99 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			t9.windingAdjusted = t8.windingAdjusted;
 			this5[this5.length] = t9;
 		}
-		this.spiralLines(0.,0.,0.5,60,0.0001,0.0003,16711680);
+		var color = 16711680;
+		var theta2 = 0.;
+		var line;
+		var wid = 0.0001;
+		var _g11 = 0;
+		while(_g11 < 60) {
+			++_g11;
+			p1_x = 0.5 * Math.sin(theta2);
+			p1_y = 0.5 * Math.cos(theta2);
+			theta2 += Math.PI * 2 / 60;
+			var width = wid += 0.0003;
+			var dx1 = 0. - p1_x;
+			var dy1 = 0. - p1_y;
+			P_x = 0. - width / 2;
+			var omega1 = Math.atan2(dy1,dx1);
+			dim_y = dx1 * dx1 + dy1 * dy1;
+			var pivotX = width / 2;
+			var A_ = { x : P_x, y : 0.};
+			var B_ = { x : P_x + width, y : 0.};
+			var C_ = { x : P_x + width, y : dim_y};
+			var D_ = { x : P_x, y : dim_y};
+			if(omega1 != 0.) {
+				var sin = Math.sin(omega1);
+				var cos = Math.cos(omega1);
+				var px = A_.x - pivotX;
+				var py = A_.y;
+				var px2 = px * cos - py * sin;
+				py = py * cos + px * sin;
+				A_ = { x : px2 + pivotX, y : py};
+				var px1 = B_.x - pivotX;
+				var py1 = B_.y;
+				var px21 = px1 * cos - py1 * sin;
+				py1 = py1 * cos + px1 * sin;
+				B_ = { x : px21 + pivotX, y : py1};
+				var px3 = C_.x - pivotX;
+				var py2 = C_.y;
+				var px22 = px3 * cos - py2 * sin;
+				py2 = py2 * cos + px3 * sin;
+				C_ = { x : px22 + pivotX, y : py2};
+				var px4 = D_.x - pivotX;
+				var py3 = D_.y;
+				var px23 = px4 * cos - py3 * sin;
+				py3 = py3 * cos + px4 * sin;
+				D_ = { x : px23 + pivotX, y : py3};
+			}
+			q_A = A_;
+			q_B = B_;
+			q_C = C_;
+			q_D = D_;
+			line = { t0 : new trilateral_tri_Trilateral(q_A.x,q_A.y,q_B.x,q_B.y,q_D.x,q_D.y), t1 : new trilateral_tri_Trilateral(q_B.x,q_B.y,q_C.x,q_C.y,q_D.x,q_D.y)};
+			var this6 = shapes.triangles;
+			var id5 = shapes.refCount;
+			var colorID5 = shapes.colors.indexOf(color);
+			var tri13 = line.t0;
+			var t10 = Type.createEmptyInstance(trilateral_tri_Triangle);
+			t10.id = id5;
+			t10.ax = tri13.ax;
+			t10.ay = tri13.ay;
+			t10.bx = tri13.bx;
+			t10.by = tri13.by;
+			t10.cx = tri13.cx;
+			t10.cy = tri13.cy;
+			t10.mark = tri13.mark;
+			t10.depth = 0;
+			t10.alpha = 1.;
+			t10.colorID = colorID5;
+			t10.colorA = colorID5;
+			t10.colorB = colorID5;
+			t10.colorC = colorID5;
+			t10.windingAdjusted = tri13.windingAdjusted;
+			this6[this6.length] = t10;
+			var tri14 = line.t1;
+			var t11 = Type.createEmptyInstance(trilateral_tri_Triangle);
+			t11.id = id5;
+			t11.ax = tri14.ax;
+			t11.ay = tri14.ay;
+			t11.bx = tri14.bx;
+			t11.by = tri14.by;
+			t11.cx = tri14.cx;
+			t11.cy = tri14.cy;
+			t11.mark = tri14.mark;
+			t11.depth = 0;
+			t11.alpha = 1.;
+			t11.colorID = colorID5;
+			t11.colorA = colorID5;
+			t11.colorB = colorID5;
+			t11.colorC = colorID5;
+			t11.windingAdjusted = tri14.windingAdjusted;
+			this6[this6.length] = t11;
+		}
+		shapes.refCount++;
+	}
+	,addPaths: function() {
 		var path = new trilateral_path_Medium();
 		path.width = 0.001;
 		path.widthFunction = function(width,x,y,x_,y_) {
@@ -483,29 +482,29 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		};
 		var p = new justPath_SvgPath(path);
 		p.parse(this.cubictest_d,-1.,-0.6,0.002,0.002);
-		var this6 = this.triangles;
-		var triArr1 = path.trilateralArray;
-		var _g2 = 0;
-		while(_g2 < triArr1.length) {
-			var t10 = triArr1[_g2];
-			++_g2;
-			var t11 = Type.createEmptyInstance(trilateral_tri_Triangle);
-			t11.id = 6;
-			t11.ax = t10.ax;
-			t11.ay = t10.ay;
-			t11.bx = t10.bx;
-			t11.by = t10.by;
-			t11.cx = t10.cx;
-			t11.cy = t10.cy;
-			t11.mark = t10.mark;
-			t11.depth = 0;
-			t11.alpha = 1.;
-			t11.colorID = 1;
-			t11.colorA = 1;
-			t11.colorB = 1;
-			t11.colorC = 1;
-			t11.windingAdjusted = t10.windingAdjusted;
-			this6[this6.length] = t11;
+		var this1 = this.triangles;
+		var triArr = path.trilateralArray;
+		var _g = 0;
+		while(_g < triArr.length) {
+			var t = triArr[_g];
+			++_g;
+			var t1 = Type.createEmptyInstance(trilateral_tri_Triangle);
+			t1.id = 6;
+			t1.ax = t.ax;
+			t1.ay = t.ay;
+			t1.bx = t.bx;
+			t1.by = t.by;
+			t1.cx = t.cx;
+			t1.cy = t.cy;
+			t1.mark = t.mark;
+			t1.depth = 0;
+			t1.alpha = 1.;
+			t1.colorID = 1;
+			t1.colorA = 1;
+			t1.colorB = 1;
+			t1.colorC = 1;
+			t1.windingAdjusted = t.windingAdjusted;
+			this1[this1.length] = t1;
 		}
 		path.trilateralArray = [];
 		path.width = 0.001;
@@ -513,30 +512,35 @@ Test.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			return width1 + 0.001 * y1;
 		};
 		p.parse(this.quadtest_d,-1.2,-0.6,0.002,0.002);
-		var this7 = this.triangles;
-		var triArr2 = path.trilateralArray;
-		var _g3 = 0;
-		while(_g3 < triArr2.length) {
-			var t12 = triArr2[_g3];
-			++_g3;
-			var t13 = Type.createEmptyInstance(trilateral_tri_Triangle);
-			t13.id = 6;
-			t13.ax = t12.ax;
-			t13.ay = t12.ay;
-			t13.bx = t12.bx;
-			t13.by = t12.by;
-			t13.cx = t12.cx;
-			t13.cy = t12.cy;
-			t13.mark = t12.mark;
-			t13.depth = 0;
-			t13.alpha = 1.;
-			t13.colorID = 7;
-			t13.colorA = 7;
-			t13.colorB = 7;
-			t13.colorC = 7;
-			t13.windingAdjusted = t12.windingAdjusted;
-			this7[this7.length] = t13;
+		var this2 = this.triangles;
+		var triArr1 = path.trilateralArray;
+		var _g1 = 0;
+		while(_g1 < triArr1.length) {
+			var t2 = triArr1[_g1];
+			++_g1;
+			var t3 = Type.createEmptyInstance(trilateral_tri_Triangle);
+			t3.id = 6;
+			t3.ax = t2.ax;
+			t3.ay = t2.ay;
+			t3.bx = t2.bx;
+			t3.by = t2.by;
+			t3.cx = t2.cx;
+			t3.cy = t2.cy;
+			t3.mark = t2.mark;
+			t3.depth = 0;
+			t3.alpha = 1.;
+			t3.colorID = 7;
+			t3.colorA = 7;
+			t3.colorB = 7;
+			t3.colorC = 7;
+			t3.windingAdjusted = t2.windingAdjusted;
+			this2[this2.length] = t3;
 		}
+	}
+	,draw: function() {
+		this.triangles = trilateral_tri__$TriangleArray_TriangleArray_$Impl_$._new([]);
+		this.addShapes();
+		this.addPaths();
 	}
 	,setTriangles: function(triangles,triangleColors) {
 		var rgb;
@@ -1687,6 +1691,15 @@ var trilateral_geom_Contour = function() {
 trilateral_geom_Contour.__name__ = true;
 trilateral_geom_Contour.prototype = {
 	__class__: trilateral_geom_Contour
+};
+var trilateral_helper_Shapes = function(triangleArray_,colors_) {
+	this.refCount = 0;
+	this.triangles = triangleArray_;
+	this.colors = colors_;
+};
+trilateral_helper_Shapes.__name__ = true;
+trilateral_helper_Shapes.prototype = {
+	__class__: trilateral_helper_Shapes
 };
 var trilateral_path_Base = function(contour_,trilateralArray_) {
 	this.width = 0.01;
