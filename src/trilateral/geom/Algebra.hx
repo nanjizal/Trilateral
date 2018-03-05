@@ -3,6 +3,8 @@ import trilateral.tri.Triangle;
 import trilateral.geom.Point;
 import trilateral.tri.Trilateral;
 import trilateral.tri.TrilateralPair;
+import fracs.Fraction;
+import fracs.Pi2pi;
 typedef QuadPoint = { A: Point, B: Point, C: Point, D: Point };
 class Algebra {
     public inline static
@@ -102,39 +104,44 @@ class Algebra {
     public static inline
     function arc_internal( dx: Float, dy: Float, radius: Float, start: Float, dA: Float, sides: Int ): Array<Float> {
         var p = new Array<Float>();         
-        var angle: Float = 0;
+        var angle: Pi2pi = 0;
         var angleInc: Float = ( Math.PI*2 )/sides;
         var sides = Math.round( sides );
-        var nextAngle: Float;
+        var nextAngle: Pi2pi;
         var l = 0;
+        p[ l++ ] = dy + radius * Math.sin( start );
+        p[ l++ ] = dx + radius * Math.cos( start );
         if( dA < 0 ){
-            
+            trace( 'dA < 0 ________' + dA );
             var i = -1;
             while( true ){
                 angle = i*angleInc;
+                var f: Fraction = angle;
                 i--;
-                nextAngle = angle + start; 
-                if( angle <= ( dA ) ) break; //dA
-                
-                p[ l++ ] = dx + radius * Math.cos( nextAngle );
+                nextAngle = angle + start;
                 p[ l++ ] = dy + radius * Math.sin( nextAngle );
-            } 
-            
-        } else {
-            
-            var i = -1;
-            while( true ){
-                angle = i*angleInc;
-                i++;
-                nextAngle = angle + start; 
-                if( angle >=  ( dA + angleInc ) ) break; 
-                
-                p[ l++ ] = dy + radius * Math.sin( nextAngle );
-                // after so that reverse works..
                 p[ l++ ] = dx + radius * Math.cos( nextAngle );
+                if( angle < ( dA - angleInc ) ) break; // turn down this is top of turn.
             } 
             p.reverse();
-            
+        } else {
+            trace( 'dA > 0 ________' + dA );
+            var i = -1;
+            while( true ){
+                angle = i*angleInc;
+                var f: Fraction = angle;
+                trace( f + 'pi');
+                
+                i++;
+                nextAngle = angle + start; 
+                if( angle >=  ( dA ) ) break; 
+                
+                
+                // after so that reverse works..
+                p[ l++ ] = dx + radius * Math.cos( nextAngle );
+                p[ l++ ] = dy + radius * Math.sin( nextAngle );
+                
+            }
         }
         return p;
     }

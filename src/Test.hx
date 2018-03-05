@@ -13,6 +13,7 @@ import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
 
 import trilateral.path.Crude;
+import trilateral.path.RoundEnd;
 import trilateral.path.Medium;
 import trilateral.path.Fine;
 
@@ -21,6 +22,10 @@ import trilateral.helper.AppColors;
 
 import justPath.SvgPath;
 import justPath.PathContextTrace;
+
+import fracs.Angles;
+import trilateral.polys.Poly;
+import trilateral.geom.Point;
 
 using htmlHelper.webgl.WebGLSetup;
 
@@ -74,14 +79,14 @@ class Test extends WebGLSetup {
         shapes.spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
     }
     function addPaths(){
-        
+        var path = new RoundEnd();
         // var path = new Crude();
-        var path = new Medium();
+        //var path = new Medium();
         // var path = new Fine();
         
-        path.width = 0.001;
+        path.width = 0.01;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
-            return width+0.0001;
+            return width+0.001;
         }
         var p = new SvgPath( path );
         p.parse( cubictest_d, -1., -0.6, 0.002, 0.002 );
@@ -104,21 +109,55 @@ class Test extends WebGLSetup {
                         ,   path.trilateralArray
                         ,   7 );
     }
+    public function addJoinTest(){
+        var path = new RoundEnd();
+        path.width = 0.1;
+        path.moveTo( -0.5, 0.0 );
+        path.lineTo( 0.5, 0.0 );
+        path.lineTo( 0.5, 0.5 );
+        path.lineTo( 0., 0.6 );
+        path.lineTo( 0., -0.5 );
+        path.lineTo( -0.5, -0.8 );
+        triangles.addArray( 10
+                        ,   path.trilateralArray
+                        ,   appColors.indexOf( Orange ) );
+    }
+    public function pieTests(){
+        var bottomLeft:     Point = { x: -0.5, y: -0.5 };
+        var bottomRight:    Point = { x: 0.5,  y: -0.5 };
+        var topLeft:  Point = { x: -0.5, y: 0.5  };
+        var topRight: Point = { x: 0.5,  y: 0.5  };
+        triangles.addArray( 0
+                        ,   Poly.pie( topLeft.x, topLeft.y, 0.2, Math.PI, Math.PI/16, CLOCKWISE )
+                        ,   1 );
+        triangles.addArray( 0
+                        ,   Poly.pie( topRight.x, topRight.y, 0.2, Math.PI, Math.PI/16, ANTICLOCKWISE )
+                        ,   2 );
+        triangles.addArray( 0
+                        ,   Poly.pie( bottomLeft.x, bottomLeft.y, 0.2, Math.PI, Math.PI/16, SMALL )
+                        ,   3 );
+        triangles.addArray( 0
+                        ,   Poly.pie( bottomRight.x, bottomRight.y, 0.2, Math.PI, Math.PI/16, LARGE )
+                        ,   4 );
+        
+    }
     public function draw(){
         triangles = new TriangleArray();
+        pieTests();
         addShapes();
+        addJoinTest();
         addPaths();
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;
-        var colorAlpha = 1.0;
+        var colorAlpha = 1.;
         var tri: Triangle;
         var count = 0;
         var i: Int = 0;
         var c: Int = 0;
         var j: Int = 0;
         var ox: Float = 0.;
-        var oy: Float = 0.3;
+        var oy: Float = 0.;
         var no: Int = 0;
         for( tri in triangles ){
             vertices[ i++ ] = tri.ax + ox;
@@ -149,7 +188,7 @@ class Test extends WebGLSetup {
         render();
     }
     override public function render(){
-        modelViewProjection = spin();
+        //modelViewProjection = spin();
         vertices = new Array<Float>();
         indices = new Array<Int>();
         colors = new Array<Float>();

@@ -30,7 +30,7 @@ class Base implements IPathContext {
     function line( x_: Float, y_: Float ) {
         lineTrace( x_, y_ );
         // Simplest line not connection no ends.
-        trilateralArray.addPair( contour.line( x, y, x_, y_, width ) );
+        contour.line( trilateralArray, x, y, x_, y_, width );
     }
     inline function lineTrace( x_: Float, y_: Float ){
         trace( 'lineTo( $x, $y, $x_, $y_, width )' );
