@@ -100,51 +100,6 @@ class Algebra {
         if( approxDistance == 0 ) approxDistance = 0.000001;
         return Math.min( 1/( approxDistance*0.707 ), cubicStep );
     }
-    // Create Arc Points
-    public static inline
-    function arc_internal( dx: Float, dy: Float, radius: Float, start: Float, dA: Float, sides: Int ): Array<Float> {
-        var p = new Array<Float>();         
-        var angle: Pi2pi = 0;
-        var angleInc: Float = ( Math.PI*2 )/sides;
-        var sides = Math.round( sides );
-        var nextAngle: Pi2pi;
-        var l = 0;
-        p[ l++ ] = dy + radius * Math.sin( start );
-        p[ l++ ] = dx + radius * Math.cos( start );
-        if( dA < 0 ){
-            trace( 'dA < 0 ________' + dA );
-            var i = -1;
-            while( true ){
-                angle = i*angleInc;
-                var f: Fraction = angle;
-                i--;
-                nextAngle = angle + start;
-                p[ l++ ] = dy + radius * Math.sin( nextAngle );
-                p[ l++ ] = dx + radius * Math.cos( nextAngle );
-                if( angle < ( dA - angleInc ) ) break; // turn down this is top of turn.
-            } 
-            p.reverse();
-        } else {
-            trace( 'dA > 0 ________' + dA );
-            var i = -1;
-            while( true ){
-                angle = i*angleInc;
-                var f: Fraction = angle;
-                trace( f + 'pi');
-                
-                i++;
-                nextAngle = angle + start; 
-                if( angle >=  ( dA ) ) break; 
-                
-                
-                // after so that reverse works..
-                p[ l++ ] = dx + radius * Math.cos( nextAngle );
-                p[ l++ ] = dy + radius * Math.sin( nextAngle );
-                
-            }
-        }
-        return p;
-    }
     // may not be most optimal
     public inline static
     function lineAB( A: Point, B: Point, width: Float ){

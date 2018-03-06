@@ -78,7 +78,6 @@ class Poly {
         var totalSteps = Math.ceil( Math.abs( dif )/step );
         // adjust step with smaller value to fit the angle drawn.
         var step = dif/totalSteps;
-        trace( 'step ' + step + ' ' + totalSteps );
         var angle: Float = beta;
         var cx: Float;
         var cy: Float;
@@ -91,12 +90,55 @@ class Poly {
                 //var t = ( positive )? new Trilateral( ax, ay, bx, by, cx, cy ): new Trilateral( ax, ay, cx, cy, bx, by );
                 var t = new Trilateral( ax, ay, bx, by, cx, cy ); // don't need to reorder corners and Trilateral can do that!
                 out.add( t );
-                //if( i == 1 ) t.mark = true;
                 if( mark ) t.mark = true;
             }
             angle = angle + step;
             bx = cx;
             by = cy;
+        }
+        return out;
+    }
+    public static inline
+    function arc( ax: Float, ay: Float, radius: Float, width: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Bool = false, ?sides: Int = 36 ): TrilateralArray {
+        // choose a step size based on smoothness ie number of sides expected for a circle
+        var out = new TrilateralArray();
+        var pi = Math.PI;
+        var step = pi*2/sides;
+        var dif = Angles.differencePrefer( beta, gamma, prefer );
+        var positive = ( dif >= 0 );
+        var totalSteps = Math.ceil( Math.abs( dif )/step );
+        // adjust step with smaller value to fit the angle drawn.
+        var step = dif/totalSteps;
+        var angle: Float = beta;
+        var cx: Float;
+        var cy: Float;
+        var bx: Float = 0;
+        var by: Float = 0;
+        var dx: Float = 0;
+        var dy: Float = 0;
+        var ex: Float = 0;
+        var ey: Float = 0;
+        var r2 = radius - width;
+        for( i in 0...totalSteps+1 ){
+            cx = ax + radius*Math.sin( angle );
+            cy = ay + radius*Math.cos( angle );
+            ex = ax + r2*Math.sin( angle );
+            ey = ay + r2*Math.cos( angle );
+            if( i != 0 ){ // start on second iteration after b and d are populated.
+                var t0 = new Trilateral( dx, dy, bx, by, cx, cy );
+                var t1 = new Trilateral( dx, dy, cx, cy, ex, ey );
+                out.add( t0 );
+                out.add( t1 );
+                if( mark ) {
+                    t0.mark = true;
+                    t1.mark = true;
+                }
+            }
+            angle = angle + step;
+            bx = cx;
+            by = cy;
+            dx = ex;
+            dy = ey;
         }
         return out;
     }

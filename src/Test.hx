@@ -141,9 +141,31 @@ class Test extends WebGLSetup {
                         ,   4 );
         
     }
+    
+    public function pieArc(){
+        var bottomLeft:     Point = { x: -0.5, y: -0.5 };
+        var bottomRight:    Point = { x: 0.5,  y: -0.5 };
+        var topLeft:  Point = { x: -0.5, y: 0.5  };
+        var topRight: Point = { x: 0.5,  y: 0.5  };
+        triangles.addArray( 0
+                        ,   Poly.arc( topLeft.x, topLeft.y, 0.25, 0.03, Math.PI, Math.PI/16, CLOCKWISE )
+                        ,   2 );
+        triangles.addArray( 0
+                        ,   Poly.arc( topRight.x, topRight.y, 0.25, 0.03, Math.PI, Math.PI/16, ANTICLOCKWISE )
+                        ,   3 );
+        triangles.addArray( 0
+                        ,   Poly.arc( bottomLeft.x, bottomLeft.y, 0.25, 0.03, Math.PI, Math.PI/16, SMALL )
+                        ,   4 );
+        triangles.addArray( 0
+                        ,   Poly.arc( bottomRight.x, bottomRight.y, 0.25, 0.03, Math.PI, Math.PI/16, LARGE )
+                        ,   5 );
+        
+    }
+    
     public function draw(){
         triangles = new TriangleArray();
         pieTests();
+        pieArc();
         addShapes();
         addJoinTest();
         addPaths();
