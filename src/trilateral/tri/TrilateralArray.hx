@@ -8,6 +8,11 @@ abstract TrilateralArray(Array<Trilateral>) from Array<Trilateral> to Array<Tril
     function new( ?t: Array<Trilateral> ) {
         this = ( t == null )? getEmpty(): t;
     }
+    public inline
+    function reversed(): TrilateralArray {
+        this.reverse();
+        return this;
+    }
     public inline static 
     function getEmpty(){
         return new TrilateralArray( new Array<Trilateral>() );

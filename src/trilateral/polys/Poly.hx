@@ -68,7 +68,7 @@ class Poly {
      * For example for drawing a packman shape you would want the use DifferencePreference.LARGE .
      **/
     public static inline
-    function pie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Bool = false, ?sides: Int = 36 ): TrilateralArray {
+    function pie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ): TrilateralArray {
         // choose a step size based on smoothness ie number of sides expected for a circle
         var out = new TrilateralArray();
         var pi = Math.PI;
@@ -90,7 +90,7 @@ class Poly {
                 //var t = ( positive )? new Trilateral( ax, ay, bx, by, cx, cy ): new Trilateral( ax, ay, cx, cy, bx, by );
                 var t = new Trilateral( ax, ay, bx, by, cx, cy ); // don't need to reorder corners and Trilateral can do that!
                 out.add( t );
-                if( mark ) t.mark = true;
+                if( mark != 0 ) t.mark = mark;
             }
             angle = angle + step;
             bx = cx;
@@ -99,7 +99,7 @@ class Poly {
         return out;
     }
     public static inline
-    function arc( ax: Float, ay: Float, radius: Float, width: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Bool = false, ?sides: Int = 36 ): TrilateralArray {
+    function arc( ax: Float, ay: Float, radius: Float, width: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ): TrilateralArray {
         // choose a step size based on smoothness ie number of sides expected for a circle
         var out = new TrilateralArray();
         var pi = Math.PI;
@@ -129,9 +129,9 @@ class Poly {
                 var t1 = new Trilateral( dx, dy, cx, cy, ex, ey );
                 out.add( t0 );
                 out.add( t1 );
-                if( mark ) {
-                    t0.mark = true;
-                    t1.mark = true;
+                if( mark != 0 ) {
+                    t0.mark = mark;
+                    t1.mark = mark;
                 }
             }
             angle = angle + step;
@@ -144,7 +144,7 @@ class Poly {
     }
     // useful for debugging
     public static inline
-    function circleMarked( pos: Point, radius: Float, ?sides: Int = 36 ): TrilateralArray {
+    function circleMarked( pos: Point, radius: Float, mark: Int, ?sides: Int = 36 ): TrilateralArray {
         var out = new TrilateralArray();
         var pi = Math.PI;
         var theta = pi/2;
@@ -163,7 +163,7 @@ class Poly {
             cy = ay + radius*Math.cos( theta );
             var t = new Trilateral( ax, ay, bx, by, cx, cy );
             out.add( t );
-            t.mark = true;
+            t.mark = mark;
         }
         return out;
     }

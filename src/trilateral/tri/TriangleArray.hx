@@ -45,8 +45,10 @@ abstract TriangleArray(Array<Triangle>) from Array<Triangle> to Array<Triangle> 
     function addArray( id: Int, triArr: Array<Trilateral>, colorID: Int ) {
         var tri: Triangle;
         for( t in triArr ) {
-            tri = Triangle.fromTrilateral( id, t, 0, colorID );
-            this[ this.length ] = tri;
+            if( t != null ){
+                tri = Triangle.fromTrilateral( id, t, 0, colorID );
+                this[ this.length ] = tri;
+            }
         }
         return triArr;
     }

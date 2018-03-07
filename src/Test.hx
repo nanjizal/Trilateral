@@ -8,6 +8,8 @@ import js.html.MouseEvent;
 import htmlHelper.tools.AnimateTimer; 
 
 import trilateral.tri.Triangle;
+import trilateral.tri.TrilateralArray;
+import trilateral.geom.Contour;
 import trilateral.tri.TriangleArray;
 import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
@@ -79,10 +81,10 @@ class Test extends WebGLSetup {
         shapes.spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
     }
     function addPaths(){
-        var path = new RoundEnd();
+        //var path = new RoundEnd();
         // var path = new Crude();
         //var path = new Medium();
-        // var path = new Fine();
+        var path = new Crude();
         
         path.width = 0.01;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
@@ -109,15 +111,38 @@ class Test extends WebGLSetup {
                         ,   path.trilateralArray
                         ,   7 );
     }
+    /*
+    public function add2Line(){
+        var triArr = new TrilateralArray();
+        var contour = new Contour();
+        contour.poly( triArr, [ -0.5, 0.0, 0.5, 0.0, 0.5, 0.5, 0., 0.6, 0., -0.5, -0.5, -0.8 ], 0.2 );
+        triangles.addArray( 10
+                        ,   triArr
+                        ,   appColors.indexOf( Red ) );
+    }*/
     public function addJoinTest(){
-        var path = new RoundEnd();
-        path.width = 0.1;
+        var path = new Fine();
+        path.width = 0.03;
+        // forwards
+        
         path.moveTo( -0.5, 0.0 );
         path.lineTo( 0.5, 0.0 );
         path.lineTo( 0.5, 0.5 );
         path.lineTo( 0., 0.6 );
         path.lineTo( 0., -0.5 );
         path.lineTo( -0.5, -0.8 );
+        path.lineTo( -0.5, 0.0 );
+        // backwards
+       
+        /* 
+        path.moveTo( -0.5+ 0.1, -0.8 );
+        path.lineTo( 0.+0.1, -0.5 );
+        path.lineTo( 0.+0.1, 0.6 );
+        path.lineTo( 0.5+0.1, 0.5 );
+        path.lineTo( 0.5+0.1, 0.0 );
+        path.lineTo( -0.5+0.1, 0.0 );
+        path.lineTo( -0.5+0.1, -0.8 );
+        */
         triangles.addArray( 10
                         ,   path.trilateralArray
                         ,   appColors.indexOf( Orange ) );
@@ -169,6 +194,7 @@ class Test extends WebGLSetup {
         addShapes();
         addJoinTest();
         addPaths();
+        //add2Line();
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;
@@ -191,8 +217,8 @@ class Test extends WebGLSetup {
             vertices[ i++ ] = tri.cx + ox;
             vertices[ i++ ] = tri.cy + oy;
             vertices[ i++ ] = tri.depth;
-            if( tri.mark ){
-                rgb = WebGLSetup.toRGB( triangleColors[ 12 ] );
+            if( tri.mark != 0 ){
+                rgb = WebGLSetup.toRGB( triangleColors[ tri.mark ] );
             } else {
                 rgb = WebGLSetup.toRGB( triangleColors[ tri.colorID ] );
             }

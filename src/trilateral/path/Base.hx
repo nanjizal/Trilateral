@@ -19,6 +19,7 @@ class Base implements IPathContext {
     public function moveTo( x_: Float, y_: Float ): Void{
         x = x_;
         y = y_;
+        contour.reset();
     }
     public inline 
     function lineTo( x_: Float, y_: Float ): Void{
@@ -56,7 +57,6 @@ class Base implements IPathContext {
         var l = arr.length;
         var i = 2;
         lineTo( arr[ i ], arr[ i + 1 ] );
-        var line: TrilateralPair;
         while( i < l ){
             lineTo( arr[ i ], arr[ i + 1 ] );
             i += 2;
