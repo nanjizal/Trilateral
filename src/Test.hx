@@ -14,11 +14,13 @@ import trilateral.tri.TriangleArray;
 import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
 
-import trilateral.path.Crude;
-import trilateral.path.RoundEnd;
-import trilateral.path.Medium;
-import trilateral.path.Fine;
-import trilateral.path.FillOnly;
+import trilateral.path.Crude;         // just overlap nothing between very dirty
+import trilateral.path.RoundEnd;      // create isolated rounded lines not ideal as end of each line overlap but very robust.
+import trilateral.path.MediumOverlap; // when the lines overlap slightly
+import trilateral.path.Medium;        // this is for triangles between angles
+import trilateral.path.FineOverlap;   // when the lines overlap slightly
+import trilateral.path.Fine;          // this is triangles with curved corners
+import trilateral.path.FillOnly;      // no drawing this is just useful if you want the shape without drawing the contour.
 
 import trilateral.helper.Shapes;
 import trilateral.helper.AppColors;
@@ -30,8 +32,10 @@ import fracs.Angles;
 import trilateral.polys.Poly;
 import trilateral.geom.Point;
 
+#if trilateral_includeSegments
 import trilateral.segment.SixteenSeg;
 import trilateral.segment.SevenSeg;
+#end
 
 using htmlHelper.webgl.WebGLSetup;
 
@@ -90,6 +94,7 @@ class Test extends WebGLSetup {
          AnimateTimer.onFrame = render_;
         render();
     }
+    #if trilateral_includeSegments
     function addSixteen(){
         var sixteen = new SixteenSeg( 20, 30 );
         sixteen.add( 'Trilateral', 10., 10. );
@@ -106,6 +111,7 @@ class Test extends WebGLSetup {
                         ,   seven.triArr
                         ,   appColors.indexOf( Green ) );
     }
+    #end
     function addShapes(){
         var size = 80;
         var shapes = new Shapes( triangles, appColors );
@@ -122,7 +128,10 @@ class Test extends WebGLSetup {
                               ,( topLeft.y + bottomLeft.y )/2 - size/2, size*2, size,  6, 30,  MidGrey );
     }
     function addBird(){
-        var path = new RoundEnd(); // currently Fine has issues.
+        //var path = new RoundEnd(); // currently Fine has issues.
+        //var path = new MediumOverlap( null, null, both ); // overlap triangles between, and round at 
+                                                            // beginning posible not at end because need move.
+        var path = new FineOverlap( null, null, both );
         // var path = new FillOnly();
         //var path = new Crude();
         //var path = new Medium();
@@ -137,7 +146,8 @@ class Test extends WebGLSetup {
         
     }
     function addQuadCurve(){
-        var path = new RoundEnd();
+        //var path = new RoundEnd();
+        var path = new FineOverlap( null, null, both );
         path.width = 2;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
             return width+0.008;
@@ -149,7 +159,8 @@ class Test extends WebGLSetup {
                         ,   1 );
     }
     function addCubicCurve(){
-        var path = new RoundEnd();
+        //var path = new RoundEnd();
+        var path = new FineOverlap( null, null, both );
         path.width = 1;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
             return width+0.008;
@@ -240,8 +251,11 @@ class Test extends WebGLSetup {
         pieArc();
         addShapes();
         addJoinTestForwards();
+        
+        #if trilateral_includeSegments
         addSixteen();
         addSeven();
+        #end
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;

@@ -99,7 +99,7 @@ class Contour {
         endLine = endLine_;
     }
     public inline
-    function triangleJoin( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false ){
+    function triangleJoin( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false, ?overlap: Bool = false ){
         var oldAngle = ( dx != null )? angle1: null;  // I am not sure I can move this to curveJoins because angle1 is set by computeDE
         halfA = Math.PI/2;
         //  if( dxOld != null ){
@@ -132,7 +132,7 @@ class Contour {
                 theta1 = thetaComputeAdj( dxPrev, dyPrev );
             }
             var dif = Angles.differencePrefer( theta0, theta1, SMALL );
-            computeJ( width_, theta0, dif );
+            if( !overlap ) computeJ( width_, theta0, dif ); // don't calculate j if your just overlapping quads
             
             if( count == 0 && ( endLine == begin || endLine == both ) ) addPie( ax, ay, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
             
@@ -141,18 +141,32 @@ class Contour {
                 addArray( Poly.pieDif( ax_, ay_, width_/2, theta0, dif ) );
             } else {
             // straight line between lines    
-            // don't draw the first one???
-                connectQuads( clockWise );
+                if( count != 0 ){
+                    if( overlap ){ // just draw down to a as overlapping quads
+                        connectQuadsWhenQuadsOverlay( clockWise );
+                    } else {
+                        connectQuads( clockWise );
+                    }
+                }
             }
-            addQuads( clockWise );
-            addInitialQuads( clockWise );
+            if( overlap ){
+                overlapQuad(); // not normal
+            }else {
+                addQuads( clockWise );
+                addInitialQuads( clockWise );
+            }
             storeLastQuads();
-        if( curveEnds ) addSmallTriangles( clockWise );
+        if( curveEnds && !overlap ) addSmallTriangles( clockWise );
         jxOld = jx;
         jyOld = jy;
         lastClock = clockWise;
         count++;
         return triArr;
+    }
+    inline
+    function overlapQuad(){
+        addTri( dxPrev, dyPrev, dx, dy, ex, ey #if trilateral_debug ,8 #end );
+        addTri( dxPrev, dyPrev, dx, dy, exPrev, eyPrev #if trilateral_debug ,12 #end );
     }
     // call to add round end to line
     public inline
@@ -215,7 +229,19 @@ class Contour {
         addArray( Poly.circleMarked( jx, jy, 0.01 , 5 ) );
     }
     // The triangle between quads
-    inline function connectQuads( clockWise: Bool ){
+    inline
+    function connectQuadsWhenQuadsOverlay( clockWise: Bool ){
+        if( clockWise ){
+            addTri( dxOld, dyOld, exPrev, eyPrev, ax, ay );
+            #if trilateral_debugPoints addTriangleCornersLess( dxOld, dyOld, exPrev, eyPrev ); #end
+        } else {
+            addTri( exOld, eyOld, dxPrev, dyPrev, ax, ay );
+            #if trilateral_debugPoints addTriangleCornersLess( exOld, eyOld, dxPrev, dyPrev ); #end
+        }
+    }
+    // The triangle between quads
+    inline
+    function connectQuads( clockWise: Bool ){
         if( clockWise ){
             addTri( dxOld, dyOld, exPrev, eyPrev, jx, jy );
             #if trilateral_debugPoints addTriangleCornersLess( dxOld, dyOld, exPrev, eyPrev ); #end

@@ -19,7 +19,7 @@ Add DroidSans svg path example?
 6)
 Add generic star.
 
-7) 
+7) DONE
 Remove Point from Circle or shapes prefer generally to minimize use of Point it will only add overhead.
 
 8)

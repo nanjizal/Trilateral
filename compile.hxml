@@ -2,6 +2,7 @@
 -cp src
 #-D trilateral_debug
 #-D trilateral_debugPoints
+-D trilateral_includeSegments
 -lib htmlHelper
 -lib khaMath
 -lib justPath
