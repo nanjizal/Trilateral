@@ -17,6 +17,7 @@ abstract EndLineCurve( Int ){
     var both = 3;
 }
 class Contour {
+    var triArr: TrilateralArray;
     var ax: Float; // 0
     var ay: Float; // 0
     var bx: Float; // 1
@@ -41,6 +42,25 @@ class Contour {
     var dyOld: Float;
     var exOld: Float;
     var eyOld: Float;    
+    var jx: Float;
+    var jy: Float;
+    var lastClock: Bool;
+    var jxOld: Float;
+    var jyOld: Float;
+    
+    var kax: Float;
+    var kay: Float;
+    var kbx: Float;
+    var kby: Float;
+    var kcx: Float;
+    var kcy: Float;
+    var nax: Float;
+    var nay: Float;
+    var nbx: Float;
+    var nby: Float;
+    var ncx: Float;
+    var ncy: Float;
+    var quadIndex: Int;
     
     //var angleD: Float;
     public var angleA: Float; // smallest angle between lines
@@ -72,9 +92,11 @@ class Contour {
     }
     //TODO: create lower limit for width   0.00001; ?
     public var count = 0;
-    public function new( ){}
+    public function new( triArr_: TrilateralArray ){
+        triArr = triArr_;
+    }
     public inline
-    function triangleJoin( triArr: TrilateralArray, ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false ){
+    function triangleJoin( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false ){
         var oldAngle = ( dx != null )? angle1: null;  // I am not sure I can move this to curveJoins because angle1 is set by computeDE
         halfA = Math.PI/2;
         //  if( dxOld != null ){
@@ -99,217 +121,164 @@ class Contour {
             var clockWise = isClockwise( bx_, by_ );
             var theta0: Float;
             var theta1: Float;
-            
             if( clockWise ){
-                theta0 = thetaCompute( ax_, ay_, dxOld, dyOld );
-                theta1 = thetaCompute( ax_, ay_, exPrev, eyPrev );
+                theta0 = thetaComputeAdj( dxOld, dyOld );
+                theta1 = thetaComputeAdj( exPrev, eyPrev );
             } else {
-                theta0 = thetaCompute( ax_, ay_, exOld, eyOld );
-                theta1 = thetaCompute( ax_, ay_, dxPrev, dyPrev );
+                theta0 = thetaComputeAdj( exOld, eyOld );
+                theta1 = thetaComputeAdj( dxPrev, dyPrev );
             }
-            
-            var dif = Angles.differencePrefer( -theta0 - Math.PI/2, -theta1 - Math.PI/2, SMALL );
-            var gamma = Math.abs( dif )/2;
-            var h = ( width_ ) * Math.sin( gamma );
-            var start: Pi2pi = -theta0 - Math.PI/2 ;
-            var start2: Float = start;
-            var delta = start2 + dif/2 + Math.PI;
-            var jx = ax_ + h * Math.sin( delta );
-            var jy = ay_ + h * Math.cos( delta );
+            var dif = Angles.differencePrefer( theta0, theta1, SMALL );
+            computeJ( width_, theta0, dif );
             
             if( curveEnds ){
                 //joinArc
-                triArr.addArray( Poly.pie( ax_, ay_, width_/2, -theta0 - Math.PI/2, -theta1 - Math.PI/2, SMALL ) );  // calculates dif in the pie
-            } else { /* should be in here, but there are some gaps when using curve so use the next part to fill.*/
+                addArray( Poly.pieDif( ax_, ay_, width_/2, theta0, dif ) );
+            } else {
             // straight line between lines    
             // don't draw the first one???
-                connectQuads( triArr, ax_, ay_, clockWise );
+                connectQuads( clockWise );
             }
-            addQuads( triArr, ax_, ay_, jx, jy, clockWise );
-        // addDot( triArr, ax_, ay_, 1 );
-        // addDot( triArr, jx, jy, 4 );
-        // triArr.addArray( Poly.arc( ax_, ay_, h, 0.008, 0, 2*Math.PI, CLOCKWISE, 5 ) );
-        //triArr.addArray( Poly.circleMarked( { x: bx_, y: by_ }, 0.01 ) );
-        addSmallTriangles( triArr, jx, jy, clockWise );
+            addQuads( clockWise );
+            addInitialQuads( clockWise );
+            storeLastQuads();
+        if( curveEnds ) addSmallTriangles( clockWise );
         jxOld = jx;
         jyOld = jy;
         lastClock = clockWise;
         count++;
         return triArr;
     }
-    var lastClock: Bool;
-    var jxOld: Float;
-    var jyOld: Float;
-    inline function addDot( triArr: TrilateralArray, x: Float, y: Float, color: Int ){
-        triArr.addArray( Poly.circleMarked( { x: x, y: y }, 0.008, color ) );
+    inline
+    function add( trilateral: Trilateral ){
+        triArr.add( trilateral );
     }
-    inline function addSmallTriangles( triArr: TrilateralArray, jx: Float, jy: Float, clockWise: Bool ){
-        //if( count == 3 ){
+    inline
+    function addArray( trilateralArray: TrilateralArray ){
+        triArr.addArray( trilateralArray );
+    }
+    inline 
+    function addTri( ax_: Float, ay_: Float, bx_: Float, by_: Float, cx_: Float, cy_: Float, ?mark_: Int = 0 ){
+        triArr.add( new Trilateral( ax_, ay_, bx_, by_, cx_, cy_, mark_ ) );
+    }
+    inline
+    function addPie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ){
+        triArr.addArray( Poly.pie( ax, ay, radius, beta, gamma, prefer, mark, sides ) );
+    }
+    inline
+    function computeJ( width_: Float, theta0: Float, dif: Float ){
+        var gamma = Math.abs( dif )/2;
+        var h = ( width_ ) * Math.sin( gamma );
+        var start: Pi2pi = theta0;
+        var start2: Float = start;
+        var delta = start2 + dif/2 + Math.PI;
+        jx = ax + h * Math.sin( delta );
+        jy = ay + h * Math.cos( delta );
+    }
+    inline 
+    function addDot( x: Float, y: Float, color: Int ){
+        addArray( Poly.circleMarked( { x: x, y: y }, 0.008, color ) );
+    }
+    inline
+    function addSmallTriangles( clockWise: Bool ){
         if( clockWise ){
-            var t0 = new Trilateral( ax, ay, dxOld, dyOld, jx, jy );
-                #if trilateral_debug t0.mark = 1; #end
-            triArr.add( t0 );
-            var t1 = new Trilateral( ax, ay, exPrev, eyPrev, jx, jy );
-                #if trilateral_debug t1.mark = 5; #end
-            triArr.add( t1 );
-            //triArr.addArray( Poly.circleMarked( { x: dxOld, y: dyOld }, 0.01 , 3 ) );
-            //triArr.addArray( Poly.circleMarked( { x: exPrev, y: eyPrev }, 0.01 , 3) );
+            addTri( ax, ay, dxOld,  dyOld,  jx, jy #if trilateral_debug ,1 #end );
+            addTri( ax, ay, exPrev, eyPrev, jx, jy #if trilateral_debug ,3 #end );
+            #if trilateral_debugPoints addTriangleCorners( dxOld, dyOld, exPrev, eyPrev ); #end
         } else {
-            var t0 = new Trilateral( ax, ay, exOld, eyOld, jx, jy );
-                #if trilateral_debug t0.mark = 1; #end
-            triArr.add( t0 );
-            var t1 = new Trilateral( ax, ay, dxPrev, dyPrev, jx, jy  );
-                #if trilateral_debug t1.mark = 5; #end
-            triArr.add( t1 );
-            //triArr.addArray( Poly.circleMarked( { x: exOld, y: eyOld }, 0.01, 4 ) );
-            //triArr.addArray( Poly.circleMarked( { x: dxPrev, y: dyPrev }, 0.01 , 3) );
+            addTri( ax, ay, exOld, eyOld, jx, jy #if trilateral_debug ,1 #end );
+            addTri( ax, ay, dxPrev, dyPrev, jx, jy #if trilateral_debug ,3 #end );
+            #if trilateral_debugPoints addTriangleCorners( exOld, eyOld, dxPrev, dyPrev ); #end
         }
-        //}
+    }
+    inline
+    function addTriangleCorners( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float ){
+        addArray( Poly.circleMarked( { x: oldx_, y: oldy_ }, 0.01 , 4 ) );
+        addArray( Poly.circleMarked( { x: prevx_, y: prevy_ }, 0.01 , 3 ) );
+        addArray( Poly.circleMarked( { x: ax, y: ay }, 0.01 , 10 ) );
+        addArray( Poly.circleMarked( { x: jx, y: jy }, 0.01 , 5 ) );
+    }
+    inline
+    function addTriangleCornersLess( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float ){
+        addArray( Poly.circleMarked( { x: oldx_, y: oldy_ }, 0.01 , 4 ) );
+        addArray( Poly.circleMarked( { x: prevx_, y: prevy_ }, 0.01 , 3 ) );
+        addArray( Poly.circleMarked( { x: jx, y: jy }, 0.01 , 5 ) );
     }
     // The triangle between quads
-    inline function connectQuads( triArr: TrilateralArray, x: Float, y: Float, clockWise: Bool ){
+    inline function connectQuads( clockWise: Bool ){
         if( clockWise ){
-            triArr.add( new Trilateral( dxOld, dyOld, exPrev, eyPrev, x, y ) );
+            addTri( dxOld, dyOld, exPrev, eyPrev, jx, jy );
+            #if trilateral_debugPoints addTriangleCornersLess( dxOld, dyOld, exPrev, eyPrev ); #end
         } else {
-            triArr.add( new Trilateral( exOld, eyOld, dxPrev, dyPrev, x, y ) );
+            addTri( exOld, eyOld, dxPrev, dyPrev, jx, jy );
+            #if trilateral_debugPoints addTriangleCornersLess( exOld, eyOld, dxPrev, dyPrev ); #end
         }
     }
-    var kax: Float;
-    var kay: Float;
-    var kbx: Float;
-    var kby: Float;
-    var kcx: Float;
-    var kcy: Float;
-    var nax: Float;
-    var nay: Float;
-    var nbx: Float;
-    var nby: Float;
-    var ncx: Float;
-    var ncy: Float;
-    var quadIndex: Int;
-    
-    // these are Quads that don't use the inner connection so they overlap
+    // these are Quads that don't use the second inner connection so they overlap at the end
     // draw these first and replace them?
-    inline function genericQuads( triArr: TrilateralArray, jx: Float, jy: Float, clockWise ){
+    inline 
+    function addInitialQuads( clockWise ){
         //These get replaced as drawing only to leave the last one
-        var t0: Trilateral;
-        var t1: Trilateral;
         quadIndex = triArr.length;
         if( count == 0 ){ // first line
-            t1 = new Trilateral( dxPrev, dyPrev, dx, dy, exPrev, eyPrev );
-                #if trilateral_debug t1.mark = 12; #end // white
-            triArr.add( t1 );
-            t0 = new Trilateral( dxPrev, dyPrev, dx, dy, ex, ey );
-                #if trilateral_debug t0.mark = 8; #end
-            triArr.add( t0 );
+            addTri( dxPrev, dyPrev, dx, dy, ex, ey #if trilateral_debug ,8 #end );
+            addTri( dxPrev, dyPrev, dx, dy, exPrev, eyPrev #if trilateral_debug ,12 #end );
         } else {
-            if( clockWise && !lastClock ){ // DONE
-                t1 = new Trilateral( jx, jy, dx, dy, exPrev, eyPrev );
-                    #if trilateral_debug t1.mark = 12; #end// white
-                triArr.add( t1 );
-                t0 = new Trilateral( jx, jy, dx, dy, ex, ey );
-                    #if trilateral_debug t0.mark = 8; #end // grey
-                triArr.add( t0 );
+            if( clockWise && !lastClock ){
+                addTri( jx, jy, dx, dy, ex, ey #if trilateral_debug ,8 #end );
+                addTri( jx, jy, dx, dy, exPrev, eyPrev #if trilateral_debug ,12 #end );
             }
             if( clockWise && lastClock ){
-                t1 = new Trilateral( jx, jy, dx, dy, exPrev, eyPrev );
-                    #if trilateral_debug t1.mark = 12; #end// white
-                triArr.add( t1 );
-                // dxPrev, dyPrev, dx, dy, ex, ey 
-                t0 = new Trilateral( jx, jy, dx, dy, ex, ey  );
-                    #if trilateral_debug t0.mark = 8; #end
-                triArr.add( t0 );
+                addTri( jx, jy, dx, dy, ex, ey #if trilateral_debug ,8 #end );
+                addTri( jx, jy, dx, dy, exPrev, eyPrev #if trilateral_debug ,12 #end );
             }
             if( !clockWise && !lastClock ){
-                t1 = new Trilateral( dxPrev, dyPrev, dx, dy, ex, ey );
-                    #if trilateral_debug t1.mark = 12; #end// white
-                triArr.add( t1 );
-                t0 = new Trilateral( dxPrev, dyPrev, dx, dy, jx, jy );
-                    #if trilateral_debug t0.mark = 8; #end// grey
-                triArr.add( t0 );
+                addTri( dxPrev, dyPrev, dx, dy, jx, jy #if trilateral_debug ,8 #end );
+                addTri( dxPrev, dyPrev, dx, dy, ex, ey #if trilateral_debug ,12 #end );
             }
             if( !clockWise && lastClock ){
-                t1 = new Trilateral( dxPrev, dyPrev, jx, jy, ex, ey );
-                    #if trilateral_debug t1.mark = 12; #end// white
-                triArr.add( t1 );
-                t0 = new Trilateral( jx, jy, dx, dy, ex, ey );
-                    #if trilateral_debug t0.mark = 8; #end
-                triArr.add( t0 );
+                addTri( jx, jy, dx, dy, ex, ey #if trilateral_debug ,8 #end );
+                addTri( dxPrev, dyPrev, jx, jy, ex, ey #if trilateral_debug ,12 #end );
             }
-            
         }
     }
-
-    // main section of triangleJoin line
-    inline function addQuads( triArr: TrilateralArray, x: Float, y: Float, jx: Float, jy: Float, clockWise: Bool ){
-        var t0: Trilateral;
-        var t1: Trilateral;
-        
+    // replace the section quads with quads with both inner points
+    inline 
+    function addQuads( clockWise: Bool ){
         if( clockWise && !lastClock ){
-            t1 = new Trilateral( kax, kay, kbx, kby, jx, jy );
-                #if trilateral_debug t1.mark = 6; #end// purple
-            triArr[ quadIndex ] = t1;
-            if( count == 1 ){// deals with first case
-                t0 = new Trilateral( nax, nay, nbx, nby, ncx, ncy );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+            if( count == 1 ){ // deals with first case
+                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
-                t0 = new Trilateral( nax, nay, nbx, nby, jxOld, jyOld );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, jxOld, jyOld #if trilateral_debug ,7 #end );
             }
+            triArr[ quadIndex ] = new Trilateral( kax, kay, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
         }
         if( clockWise && lastClock ){
             if( count == 1 ){
-                t1 = new Trilateral( kax, kay, kbx, kby, jx, jy );
-                    #if trilateral_debug t1.mark = 6; #end // purple
-                triArr[ quadIndex ] = t1;
-                t0 = new Trilateral( nax, nay, nbx, nby, ncx, ncy );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+                triArr[ quadIndex ] = new Trilateral( kax, kay, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
-                t1 = new Trilateral( jxOld, jyOld, kbx, kby, jx, jy );
-                    #if trilateral_debug t1.mark = 6; #end// purple
-                triArr[ quadIndex ] = t1;
-                t0 = new Trilateral( jxOld, jyOld, nbx, nby, ncx, ncy );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+                triArr[ quadIndex ] = new Trilateral( jxOld, jyOld, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( jxOld, jyOld, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
             }
         }
         if( !clockWise && !lastClock ){
-            t1 = new Trilateral( kax, kay, jx, jy, kcx, kcy );
-                #if trilateral_debug t1.mark = 6; #end// purple
-            triArr[ quadIndex ] = t1;
+            triArr[ quadIndex ] = new Trilateral( kax, kay, jx, jy, kcx, kcy #if trilateral_debug ,6 #end );
             if( count == 1 ){
-                t0 = new Trilateral( nax, nay, jx, jy, ncx, ncy );//jxOld, jyOld );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
-                t0 = new Trilateral( nax, nay, jx, jy, jxOld, jyOld );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, jxOld, jyOld #if trilateral_debug ,7 #end );
             }
-            
         }
         if( !clockWise && lastClock ){
             if( count == 1 ){
-                t1 = new Trilateral( kax, kay, jx, jy, kcx, kcy );
-                    #if trilateral_debug t1.mark = 6; #end // purple
-                triArr[ quadIndex ] = t1;
-                t0 = new Trilateral( nax, nay, jx, jy, ncx, ncy );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+                triArr[ quadIndex ] = new Trilateral( kax, kay, jx, jy, kcx, kcy #if trilateral_debug ,6 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
-                t1 = new Trilateral( jxOld, jyOld, jx, jy, kcx, kcy );
-                    #if trilateral_debug t1.mark = 6; #end // purple
-                triArr[ quadIndex ] = t1;
-                t0 = new Trilateral(jxOld, jyOld, jx, jy, ncx, ncy );
-                    #if trilateral_debug t0.mark = 7; #end
-                triArr[ quadIndex + 1 ] = t0;
+                triArr[ quadIndex ] = new Trilateral( jxOld, jyOld, jx, jy, kcx, kcy #if trilateral_debug ,6 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( jxOld, jyOld, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
             }
         }
-        genericQuads( triArr, jx, jy, clockWise );
-        storeLastQuads();
     }
     inline function storeLastQuads(){
         nax = dxPrev;
@@ -329,7 +298,7 @@ class Contour {
          return dist( dxOld, dyOld, x, y ) > dist( exOld, eyOld, x, y );
     }
     public inline 
-    function line( triArr: TrilateralArray, ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?endLineCurve: EndLineCurve ){
+    function line( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?endLineCurve: EndLineCurve ){
                     // thick
         ax = bx_;
         ay = by_;
@@ -351,18 +320,19 @@ class Contour {
         bx = bx_;
         by = by_;
         computeDE();
+        
         switch( endLineCurve ){
             case no: // don't draw ends
             case begin: 
-                triArr.addArray( Poly.pie( ax_, ay_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL ) );
+                addPie( ax_, ay_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
             case end:
-                triArr.addArray( Poly.pie( bx_, by_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL ) );
+                addPie( bx_, by_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
             case both:
-                triArr.addArray( Poly.pie( ax_, ay_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL ) );
-                triArr.addArray( Poly.pie( bx_, by_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL ) );
+                addPie( ax_, ay_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
+                addPie( bx_, by_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
         }
-        triArr.add( new Trilateral( dxPrev_, dyPrev_, dx, dy, exPrev_, eyPrev_ ) );
-        triArr.add( new Trilateral( dxPrev_, dyPrev_, dx, dy, ex, ey ) );
+        addTri( dxPrev_, dyPrev_, dx, dy, exPrev_, eyPrev_ );
+        addTri( dxPrev_, dyPrev_, dx, dy, ex, ey );
     }
     public inline 
     function computeDE(){
@@ -401,92 +371,15 @@ class Contour {
             }
         }
     }
-    /*
-    var q0x: Float;
-    var q0y: Float;
-    var q1x: Float;
-    var q1y: Float;
-    
-    public inline 
-    function poly( triArr: TrilateralArray, p: Array<Float>, width_: Float ){
-        q0x = p[0];
-        q0y = p[1];
-        q1x = p[2];
-        q1y = p[3]; 
-        firstQuad( triArr, p, 0, width_ );
-        for( i in 2...( p.length - 4 ) ) {
-            if( i%2 == 0 ) otherQuad( triArr, p, i, width_ ); 
-        }// Have to get loop right
-    }
     inline
-    function firstQuad( triArr: TrilateralArray, p: Array<Float>, i: Int, width_: Float ) {
-        create2Lines( p[ i ], p[ i + 1 ], p[ i + 2 ], p[ i + 3 ], p[ i + 4 ], p[ i + 5 ], width_ );
-        q0x = dx;
-        q0y = dy;
-        q1x = ex;
-        q1y = ey;
+    function thetaComputeAdj( qx: Float, qy: Float ): Float {
+        return -thetaCompute( ax, ay, qx, qy ) - Math.PI/2;
     }
-    // assumes that firstQuad is drawn.
-    inline
-    function otherQuad( triArr: TrilateralArray, p: Array<Float>, i: Int, width_: Float ){
-        ax = bx;
-        ay = by;
-        bx = cx;
-        by = cy;
-        cx = p[ i + 4];
-        cy = p[ i + 5];
-        computeDE();
-        var q3x = dx;
-        var q3y = dy;
-        var q4x = ex;
-        var q4y = ey;
-        addDot( triArr, q0x, q0y );
-        addDot( triArr, q1x, q1y );
-        addDot( triArr, q3x, q3y );
-        addDot( triArr, q4x, q4y );
-        triArr.add( new Trilateral(q1x, q1y , q3x, q3y, q0x, q0x ) );
-        triArr.add( new Trilateral( q1x, q1x, q3x, q3y, q4x, q4y ) );
-        q0x = q3x;
-        q0y = q3y;
-        q1x = q4x;
-        q1y = q4y;
-    }
-    public
-    function create2Lines( ax_: Float, ay_: Float, bx_: Float, by_: Float, cx_: Float, cy_: Float, width_: Float ){
-        ax = ax_;
-        bx = bx_;
-        cx = cx_;
-        ay = ay_;
-        by = by_;
-        cy = cy_;
-        var b2 = dist( ax, ay, bx, by );
-        var c2 = dist( bx, by, cx, cy );
-        var a2 = dist( ax, ay, cx, cy );
-        var b = Math.sqrt( b2 );
-        var c = Math.sqrt( c2 );
-        var a = Math.sqrt( a2 );
-        var cosA = ( b2 + c2 - a2 )/ ( 2*b*c );
-        // clamp cosA between ±1
-        if( cosA > 1 ) {
-            cosA = 1;
-        } else if( cosA < -1 ){
-            cosA = -1;
-        }
-        angleA = Math.acos( cosA )+Math.PI;
-        // angleD = Math.PI - angleA;
-        halfA = angleA/2;
-        // thickness
-        beta = Math.PI/2 - halfA;
-        r = ( width_/2 )*Math.cos( beta );
-        // 
-        computeDE();
-    }
-    */
-    public static inline 
+    static inline 
     function thetaCompute( px: Float, py: Float, qx: Float, qy: Float ): Float {
         return Math.atan2( py - qy, px - qx );
     }
-    public static inline 
+    static inline 
     function dist( px: Float, py: Float, qx: Float, qy: Float  ): Float {
         var x = px - qx;
         var y = py - qy;

@@ -1,6 +1,7 @@
 -js bin/test.js
 -cp src
-# -D trilateral_debug
+#-D trilateral_debug
+#-D trilateral_debugPoints
 -lib htmlHelper
 -lib khaMath
 -lib justPath

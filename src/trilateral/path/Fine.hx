@@ -11,6 +11,6 @@ class Fine extends Base {
     function line( x_: Float, y_: Float ){
         // lineTrace( x_, y_ );
         // broken a bit!
-        contour.triangleJoin( trilateralArray, x, y, x_, y_, width, true );
+        contour.triangleJoin( x, y, x_, y_, width, true );
     }
 }

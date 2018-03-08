@@ -48,7 +48,7 @@ class Trilateral {
         cx += dx;
         cy += dy;
     }
-    public function new( ax_: Float, ay_: Float, bx_: Float, by_: Float, cx_: Float, cy_: Float ){
+    public function new( ax_: Float, ay_: Float, bx_: Float, by_: Float, cx_: Float, cy_: Float, ?mark_: Int = 0 ){
         ax = ax_;
         ay = ay_;
         bx = bx_;
@@ -64,6 +64,7 @@ class Trilateral {
             cx = bx_;
             cy = by_;
         }
+        mark = mark_;
     }
     // no bounds checking
     public inline function liteHit( px: Float, py: Float ): Bool {

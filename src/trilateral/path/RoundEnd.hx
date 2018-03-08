@@ -11,6 +11,6 @@ class RoundEnd extends Base {
     function line( x_: Float, y_: Float ){
         // lineTrace( x_, y_ );
         // less than ideal as triangles overlap lots, Fine needs tweaking.
-        contour.line( trilateralArray, x, y, x_, y_, width, both );
+        contour.line( x, y, x_, y_, width, both );
     }
 }

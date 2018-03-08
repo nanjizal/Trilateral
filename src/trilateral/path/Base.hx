@@ -14,7 +14,7 @@ class Base implements IPathContext {
     var contour:                    Contour;
     public function new( ?contour_: Contour, ?trilateralArray_: TrilateralArray ){
         trilateralArray = ( trilateralArray_ == null )? new TrilateralArray(): trilateralArray_;
-        contour = ( contour_ == null )? new Contour(): contour_;
+        contour = ( contour_ == null )? new Contour( trilateralArray ): contour_;
     }
     public function moveTo( x_: Float, y_: Float ): Void{
         x = x_;
@@ -31,7 +31,7 @@ class Base implements IPathContext {
     function line( x_: Float, y_: Float ) {
         lineTrace( x_, y_ );
         // Simplest line not connection no ends.
-        contour.line( trilateralArray, x, y, x_, y_, width );
+        contour.line( x, y, x_, y_, width );
     }
     inline function lineTrace( x_: Float, y_: Float ){
         trace( 'lineTo( $x, $y, $x_, $y_, width )' );

@@ -10,6 +10,6 @@ class Medium extends Base {
     override inline
     function line( x_: Float, y_: Float ){
         // lineTrace( x_, y_ );
-        contour.triangleJoin( trilateralArray, x, y, x_, y_, width, false );
+        contour.triangleJoin( x, y, x_, y_, width, false );
     }
 }

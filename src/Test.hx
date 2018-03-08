@@ -81,10 +81,10 @@ class Test extends WebGLSetup {
         shapes.spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
     }
     function addPaths(){
-        //var path = new RoundEnd();
+        var path = new RoundEnd(); // currently Fine has issues.
         // var path = new Crude();
         //var path = new Medium();
-        var path = new Crude();
+        //var path = new Fine();
         
         path.width = 0.01;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
@@ -111,20 +111,10 @@ class Test extends WebGLSetup {
                         ,   path.trilateralArray
                         ,   7 );
     }
-    /*
-    public function add2Line(){
-        var triArr = new TrilateralArray();
-        var contour = new Contour();
-        contour.poly( triArr, [ -0.5, 0.0, 0.5, 0.0, 0.5, 0.5, 0., 0.6, 0., -0.5, -0.5, -0.8 ], 0.2 );
-        triangles.addArray( 10
-                        ,   triArr
-                        ,   appColors.indexOf( Red ) );
-    }*/
-    public function addJoinTest(){
+    public function addJoinTestForwards(){
         var path = new Fine();
-        path.width = 0.03;
+        path.width = 0.08;
         // forwards
-        
         path.moveTo( -0.5, 0.0 );
         path.lineTo( 0.5, 0.0 );
         path.lineTo( 0.5, 0.5 );
@@ -132,9 +122,14 @@ class Test extends WebGLSetup {
         path.lineTo( 0., -0.5 );
         path.lineTo( -0.5, -0.8 );
         path.lineTo( -0.5, 0.0 );
+        triangles.addArray( 10
+                        ,   path.trilateralArray
+                        ,   appColors.indexOf( Orange ) );
+    }
+    public function addJoinTestBackwards(){
+        var path = new Fine();
+        path.width = 0.08;
         // backwards
-       
-        /* 
         path.moveTo( -0.5+ 0.1, -0.8 );
         path.lineTo( 0.+0.1, -0.5 );
         path.lineTo( 0.+0.1, 0.6 );
@@ -142,11 +137,11 @@ class Test extends WebGLSetup {
         path.lineTo( 0.5+0.1, 0.0 );
         path.lineTo( -0.5+0.1, 0.0 );
         path.lineTo( -0.5+0.1, -0.8 );
-        */
         triangles.addArray( 10
                         ,   path.trilateralArray
                         ,   appColors.indexOf( Orange ) );
     }
+    
     public function pieTests(){
         var bottomLeft:     Point = { x: -0.5, y: -0.5 };
         var bottomRight:    Point = { x: 0.5,  y: -0.5 };
@@ -192,9 +187,8 @@ class Test extends WebGLSetup {
         pieTests();
         pieArc();
         addShapes();
-        addJoinTest();
+        addJoinTestForwards();
         addPaths();
-        //add2Line();
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;

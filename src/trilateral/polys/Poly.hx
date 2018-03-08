@@ -98,6 +98,39 @@ class Poly {
         }
         return out;
     }
+    /**
+     * Optimized Pie used in Contour, with dif pre-calculated
+     **/
+    public static inline
+    function pieDif( ax: Float, ay: Float, radius: Float, beta: Float, dif: Float, ?mark: Int = 0, ?sides: Int = 36 ): TrilateralArray {
+        // choose a step size based on smoothness ie number of sides expected for a circle
+        var out = new TrilateralArray();
+        var pi = Math.PI;
+        var step = pi*2/sides;
+        var positive = ( dif >= 0 );
+        var totalSteps = Math.ceil( Math.abs( dif )/step );
+        // adjust step with smaller value to fit the angle drawn.
+        var step = dif/totalSteps;
+        var angle: Float = beta;
+        var cx: Float;
+        var cy: Float;
+        var bx: Float = 0;
+        var by: Float = 0;
+        for( i in 0...totalSteps+1 ){
+            cx = ax + radius*Math.sin( angle );
+            cy = ay + radius*Math.cos( angle );
+            if( i != 0 ){ // start on second iteration after b is populated.
+                //var t = ( positive )? new Trilateral( ax, ay, bx, by, cx, cy ): new Trilateral( ax, ay, cx, cy, bx, by );
+                var t = new Trilateral( ax, ay, bx, by, cx, cy ); // don't need to reorder corners and Trilateral can do that!
+                out.add( t );
+                if( mark != 0 ) t.mark = mark;
+            }
+            angle = angle + step;
+            bx = cx;
+            by = cy;
+        }
+        return out;
+    }
     public static inline
     function arc( ax: Float, ay: Float, radius: Float, width: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ): TrilateralArray {
         // choose a step size based on smoothness ie number of sides expected for a circle
