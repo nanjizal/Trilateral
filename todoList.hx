@@ -28,7 +28,7 @@ Need to see if it still works on Kha graphics2 and perhaps graphics4
 9)
 I am not sure if polytrihx is better than hxDaedalus for fills. PolyK has an isSimple it is what is used in justTriangle it's not good at complex shapes, but maybe fast for simple so need to build and test.  I have improved hxDaedalus see heaps and Kha examples they use simple triangle approach for drawing.
 
-10)
+10) DONE
 Need to re-enable the overlap in the triangleJoin as an option since it is less likely to fail and is probably lighter than separate lines with rounded corners on the end which is currently my best option.
 
 11) 
@@ -58,7 +58,7 @@ Straight lines need to be split up similar to curves when using a width equation
 19)
 Width equation needs to be implemented on arc.
 
-20)
+20) DONE
 Need to implement a roundedRectangle outline same as current one just use arc rather than pie. Low Friut :)
 
 21) 
