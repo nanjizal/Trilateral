@@ -31,6 +31,7 @@ import trilateral.polys.Poly;
 import trilateral.geom.Point;
 
 import trilateral.segment.SixteenSeg;
+import trilateral.segment.SevenSeg;
 
 using htmlHelper.webgl.WebGLSetup;
 
@@ -89,13 +90,21 @@ class Test extends WebGLSetup {
          AnimateTimer.onFrame = render_;
         render();
     }
-    
     function addSixteen(){
         var sixteen = new SixteenSeg( 20, 30 );
         sixteen.add( 'Trilateral', 10., 10. );
         triangles.addArray( 12
                         ,   sixteen.triArr
                         ,   appColors.indexOf( Orange ) );
+    }
+    function addSeven(){
+        var seven = new SevenSeg( 8, 12 );//0.050, 0.080 );
+        seven.addDigit( 0, 30, 45 );
+        seven.addNumber( 123456780, 30, 65 );
+        seven.addString( '0123456789', 30, 85 );
+        triangles.addArray( 12
+                        ,   seven.triArr
+                        ,   appColors.indexOf( Green ) );
     }
     function addShapes(){
         var size = 80;
@@ -232,6 +241,7 @@ class Test extends WebGLSetup {
         addShapes();
         addJoinTestForwards();
         addSixteen();
+        addSeven();
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;

@@ -3,15 +3,14 @@ import trilateral.tri.Trilateral;
 import trilateral.tri.TrilateralArray;
 // Used to emulate 16 segment display, can be used for rough letters.
 class SixteenSeg{
-    var width: Float;
-    var height: Float;
-    var sx: Float = 1.;
-    var sy: Float = 1.;
+    public var width: Float;
+    public var height: Float;
+    public var sx: Float = 1.;
+    public var sy: Float = 1.;
     public var x: Float;
     public var y: Float;
-    var spacing: Float;
+    public var spacing: Float;
     public var triArr: TrilateralArray;
-    
     public function new( width_: Float, height_: Float, ?trilateralArray_: TrilateralArray = null ){
         height = height_;
         width  = width_;
@@ -20,7 +19,8 @@ class SixteenSeg{
         spacing = width * 14/11;
         triArr = ( trilateralArray_ == null )? new Array<Trilateral>(): trilateralArray_;
     } 
-    public inline function stringWidth( str: String ): Float {
+    public inline
+    function stringWidth( str: String ): Float {
         var l = str.length;
         var space = 0.;
         for( i in 0...l ){
@@ -28,11 +28,13 @@ class SixteenSeg{
         }
         return space;
     }
-    public inline function addNumber( val: Int, x_: Float, y_: Float, ?centre: Bool = false ){
+    public inline
+    function addNumber( val: Int, x_: Float, y_: Float, ?centre: Bool = false ){
         var str = Std.string( val );
         add( str, x_, y_, centre );
     }
-    public inline function add( str: String, x_: Float, y_: Float, ?centre: Bool = false ){
+    public inline
+    function add( str: String, x_: Float, y_: Float, ?centre: Bool = false ){
         var l = str.length;
         var space = 0.;
         if( centre ){
@@ -46,7 +48,8 @@ class SixteenSeg{
             space += spacing;
         }
     }
-    public inline function addChar( str: String, x_: Float, y_: Float ){
+    public inline
+    function addChar( str: String, x_: Float, y_: Float ){
         x = x_;
         y = y_;
         switch( str ){
@@ -148,22 +151,27 @@ class SixteenSeg{
             
         }
     }
-    inline function a(){
+    inline
+    function a(){
         a1();
         a2();
     }
-    inline function g(){
+    inline
+    function g(){
         g1();
         g2();
     }
-    inline function d(){
+    inline
+    function d(){
         d1();
         d2();
     }
-    inline function triFactory( ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float ): Trilateral {
+    inline
+    function triFactory( ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float ): Trilateral {
         return new Trilateral( x+sx*ax, y+sy*ay, x+sx*bx, y+sy*by, x+sx*cx, y+sy*cy );
     }
-    inline function a1(){
+    inline
+    function a1(){
         var tri = triArr;
         var l_ = tri.length;
         var third = 1/3;
@@ -175,7 +183,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 1., 0.5, 5 + third, 2., 2.5, 2. );
     }
-    inline function a2(){
+    inline
+    function a2(){
         var tri = triArr;
         var l_ = tri.length;
         var third = 1/3;
@@ -187,7 +196,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 6 - third, 0.5, 8.5, 0.5, 6 - third, 2.0 );
     }
-    inline function b(){
+    inline
+    function b(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 9., 2.5, 10.5, 1., 11., 1.5 );
@@ -198,7 +208,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 9., 2.5, 11., 7.5, 10.5, 8.5 );
     }
-    inline function c(){
+    inline
+    function c(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 9., 10.5, 10.5, 9.5, 11., 10.5 );
@@ -209,7 +220,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 9., 15.5, 11., 16.5, 10.5, 17. );
     }
-    inline function d1(){
+    inline
+    function d1(){
         var tri = triArr;
         var l_ = tri.length;
         var third = 1/3;
@@ -222,7 +234,8 @@ class SixteenSeg{
         tri[ l_ ] = triFactory( 1., 17.5, 5., 18., 1.5, 18. );
         l_++;
     }
-    inline function d2(){
+    inline
+    function d2(){
         var tri = triArr;
         var l_ = tri.length;
         var third = 1/3;
@@ -234,7 +247,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 6. - third, 17.5, 9.5, 18., 6., 18. );
     }
-    inline function e(){
+    inline
+    function e(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 0., 10.5, 0.5, 9.5, 2., 10.5 );
@@ -245,7 +259,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 0., 16., 2., 15.5, 0.5, 17 );
     }
-    inline function f(){
+    inline
+    function f(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 0., 1.5, 0.5, 1., 2., 2.5 );
@@ -256,7 +271,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 0., 7.5, 2., 7.5, 0.5, 8.5 );
     }
-    inline function g1(){
+    inline
+    function g1(){
         var tri = triArr;
         var l_ = tri.length;
         var third = 1/3;
@@ -266,7 +282,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 2.5, 8., 5. + third, 10., 2.5, 10. );
     }
-    inline function g2(){
+    inline
+    function g2(){
         var tri = triArr;
         var l_ = tri.length;
         var third = 1/3;
@@ -276,7 +293,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 8.5, 8., 10.5, 9., 8.5, 10.);
     }
-    inline function h(){
+    inline
+    function h(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 2.5, 2.5, 3.5, 2.5, 4., 4. );
@@ -287,7 +305,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 2.5, 5., 4., 4., 4., 7.5 );
     }
-    inline function i(){
+    inline
+    function i(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 4.5, 2.5, 6.5, 2.5, 6.5, 4. );
@@ -296,7 +315,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 4.5, 4., 6.5, 4., 5.5, 7.5 );
     }
-    inline function j(){
+    inline
+    function j(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 6.5, 7.5, 7., 4., 7., 7.5 );
@@ -307,7 +327,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 7., 4., 8.5, 4., 7., 7.5 );
     }
-    inline function k(){
+    inline
+    function k(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 2.5, 13., 4., 10.5, 5., 10.5 );
@@ -318,7 +339,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 2.5, 13., 3.5, 15., 2.5, 15. );
     }
-    inline function l(){
+    inline
+    function l(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 4.5, 14., 5.5, 10.5, 6.5, 14. );
@@ -327,7 +349,8 @@ class SixteenSeg{
         l_++;
         tri[ l_ ] = triFactory( 4.5, 14., 6.5, 15.5, 4.5, 15.5 );
     }
-    inline function m(){
+    inline
+    function m(){
         var tri = triArr;
         var l_ = tri.length;
         tri[ l_ ] = triFactory( 6., 10.5, 6.5, 10., 8.5, 13.);
