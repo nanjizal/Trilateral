@@ -12,14 +12,17 @@ class Base implements IPathContext {
     public var widthFunction:       Float->Float->Float->Float->Float->Float;
     var tempArr:                    Array<Float>;
     var contour:                    Contour;
-    public function new( ?contour_: Contour, ?trilateralArray_: TrilateralArray ){
+    var endLine:                    EndLineCurve;
+    public function new( ?contour_: Contour, ?trilateralArray_: TrilateralArray, ?endLine_: EndLineCurve = no ){
         trilateralArray = ( trilateralArray_ == null )? new TrilateralArray(): trilateralArray_;
-        contour = ( contour_ == null )? new Contour( trilateralArray ): contour_;
+        contour = ( contour_ == null )? new Contour( trilateralArray, endLine_ ): contour_;
+        endLine = endLine_;
     }
-    public function moveTo( x_: Float, y_: Float ): Void{
+    public function moveTo( x_: Float, y_: Float ): Void {
+        if( endLine == end || endLine == both ) contour.end( width );
         x = x_;
         y = y_;
-        contour.reset();
+        contour.reset(); // TODO: needs improving
     }
     public inline 
     function lineTo( x_: Float, y_: Float ): Void{

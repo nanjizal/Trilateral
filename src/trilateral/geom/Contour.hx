@@ -18,6 +18,7 @@ abstract EndLineCurve( Int ){
 }
 class Contour {
     var triArr: TrilateralArray;
+    var endLine: EndLineCurve;
     var ax: Float; // 0
     var ay: Float; // 0
     var bx: Float; // 1
@@ -92,8 +93,9 @@ class Contour {
     }
     //TODO: create lower limit for width   0.00001; ?
     public var count = 0;
-    public function new( triArr_: TrilateralArray ){
+    public function new( triArr_: TrilateralArray, ?endLine_: EndLineCurve = no ){
         triArr = triArr_;
+        endLine = endLine_;
     }
     public inline
     function triangleJoin( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false ){
@@ -131,6 +133,8 @@ class Contour {
             var dif = Angles.differencePrefer( theta0, theta1, SMALL );
             computeJ( width_, theta0, dif );
             
+            if( count == 0 && ( endLine == begin || endLine == both ) ) addPie( ax, ay, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
+            
             if( curveEnds ){
                 //joinArc
                 addArray( Poly.pieDif( ax_, ay_, width_/2, theta0, dif ) );
@@ -148,6 +152,11 @@ class Contour {
         lastClock = clockWise;
         count++;
         return triArr;
+    }
+    // call to add round end to line
+    public inline
+    function end( width_: Float ){
+        addPie( bx, by, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
     }
     inline
     function add( trilateral: Trilateral ){
@@ -322,7 +331,8 @@ class Contour {
         computeDE();
         
         switch( endLineCurve ){
-            case no: // don't draw ends
+            case no: 
+                // don't draw ends
             case begin: 
                 addPie( ax_, ay_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
             case end:

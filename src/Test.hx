@@ -112,7 +112,7 @@ class Test extends WebGLSetup {
                         ,   7 );
     }
     public function addJoinTestForwards(){
-        var path = new Fine();
+        var path = new Fine( null, null, both );
         path.width = 0.08;
         // forwards
         path.moveTo( -0.5, 0.0 );
@@ -121,13 +121,14 @@ class Test extends WebGLSetup {
         path.lineTo( 0., 0.6 );
         path.lineTo( 0., -0.5 );
         path.lineTo( -0.5, -0.8 );
-        path.lineTo( -0.5, 0.0 );
+        path.lineTo( -0.5-0.1, 0.0 );
+        path.moveTo( 0.,0. ); // required to make it put endCap
         triangles.addArray( 10
                         ,   path.trilateralArray
                         ,   appColors.indexOf( Orange ) );
     }
     public function addJoinTestBackwards(){
-        var path = new Fine();
+        var path = new Fine( null, null, both );
         path.width = 0.08;
         // backwards
         path.moveTo( -0.5+ 0.1, -0.8 );
