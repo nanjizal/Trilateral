@@ -2,6 +2,7 @@ package trilateral.polys;
 import trilateral.tri.Trilateral;
 import trilateral.tri.TrilateralArray;
 import trilateral.geom.Algebra;
+import trilateral.pairs.Quad;
 import trilateral.geom.Point;
 import fracs.Angles;
 @:enum
@@ -231,4 +232,29 @@ class Poly {
             circle( pos, radius, p );
         }
     }
+    public static inline
+    function roundedRectangle( x: Float, y: Float, width: Float, height: Float, radius: Float ): TrilateralArray {
+        var out = new TrilateralArray();
+        var pi = Math.PI;
+        var pi_2 = Math.PI/2;
+        var ax = x + radius;
+        var ay = y + radius;
+        var bx = x - width - radius;
+        var by = y + radius;
+        var cx = bx;
+        var cy = y - height - radius;
+        var dx = ax;
+        var dy = cy;
+        out.addPair( Quad.rectangle( { x: ax, y: y }, { x: width, y: height } ) );
+//out.addPair( Quad.rectangle( { x: ax, y: y }, { x: bx - ax, y: height } ) );
+        var dim = { x: radius, y: height - 2*radius };
+        //out.addPair( Quad.rectangle( { x: x, y: ay }, dim ) );
+        //out.addPair( Quad.rectangle( { x: cx, y: cy }, dim ) );
+        out.addArray( pie( x, y, radius, 0, -pi_2, ANTICLOCKWISE ) );
+        //out.addArray( pie( bx, by, radius, 0, pi_2, CLOCKWISE ) );
+        //out.addArray( pie( cx, cy, radius, 0, -pi_2, CLOCKWISE ) );
+        //out.addArray( pie( dx, dy, radius, 0, pi_2, ANTICLOCKWISE ) );
+        return out;
+    }
+    
 }

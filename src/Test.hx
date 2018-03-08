@@ -18,6 +18,7 @@ import trilateral.path.Crude;
 import trilateral.path.RoundEnd;
 import trilateral.path.Medium;
 import trilateral.path.Fine;
+import trilateral.path.FillOnly;
 
 import trilateral.helper.Shapes;
 import trilateral.helper.AppColors;
@@ -28,6 +29,8 @@ import justPath.PathContextTrace;
 import fracs.Angles;
 import trilateral.polys.Poly;
 import trilateral.geom.Point;
+
+//import trilateral.segment.SixteenSeg;
 
 using htmlHelper.webgl.WebGLSetup;
 
@@ -57,8 +60,10 @@ class Test extends WebGLSetup {
             ' gl_FragColor = vcol;' +
         '}';
     public static function main(){ new Test(); }
+    var scale = 0.002;
     public function new(){
         super( 570*2, 570*2 );
+        scale = 1/(570);
         var dark = 0x18/256;
         bgRed   = dark;
         bgGreen = dark;
@@ -71,42 +76,58 @@ class Test extends WebGLSetup {
          AnimateTimer.onFrame = render_;
         render();
     }
+    /*
+    function addSixteen(){
+        var sixteen = new SixteenSeg( 20, 30 );
+        sixteen.add( 'Trilateral', 10., 10. );
+        triangles.addArray( 12
+                        ,   sixteen.triArr
+                        ,   appColors.indexOf( Orange ) );
+    }*/
     function addShapes(){
         var shapes = new Shapes( triangles, appColors ); 
-        shapes.star(      -0.3,  -0.3, 0.2,       Orange );
-        shapes.diamond(   -0.3,   0.3, 0.15,      Yellow );
-        shapes.square(     0.3,  -0.3, 0.15,      Green );
-        shapes.rectangle( -0.15, -0.1, 0.3, 0.2,  Blue );
-        shapes.circle(     0.3,   0.3, 0.1,       Indigo );
-        shapes.spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
+        //shapes.star(      -0.3,  -0.3, 0.2,       Orange );
+        //shapes.diamond(   -0.3,   0.3, 0.15,      Yellow );
+        //shapes.square(     0.3,  -0.3, 0.15,      Green );
+        //shapes.rectangle( -0.15, -0.1, 0.3, 0.2,  Blue );
+        //shapes.circle(   0.,    0., 500.,       Indigo );
+        shapes.circle( 570.,  570., 570.,       Indigo );
+        //shapes.spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
+        //shapes.roundedRectangle( -0.4, -0.2, 0.3, 0.2, 0.08, Violet );
     }
     function addPaths(){
         var path = new RoundEnd(); // currently Fine has issues.
-        // var path = new Crude();
+        // var path = new FillOnly();
+        //var path = new Crude();
         //var path = new Medium();
         //var path = new Fine();
         
-        path.width = 0.01;
-        path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
-            return width+0.001;
-        }
+        path.width = 2;
+        /*path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
+            return width+0.008;
+        }*/
         var p = new SvgPath( path );
-        p.parse( cubictest_d, -1., -0.6, 0.002, 0.002 );
+        p.parse( bird_d, 0, 0, 1.5, 1.5 );
+        trace( path.dim );
+        /*
         triangles.addArray( 6
                         ,   path.trilateralArray
                         ,   1 );
+        /*
         path.trilateralArray = [];
-        path.width = 0.001;
+        path.width = 1;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
-            return width+0.001*y;
+            return width+0.1*y;
         }
-        p.parse( quadtest_d, -1.2, -0.6, 0.002, 0.002 );
+        p.parse( quadtest_d, 100, 100, 1, 1 );
+        */
         //crudePath.width = 0.001;  bird not currently working properly
         //p.parse( bird_d, -0.5, -0.0, 0.0005, 0.0005 );
         // you can trace out svg points.
         // var p = new SvgPath( new PathContextTrace() );
         // p.parse( quadtest_d, -1., -0.6, 0.002, 0.002 );
         //trace( path.trilateralArray );
+        
         triangles.addArray( 6
                         ,   path.trilateralArray
                         ,   7 );
@@ -127,6 +148,23 @@ class Test extends WebGLSetup {
                         ,   path.trilateralArray
                         ,   appColors.indexOf( Orange ) );
     }
+    public function addJoinTestForwards2(){
+        var path = new Fine( null, null, both );
+        path.width = 20;
+        // forwards
+        path.moveTo( 200, 450 );
+        path.lineTo( 700, 450 );
+        path.lineTo( 700, 700 );
+        path.lineTo( 450, 750);
+        path.lineTo( 450, 700 );
+        path.lineTo( 200, 50);
+        path.lineTo( 150, 450 );
+        path.moveTo( 0.,0. ); // required to make it put endCap
+        triangles.addArray( 10
+                        ,   path.trilateralArray
+                        ,   appColors.indexOf( Orange ) );
+    }
+    
     public function addJoinTestBackwards(){
         var path = new Fine( null, null, both );
         path.width = 0.08;
@@ -186,10 +224,11 @@ class Test extends WebGLSetup {
     public function draw(){
         triangles = new TriangleArray();
         pieTests();
-        pieArc();
-        addShapes();
-        addJoinTestForwards();
+        //pieArc();
+        //addShapes();
+        addJoinTestForwards2();
         addPaths();
+        //addSixteen();
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;
@@ -199,18 +238,18 @@ class Test extends WebGLSetup {
         var i: Int = 0;
         var c: Int = 0;
         var j: Int = 0;
-        var ox: Float = 0.;
-        var oy: Float = 0.;
+        var ox: Float = -1.0;
+        var oy: Float = 1.0;
         var no: Int = 0;
         for( tri in triangles ){
-            vertices[ i++ ] = tri.ax + ox;
-            vertices[ i++ ] = tri.ay + oy;
+            vertices[ i++ ] = tri.ax*scale + ox;
+            vertices[ i++ ] = -tri.ay*scale + oy;
             vertices[ i++ ] = tri.depth;
-            vertices[ i++ ] = tri.bx + ox;
-            vertices[ i++ ] = tri.by + oy;
+            vertices[ i++ ] = tri.bx*scale + ox;
+            vertices[ i++ ] = -tri.by*scale + oy;
             vertices[ i++ ] = tri.depth;
-            vertices[ i++ ] = tri.cx + ox;
-            vertices[ i++ ] = tri.cy + oy;
+            vertices[ i++ ] = tri.cx*scale + ox;
+            vertices[ i++ ] = -tri.cy*scale + oy;
             vertices[ i++ ] = tri.depth;
             if( tri.mark != 0 ){
                 rgb = WebGLSetup.toRGB( triangleColors[ tri.mark ] );

@@ -55,6 +55,13 @@ class Shapes {
         return refCount - 1;
     }
     public inline
+    function roundedRectangle( dx: Float, dy: Float, width: Float, height: Float, radius: Float, color: AppColors ): Int {
+        triangles.addArray( refCount++
+                        ,   Poly.roundedRectangle( dx, dy, width, height, radius )
+                        ,   colors.indexOf( color ) );
+        return refCount - 1;
+    } 
+    public inline
     function spiralLines( x: Float, y: Float, radius: Float, nolines: Int, startWid: Float, stepWid: Float, color: AppColors ): Int {
         var theta = 0.;
         var line: TrilateralPair;

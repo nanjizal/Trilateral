@@ -90,6 +90,7 @@ class Contour {
         nby = null;
         ncx = null;
         ncy = null;
+        dx = null;
     }
     //TODO: create lower limit for width   0.00001; ?
     public var count = 0;

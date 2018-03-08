@@ -3,7 +3,8 @@ import trilateral.geom.Algebra;
 // Triangle coordinates without color.
 class Trilateral {
     public var windingAdjusted: Bool;
-    public var mark: Int = 0; //false; // used to allow trilaterals to be marked for alternate coloring.
+    // used to allow trilaterals to be marked for alternate coloring when debugging, normally for colouring use Triangle!
+    public var mark: Int = 0; 
     public var ax: Float;
     public var bx: Float;
     public var cx: Float;
@@ -79,7 +80,7 @@ class Trilateral {
         return liteHit( px, py );
     }
     public function adjustWinding():Bool { // check sign
-        return ( (ax * by - bx * ay) + (bx * cy - cx * by) + (cx * ay - ax * cy) )<0;
+        return ( (ax * by - bx * ay) + (bx * cy - cx * by) + (cx * ay - ax * cy) )>0;
     }
     public inline 
     function rotate( x: Float, y: Float, theta: Float ){
