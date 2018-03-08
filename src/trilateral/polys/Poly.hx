@@ -259,5 +259,32 @@ class Poly {
         out.addArray( pie( dx, dy, radius, 0, -pi_2,ANTICLOCKWISE ) );
         return out;
     }
-    
+    public static inline
+    function roundedRectangleOutline( x: Float, y: Float, width: Float, height: Float, thick: Float, radius: Float ): TrilateralArray {
+        var out = new TrilateralArray();
+        // zero = down
+        // clockwise seems to be wrong way round !
+        // Needs fixing in Contour so can't change yet!
+        // so all the angles are currently wrong!!
+        var pi = Math.PI;
+        var pi_2 = Math.PI/2;
+        var ax = x + radius;
+        var ay = y + radius;
+        var bx = x + width - radius;
+        var by = y + radius;
+        var cx = bx;
+        var cy = y + height - radius;
+        var dx = ax;
+        var dy = cy;
+        out.addPair( Quad.rectangle( ax, y, width - radius*2, thick ) );
+        out.addPair( Quad.rectangle( ax, y + height - thick, width - radius*2, thick ) );
+        var dimY = height - 2*radius;
+        out.addPair( Quad.rectangle( x,  ay, thick, dimY ) );
+        out.addPair( Quad.rectangle( x + width - thick, by, thick, dimY ) );
+        out.addArray( arc( ax, ay, radius, thick, -pi, -pi_2, CLOCKWISE ) );
+        out.addArray( arc( bx, by, radius, thick, pi_2, pi,   CLOCKWISE ) );
+        out.addArray( arc( cx, cy, radius, thick, pi_2, 0, ANTICLOCKWISE ) );
+        out.addArray( arc( dx, dy, radius, thick, 0, -pi_2,ANTICLOCKWISE ) );
+        return out;
+    }
 }

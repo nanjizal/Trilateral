@@ -109,6 +109,8 @@ class Test extends WebGLSetup {
         shapes.spiralLines( centre.x, centre.y, 15, 60, 0.08, 0.05,                            Red    );
         shapes.roundedRectangle( topLeft.x - size
                               ,( topLeft.y + bottomLeft.y )/2 - size/2, size*2, size, 30,      Violet );
+        shapes.roundedRectangleOutline( topLeft.x - size
+                              ,( topLeft.y + bottomLeft.y )/2 - size/2, size*2, size,  6, 30,  MidGrey );
     }
     function addBird(){
         var path = new RoundEnd(); // currently Fine has issues.
