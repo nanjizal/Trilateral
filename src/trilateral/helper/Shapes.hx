@@ -42,7 +42,7 @@ class Shapes {
     public inline
     function rectangle( x: Float, y: Float, width: Float, height: Float, color: AppColors ): Int {
         triangles.addPair(  refCount++
-                        ,   Quad.rectangle( { x: x, y: y }, { x: width, y: height } )
+                        ,   Quad.rectangle( x, y, width, height )
                         ,   colors.indexOf( color ) );
         return refCount - 1;
     }

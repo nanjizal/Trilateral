@@ -7,16 +7,14 @@ import trilateral.tri.TrilateralPair;
 class Quad {
     // TODO: add support for rotated rectangle
     public inline static
-    function rectangle( pos: Point, dim: Point ): TrilateralPair {
-        var ax = pos.x;
-        var ay = pos.y;
-        var lx = dim.x;
-        var ly = dim.y;
-        var bx = ax + lx;
+    function rectangle( x: Float, y: Float, w: Float, h: Float ): TrilateralPair {
+        var ax = x;
+        var ay = y;
+        var bx = x + w;
         var by = ay;
         var cx = bx;
-        var cy = ay + ly;
-        var dx = ax;
+        var cy = ay + h;
+        var dx = x;
         var dy = cy;
         return { t0: new Trilateral( ax, ay, bx, by, dx, dy )
             ,    t1: new Trilateral( bx, by, cx, cy, dx, dy ) };

@@ -30,7 +30,7 @@ import fracs.Angles;
 import trilateral.polys.Poly;
 import trilateral.geom.Point;
 
-//import trilateral.segment.SixteenSeg;
+import trilateral.segment.SixteenSeg;
 
 using htmlHelper.webgl.WebGLSetup;
 
@@ -42,8 +42,13 @@ class Test extends WebGLSetup {
     public function findColorID( col: AppColors ){
         return appColors.indexOf( col );
     }
-    //var triangles: Array<Triangle>;
     var triangles: TriangleArray;
+    var centre:         Point;
+    var bottomLeft:     Point;
+    var bottomRight:    Point;
+    var topLeft:        Point;
+    var topRight:       Point;
+    
     public static inline var vertex: String =
         'attribute vec3 pos;' +
         'attribute vec4 color;' +
@@ -61,13 +66,21 @@ class Test extends WebGLSetup {
         '}';
     public static function main(){ new Test(); }
     var scale = 0.002;
+    public inline static var stageRadius: Int = 570;
+    var quarter: Float;
     public function new(){
-        super( 570*2, 570*2 );
-        scale = 1/(570);
+        super( stageRadius*2, stageRadius*2 );
+        scale = 1/(stageRadius);
         var dark = 0x18/256;
         bgRed   = dark;
         bgGreen = dark;
         bgBlue  = dark;
+        centre          = { x: stageRadius, y: stageRadius };
+        quarter         = stageRadius/2;
+        bottomLeft      = { x: stageRadius - quarter, y: stageRadius + quarter };
+        bottomRight     = { x: stageRadius + quarter, y: stageRadius + quarter };
+        topLeft         = { x: stageRadius - quarter, y: stageRadius - quarter };
+        topRight        = { x: stageRadius + quarter, y: stageRadius - quarter };
         draw();
         setupProgram( vertex, fragment );
         modelViewProjection = Matrix4.identity();
@@ -76,79 +89,72 @@ class Test extends WebGLSetup {
          AnimateTimer.onFrame = render_;
         render();
     }
-    /*
+    
     function addSixteen(){
         var sixteen = new SixteenSeg( 20, 30 );
         sixteen.add( 'Trilateral', 10., 10. );
         triangles.addArray( 12
                         ,   sixteen.triArr
                         ,   appColors.indexOf( Orange ) );
-    }*/
-    function addShapes(){
-        var shapes = new Shapes( triangles, appColors ); 
-        //shapes.star(      -0.3,  -0.3, 0.2,       Orange );
-        //shapes.diamond(   -0.3,   0.3, 0.15,      Yellow );
-        //shapes.square(     0.3,  -0.3, 0.15,      Green );
-        //shapes.rectangle( -0.15, -0.1, 0.3, 0.2,  Blue );
-        //shapes.circle(   0.,    0., 500.,       Indigo );
-        shapes.circle( 570.,  570., 570.,       Indigo );
-        //shapes.spiralLines( 0., 0., 0.5, 60, 0.0001, 0.0003, Red );
-        //shapes.roundedRectangle( -0.4, -0.2, 0.3, 0.2, 0.08, Violet );
     }
-    function addPaths(){
+    function addShapes(){
+        var size = 80;
+        var shapes = new Shapes( triangles, appColors );
+        shapes.star( ( bottomLeft.x + centre.x )/2, ( bottomLeft.y + centre.y )/2,      size,  Orange );
+        shapes.diamond( ( topLeft.x + centre.x )/2, ( topLeft.y + centre.y )/2,     0.7*size,  Yellow );
+        shapes.square( ( bottomRight.x + centre.x )/2
+                                                 , ( bottomRight.y + centre.y )/2,  0.7*size,  Green  );
+        shapes.rectangle( centre.x - 100, centre.y - 50,                        size*2, size,  Blue   );
+        shapes.circle( ( topRight.x + centre.x )/2, ( topRight.y + centre.y )/2,        size,  Indigo );
+        shapes.spiralLines( centre.x, centre.y, 15, 60, 0.08, 0.05,                            Red    );
+        shapes.roundedRectangle( topLeft.x - size
+                              ,( topLeft.y + bottomLeft.y )/2 - size/2, size*2, size, 30,      Violet );
+    }
+    function addBird(){
         var path = new RoundEnd(); // currently Fine has issues.
         // var path = new FillOnly();
         //var path = new Crude();
         //var path = new Medium();
         //var path = new Fine();
         
-        path.width = 2;
-        /*path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
-            return width+0.008;
-        }*/
+        path.width = 1;
         var p = new SvgPath( path );
         p.parse( bird_d, 0, 0, 1.5, 1.5 );
-        trace( path.dim );
-        /*
         triangles.addArray( 6
+                        ,   path.trilateralArray
+                        ,   8 );
+        
+    }
+    function addQuadCurve(){
+        var path = new RoundEnd();
+        path.width = 2;
+        path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
+            return width+0.008;
+        }
+        var p = new SvgPath( path );
+        p.parse( quadtest_d, -100, 300, 1, 1 );
+        triangles.addArray( 7
                         ,   path.trilateralArray
                         ,   1 );
-        /*
-        path.trilateralArray = [];
+    }
+    function addCubicCurve(){
+        var path = new RoundEnd();
         path.width = 1;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
-            return width+0.1*y;
+            return width+0.008;
         }
-        p.parse( quadtest_d, 100, 100, 1, 1 );
-        */
-        //crudePath.width = 0.001;  bird not currently working properly
-        //p.parse( bird_d, -0.5, -0.0, 0.0005, 0.0005 );
-        // you can trace out svg points.
-        // var p = new SvgPath( new PathContextTrace() );
-        // p.parse( quadtest_d, -1., -0.6, 0.002, 0.002 );
-        //trace( path.trilateralArray );
-        
-        triangles.addArray( 6
+        var p = new SvgPath( path );
+        p.parse( cubictest_d, -50, 500, 1, 1 );
+        triangles.addArray( 7
                         ,   path.trilateralArray
-                        ,   7 );
+                        ,   5 );
+    }
+    function addPaths(){
+        addBird();
+        addQuadCurve();
+        addCubicCurve();
     }
     public function addJoinTestForwards(){
-        var path = new Fine( null, null, both );
-        path.width = 0.08;
-        // forwards
-        path.moveTo( -0.5, 0.0 );
-        path.lineTo( 0.5, 0.0 );
-        path.lineTo( 0.5, 0.5 );
-        path.lineTo( 0., 0.6 );
-        path.lineTo( 0., -0.5 );
-        path.lineTo( -0.5, -0.8 );
-        path.lineTo( -0.5-0.1, 0.0 );
-        path.moveTo( 0.,0. ); // required to make it put endCap
-        triangles.addArray( 10
-                        ,   path.trilateralArray
-                        ,   appColors.indexOf( Orange ) );
-    }
-    public function addJoinTestForwards2(){
         var path = new Fine( null, null, both );
         path.width = 20;
         // forwards
@@ -167,68 +173,63 @@ class Test extends WebGLSetup {
     
     public function addJoinTestBackwards(){
         var path = new Fine( null, null, both );
-        path.width = 0.08;
+        path.width = 20;
         // backwards
-        path.moveTo( -0.5+ 0.1, -0.8 );
-        path.lineTo( 0.+0.1, -0.5 );
-        path.lineTo( 0.+0.1, 0.6 );
-        path.lineTo( 0.5+0.1, 0.5 );
-        path.lineTo( 0.5+0.1, 0.0 );
-        path.lineTo( -0.5+0.1, 0.0 );
-        path.lineTo( -0.5+0.1, -0.8 );
+        path.moveTo( 150, 450 );
+        path.lineTo( 200, 50);
+        path.lineTo( 450, 700 );
+        path.lineTo( 450, 750);
+        path.lineTo( 700, 700 );
+        path.lineTo( 700, 450 );
+        path.lineTo( 200, 450 );
+        path.moveTo( 0.,0. ); // required to make it put endCap
         triangles.addArray( 10
                         ,   path.trilateralArray
                         ,   appColors.indexOf( Orange ) );
     }
     
     public function pieTests(){
-        var bottomLeft:     Point = { x: -0.5, y: -0.5 };
-        var bottomRight:    Point = { x: 0.5,  y: -0.5 };
-        var topLeft:  Point = { x: -0.5, y: 0.5  };
-        var topRight: Point = { x: 0.5,  y: 0.5  };
+        var pieRadius = quarter/3;
         triangles.addArray( 0
-                        ,   Poly.pie( topLeft.x, topLeft.y, 0.2, Math.PI, Math.PI/16, CLOCKWISE )
+                        ,   Poly.pie( topLeft.x, topLeft.y, pieRadius, Math.PI, Math.PI/16, CLOCKWISE )
                         ,   1 );
         triangles.addArray( 0
-                        ,   Poly.pie( topRight.x, topRight.y, 0.2, Math.PI, Math.PI/16, ANTICLOCKWISE )
+                        ,   Poly.pie( topRight.x, topRight.y, pieRadius, Math.PI, Math.PI/16, ANTICLOCKWISE )
                         ,   2 );
         triangles.addArray( 0
-                        ,   Poly.pie( bottomLeft.x, bottomLeft.y, 0.2, Math.PI, Math.PI/16, SMALL )
+                        ,   Poly.pie( bottomLeft.x, bottomLeft.y, pieRadius, Math.PI, Math.PI/16, SMALL )
                         ,   3 );
         triangles.addArray( 0
-                        ,   Poly.pie( bottomRight.x, bottomRight.y, 0.2, Math.PI, Math.PI/16, LARGE )
+                        ,   Poly.pie( bottomRight.x, bottomRight.y, pieRadius, Math.PI, Math.PI/16, LARGE )
                         ,   4 );
         
     }
     
     public function pieArc(){
-        var bottomLeft:     Point = { x: -0.5, y: -0.5 };
-        var bottomRight:    Point = { x: 0.5,  y: -0.5 };
-        var topLeft:  Point = { x: -0.5, y: 0.5  };
-        var topRight: Point = { x: 0.5,  y: 0.5  };
+        var pieRadius = quarter/3;
         triangles.addArray( 0
-                        ,   Poly.arc( topLeft.x, topLeft.y, 0.25, 0.03, Math.PI, Math.PI/16, CLOCKWISE )
+                        ,   Poly.arc( topLeft.x, topLeft.y, pieRadius + 40, 30, Math.PI, Math.PI/16, CLOCKWISE )
                         ,   2 );
         triangles.addArray( 0
-                        ,   Poly.arc( topRight.x, topRight.y, 0.25, 0.03, Math.PI, Math.PI/16, ANTICLOCKWISE )
+                        ,   Poly.arc( topRight.x, topRight.y, pieRadius + 40, 30, Math.PI, Math.PI/16, ANTICLOCKWISE )
                         ,   3 );
         triangles.addArray( 0
-                        ,   Poly.arc( bottomLeft.x, bottomLeft.y, 0.25, 0.03, Math.PI, Math.PI/16, SMALL )
+                        ,   Poly.arc( bottomLeft.x, bottomLeft.y, pieRadius + 40, 30, Math.PI, Math.PI/16, SMALL )
                         ,   4 );
         triangles.addArray( 0
-                        ,   Poly.arc( bottomRight.x, bottomRight.y, 0.25, 0.03, Math.PI, Math.PI/16, LARGE )
+                        ,   Poly.arc( bottomRight.x, bottomRight.y, pieRadius + 40, 30, Math.PI, Math.PI/16, LARGE )
                         ,   5 );
         
     }
     
     public function draw(){
         triangles = new TriangleArray();
-        pieTests();
-        //pieArc();
-        //addShapes();
-        addJoinTestForwards2();
         addPaths();
-        //addSixteen();
+        pieTests();
+        pieArc();
+        addShapes();
+        addJoinTestForwards();
+        addSixteen();
     }
     public function setTriangles( triangles: Array<Triangle>, triangleColors:Array<UInt> ) {
         var rgb: RGB;
