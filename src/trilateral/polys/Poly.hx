@@ -43,13 +43,11 @@ abstract PolySides( Int ) from Int to Int {
 }
 class Poly {
     public static inline
-    function circle( pos: Point, radius: Float, ?sides: Int = 36 ): TrilateralArray {
+    function circle( ax: Float, ay: Float, radius: Float, ?sides: Int = 36 ): TrilateralArray {
         var out = new TrilateralArray();
         var pi = Math.PI;
         var theta = pi/2;
         var step = pi*2/sides;
-        var ax = pos.x;
-        var ay = pos.y;
         var bx: Float;
         var by: Float;
         var cx: Float;
@@ -178,13 +176,11 @@ class Poly {
     }
     // useful for debugging
     public static inline
-    function circleMarked( pos: Point, radius: Float, mark: Int, ?sides: Int = 36 ): TrilateralArray {
+    function circleMarked( ax: Float, ay: Float, radius: Float, mark: Int, ?sides: Int = 36 ): TrilateralArray {
         var out = new TrilateralArray();
         var pi = Math.PI;
         var theta = pi/2;
         var step = pi*2/sides;
-        var ax = pos.x;
-        var ay = pos.y;
         var bx: Float;
         var by: Float;
         var cx: Float;
@@ -202,14 +198,12 @@ class Poly {
         return out;
     }
     public static inline
-    function circleOnSide( pos: Point, radius: Float, ?sides: Int = 36 ): TrilateralArray {
+    function circleOnSide( ax: Float, ay: Float, radius: Float, ?sides: Int = 36 ): TrilateralArray {
         var out = new TrilateralArray();
         var pi = Math.PI;
         var theta = pi/2;
         var step = pi*2/sides;
         theta -= step/2;
-        var ax = pos.x;
-        var ay = pos.y;
         var bx: Float;
         var by: Float;
         var cx: Float;
@@ -225,11 +219,11 @@ class Poly {
         return out;
     }
     public static inline
-    function shape( pos: Point, radius: Float, p: PolySides ){
+    function shape( x: Float, y: Float, radius: Float, p: PolySides ){
         return if( p & 1 == 0 ){
-            circleOnSide( pos, radius, p );
+            circleOnSide( x, y, radius, p );
         } else {
-            circle( pos, radius, p );
+            circle( x, y, radius, p );
         }
     }
     public static inline

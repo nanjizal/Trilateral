@@ -50,7 +50,7 @@ class Shapes {
     // theta not so relevant to circle but for more general poly it is.
     function circle( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ): Int {
         triangles.addArray( refCount++
-                        ,   Poly.circle( { x: x, y: y }, radius )
+                        ,   Poly.circle( x, y, radius )
                         ,   colors.indexOf( color ) );
         return refCount - 1;
     }

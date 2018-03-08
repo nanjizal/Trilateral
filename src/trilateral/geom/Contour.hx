@@ -187,7 +187,7 @@ class Contour {
     }
     inline 
     function addDot( x: Float, y: Float, color: Int ){
-        addArray( Poly.circleMarked( { x: x, y: y }, 0.008, color ) );
+        addArray( Poly.circleMarked( x, y, 0.008, color ) );
     }
     inline
     function addSmallTriangles( clockWise: Bool ){
@@ -203,16 +203,16 @@ class Contour {
     }
     inline
     function addTriangleCorners( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float ){
-        addArray( Poly.circleMarked( { x: oldx_, y: oldy_ }, 0.01 , 4 ) );
-        addArray( Poly.circleMarked( { x: prevx_, y: prevy_ }, 0.01 , 3 ) );
-        addArray( Poly.circleMarked( { x: ax, y: ay }, 0.01 , 10 ) );
-        addArray( Poly.circleMarked( { x: jx, y: jy }, 0.01 , 5 ) );
+        addArray( Poly.circleMarked( oldx_, oldy_, 0.01 , 4 ) );
+        addArray( Poly.circleMarked( prevx_, prevy_, 0.01 , 3 ) );
+        addArray( Poly.circleMarked( ax, ay, 0.01 , 10 ) );
+        addArray( Poly.circleMarked( jx, jy, 0.01 , 5 ) );
     }
     inline
     function addTriangleCornersLess( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float ){
-        addArray( Poly.circleMarked( { x: oldx_, y: oldy_ }, 0.01 , 4 ) );
-        addArray( Poly.circleMarked( { x: prevx_, y: prevy_ }, 0.01 , 3 ) );
-        addArray( Poly.circleMarked( { x: jx, y: jy }, 0.01 , 5 ) );
+        addArray( Poly.circleMarked( oldx_, oldy_, 0.01 , 4 ) );
+        addArray( Poly.circleMarked( prevx_, prevy_, 0.01 , 3 ) );
+        addArray( Poly.circleMarked( jx, jy, 0.01 , 5 ) );
     }
     // The triangle between quads
     inline function connectQuads( clockWise: Bool ){
