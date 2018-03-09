@@ -34,7 +34,7 @@ import testTrilateral.TrilateralTest;
 class Main {
     public static function main() {
         //TOD: add antiAlias; 4 ?? 
-        System.init({title: "TestKha4", width: 1024, height: 768, samplesPerPixel: 4 }, function(){ new Main(); } );
+        System.init({title: "TestKha4", width: 1024, height: 1024, samplesPerPixel: 4 }, function(){ new Main(); } );
     }
     var pixelLayer:         Image;
     var vectorLayer:        Image;
@@ -45,8 +45,8 @@ class Main {
     var trilateralTest:     TrilateralTest;
     var modelViewProjection:Matrix4;
     public function new(){
-        pixelLayer = Image.createRenderTarget( 1280, 720 );
-        vectorLayer = Image.createRenderTarget( 1280, 720, TextureFormat.RGBA32, DepthStencilFormat.DepthOnly, 4 );
+        //pixelLayer = Image.createRenderTarget( 1280, 720 );
+        //vectorLayer = Image.createRenderTarget( 1280, 720, TextureFormat.RGBA32, DepthStencilFormat.DepthOnly, 4 );
         Keyboard.get().notify(keyDown, keyUp);
         var mouse = Mouse.get();
         mouse.notify(null, null, mouseMove, null);
@@ -89,8 +89,8 @@ class Main {
         // Get a handle for our "MVP" uniform
         mvpID = pipeline.getConstantLocation("MVP");
 
-        // Projection matrix: 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-        var projection = FastMatrix4.perspectiveProjection(45.0, 16.0 / 9.0, 0.1, 10.0);
+        // Projection matrix: 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units16.0 / 9.0
+        var projection = FastMatrix4.perspectiveProjection(45.0,1 , 0.1, 10.0);
         // Or, for an ortho camera
         //var projection = FastMatrix4.orthogonalProjection(-10.0, 10.0, -10.0, 10.0, 0.0, 100.0); // In world coordinates
         
@@ -268,8 +268,9 @@ class Main {
         }
 
         updateVectors();
-        var g4 = vectorLayer.g4;
-        var g2 = vectorLayer.g2;
+        //var g4 = vectorLayer.g4;
+        var g4 = framebuffer.g4;
+        //var g2 = vectorLayer.g2;
         //g2.imageScaleQuality = ImageScaleQuality.High;
         g4.begin();
         g4.clear(Color.fromValue(0xff000000));
@@ -279,7 +280,7 @@ class Main {
         g4.setMatrix(mvpID, mvp);
         g4.drawIndexedVertices();
         g4.end();
-        
+        /*
         var g2 = framebuffer.g2;
         g2.begin();
         g2.clear(Color.fromValue(0xff000000));
@@ -287,6 +288,7 @@ class Main {
         g2.drawImage( vectorLayer, 0, 0 );
         //g2.drawImage( pixelLayer, 0, 0 );
         g2.end();
+        */
         }
         if( !repeat ) allowRender = false;
     }
