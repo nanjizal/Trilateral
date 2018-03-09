@@ -85,24 +85,11 @@ htmlHelper_webgl_WebGLSetup.prototype = {
 	,__class__: htmlHelper_webgl_WebGLSetup
 };
 var TestWebGL = function() {
-	this.bird_d = "M210.333,65.331C104.367,66.105-12.349,150.637,1.056,276.449c4.303,40.393,18.533,63.704,52.171,79.03c36.307,16.544,57.022,54.556,50.406,112.954c-9.935,4.88-17.405,11.031-19.132,20.015c7.531-0.17,14.943-0.312,22.59,4.341c20.333,12.375,31.296,27.363,42.979,51.72c1.714,3.572,8.192,2.849,8.312-3.078c0.17-8.467-1.856-17.454-5.226-26.933c-2.955-8.313,3.059-7.985,6.917-6.106c6.399,3.115,16.334,9.43,30.39,13.098c5.392,1.407,5.995-3.877,5.224-6.991c-1.864-7.522-11.009-10.862-24.519-19.229c-4.82-2.984-0.927-9.736,5.168-8.351l20.234,2.415c3.359,0.763,4.555-6.114,0.882-7.875c-14.198-6.804-28.897-10.098-53.864-7.799c-11.617-29.265-29.811-61.617-15.674-81.681c12.639-17.938,31.216-20.74,39.147,43.489c-5.002,3.107-11.215,5.031-11.332,13.024c7.201-2.845,11.207-1.399,14.791,0c17.912,6.998,35.462,21.826,52.982,37.309c3.739,3.303,8.413-1.718,6.991-6.034c-2.138-6.494-8.053-10.659-14.791-20.016c-3.239-4.495,5.03-7.045,10.886-6.876c13.849,0.396,22.886,8.268,35.177,11.218c4.483,1.076,9.741-1.964,6.917-6.917c-3.472-6.085-13.015-9.124-19.18-13.413c-4.357-3.029-3.025-7.132,2.697-6.602c3.905,0.361,8.478,2.271,13.908,1.767c9.946-0.925,7.717-7.169-0.883-9.566c-19.036-5.304-39.891-6.311-61.665-5.225c-43.837-8.358-31.554-84.887,0-90.363c29.571-5.132,62.966-13.339,99.928-32.156c32.668-5.429,64.835-12.446,92.939-33.85c48.106-14.469,111.903,16.113,204.241,149.695c3.926,5.681,15.819,9.94,9.524-6.351c-15.893-41.125-68.176-93.328-92.13-132.085c-24.581-39.774-14.34-61.243-39.957-91.247c-21.326-24.978-47.502-25.803-77.339-17.365c-23.461,6.634-39.234-7.117-52.98-31.273C318.42,87.525,265.838,64.927,210.333,65.331zM445.731,203.01c6.12,0,11.112,4.919,11.112,11.038c0,6.119-4.994,11.111-11.112,11.111s-11.038-4.994-11.038-11.111C434.693,207.929,439.613,203.01,445.731,203.01z";
-	this.cubictest_d = "M100,200 C100,100 250,100 250,200S400,300 400,200";
-	this.quadtest_d = "M200,300 Q400,50 600,300 T1000,300";
-	this.scale = 0.002;
-	this.appColors = [0,16711680,16744192,16776960,65280,255,4915330,9699539,4473924,3355443,789516,1118481,16777215,255,65280,16711680];
 	htmlHelper_webgl_WebGLSetup.call(this,1140,1140);
 	this.scale = 0.00175438596491228073;
-	var dark = 0.09375;
-	this.bgRed = dark;
-	this.bgGreen = dark;
-	this.bgBlue = dark;
-	this.centre = { x : 570, y : 570};
-	this.quarter = 285.;
-	this.bottomLeft = { x : 570 - this.quarter, y : 570 + this.quarter};
-	this.bottomRight = { x : 570 + this.quarter, y : 570 + this.quarter};
-	this.topLeft = { x : 570 - this.quarter, y : 570 - this.quarter};
-	this.topRight = { x : 570 + this.quarter, y : 570 - this.quarter};
-	this.draw();
+	this.darkBackground();
+	this.trilateralTest = new TrilateralTest(570);
+	this.trilateralTest.setup();
 	this.setupProgram("attribute vec3 pos;" + "attribute vec4 color;" + "varying vec4 vcol;" + "uniform mat4 modelViewProjection;" + "void main(void) {" + " gl_Position = modelViewProjection * vec4(pos, 1.0);" + " vcol = color;" + "}","precision mediump float;" + "varying vec4 vcol;" + "void main(void) {" + " gl_FragColor = vcol;" + "}");
 	this.modelViewProjection = new khaMath_Matrix4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 	if(htmlHelper_tools_AnimateTimer.s == null) {
@@ -121,7 +108,103 @@ TestWebGL.main = function() {
 };
 TestWebGL.__super__ = htmlHelper_webgl_WebGLSetup;
 TestWebGL.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
-	addShapes: function() {
+	darkBackground: function() {
+		this.bgRed = 0.09375;
+		this.bgGreen = 0.09375;
+		this.bgBlue = 0.09375;
+	}
+	,setTriangles: function(triangles,triangleColors) {
+		var rgb;
+		var count = 0;
+		var i = 0;
+		var c = 0;
+		var j = 0;
+		var _g = 0;
+		while(_g < triangles.length) {
+			var tri = triangles[_g];
+			++_g;
+			this.vertices[i++] = tri.ax * this.scale + -1.0;
+			this.vertices[i++] = -tri.ay * this.scale + 1.0;
+			this.vertices[i++] = tri.depth;
+			this.vertices[i++] = tri.bx * this.scale + -1.0;
+			this.vertices[i++] = -tri.by * this.scale + 1.0;
+			this.vertices[i++] = tri.depth;
+			this.vertices[i++] = tri.cx * this.scale + -1.0;
+			this.vertices[i++] = -tri.cy * this.scale + 1.0;
+			this.vertices[i++] = tri.depth;
+			if(tri.mark != 0) {
+				var $int = triangleColors[tri.mark];
+				rgb = { r : ($int >> 16 & 255) / 255, g : ($int >> 8 & 255) / 255, b : ($int & 255) / 255};
+			} else {
+				var int1 = triangleColors[tri.colorID];
+				rgb = { r : (int1 >> 16 & 255) / 255, g : (int1 >> 8 & 255) / 255, b : (int1 & 255) / 255};
+			}
+			var _g1 = 0;
+			while(_g1 < 3) {
+				++_g1;
+				this.colors[c++] = rgb.r;
+				this.colors[c++] = rgb.g;
+				this.colors[c++] = rgb.b;
+				this.colors[c++] = 1.;
+				this.indices[j++] = count++;
+			}
+		}
+		var gl = this.gl;
+		var program = this.program;
+		var vertices = this.vertices;
+		var colors = this.colors;
+		gl.bindBuffer(34962,gl.createBuffer());
+		gl.bufferData(34962,new Float32Array(vertices),35044);
+		var position = gl.getAttribLocation(program,"pos");
+		gl.vertexAttribPointer(position,3,5126,false,0,0);
+		gl.enableVertexAttribArray(position);
+		gl.bindBuffer(34962,null);
+		gl.bindBuffer(34962,gl.createBuffer());
+		gl.bufferData(34962,new Float32Array(colors),35044);
+		var col = gl.getAttribLocation(program,"color");
+		gl.vertexAttribPointer(col,4,5126,false,0,0);
+		gl.enableVertexAttribArray(col);
+		gl.bindBuffer(34962,null);
+	}
+	,render_: function(i) {
+		this.render();
+	}
+	,render: function() {
+		this.vertices = [];
+		this.indices = [];
+		this.colors = [];
+		this.setTriangles(this.trilateralTest.triangles,this.trilateralTest.appColors);
+		htmlHelper_webgl_WebGLSetup.prototype.render.call(this);
+	}
+	,__class__: TestWebGL
+});
+var TrilateralTest = function(stageRadius_) {
+	this.bird_d = "M210.333,65.331C104.367,66.105-12.349,150.637,1.056,276.449c4.303,40.393,18.533,63.704,52.171,79.03c36.307,16.544,57.022,54.556,50.406,112.954c-9.935,4.88-17.405,11.031-19.132,20.015c7.531-0.17,14.943-0.312,22.59,4.341c20.333,12.375,31.296,27.363,42.979,51.72c1.714,3.572,8.192,2.849,8.312-3.078c0.17-8.467-1.856-17.454-5.226-26.933c-2.955-8.313,3.059-7.985,6.917-6.106c6.399,3.115,16.334,9.43,30.39,13.098c5.392,1.407,5.995-3.877,5.224-6.991c-1.864-7.522-11.009-10.862-24.519-19.229c-4.82-2.984-0.927-9.736,5.168-8.351l20.234,2.415c3.359,0.763,4.555-6.114,0.882-7.875c-14.198-6.804-28.897-10.098-53.864-7.799c-11.617-29.265-29.811-61.617-15.674-81.681c12.639-17.938,31.216-20.74,39.147,43.489c-5.002,3.107-11.215,5.031-11.332,13.024c7.201-2.845,11.207-1.399,14.791,0c17.912,6.998,35.462,21.826,52.982,37.309c3.739,3.303,8.413-1.718,6.991-6.034c-2.138-6.494-8.053-10.659-14.791-20.016c-3.239-4.495,5.03-7.045,10.886-6.876c13.849,0.396,22.886,8.268,35.177,11.218c4.483,1.076,9.741-1.964,6.917-6.917c-3.472-6.085-13.015-9.124-19.18-13.413c-4.357-3.029-3.025-7.132,2.697-6.602c3.905,0.361,8.478,2.271,13.908,1.767c9.946-0.925,7.717-7.169-0.883-9.566c-19.036-5.304-39.891-6.311-61.665-5.225c-43.837-8.358-31.554-84.887,0-90.363c29.571-5.132,62.966-13.339,99.928-32.156c32.668-5.429,64.835-12.446,92.939-33.85c48.106-14.469,111.903,16.113,204.241,149.695c3.926,5.681,15.819,9.94,9.524-6.351c-15.893-41.125-68.176-93.328-92.13-132.085c-24.581-39.774-14.34-61.243-39.957-91.247c-21.326-24.978-47.502-25.803-77.339-17.365c-23.461,6.634-39.234-7.117-52.98-31.273C318.42,87.525,265.838,64.927,210.333,65.331zM445.731,203.01c6.12,0,11.112,4.919,11.112,11.038c0,6.119-4.994,11.111-11.112,11.111s-11.038-4.994-11.038-11.111C434.693,207.929,439.613,203.01,445.731,203.01z";
+	this.cubictest_d = "M100,200 C100,100 250,100 250,200S400,300 400,200";
+	this.quadtest_d = "M200,300 Q400,50 600,300 T1000,300";
+	this.appColors = [0,16711680,16744192,16776960,65280,255,4915330,9699539,4473924,3355443,789516,1118481,16777215,255,65280,16711680];
+	this.stageRadius = stageRadius_;
+};
+TrilateralTest.__name__ = true;
+TrilateralTest.prototype = {
+	setup: function() {
+		this.centre = { x : this.stageRadius, y : this.stageRadius};
+		this.quarter = this.stageRadius / 2;
+		this.bottomLeft = { x : this.stageRadius - this.quarter, y : this.stageRadius + this.quarter};
+		this.bottomRight = { x : this.stageRadius + this.quarter, y : this.stageRadius + this.quarter};
+		this.topLeft = { x : this.stageRadius - this.quarter, y : this.stageRadius - this.quarter};
+		this.topRight = { x : this.stageRadius + this.quarter, y : this.stageRadius - this.quarter};
+		this.draw();
+	}
+	,draw: function() {
+		this.triangles = trilateral_tri__$TriangleArray_TriangleArray_$Impl_$._new([]);
+		this.addPaths();
+		this.pieTests();
+		this.pieArc();
+		this.addShapes();
+		this.addJoinTestForwards();
+	}
+	,addShapes: function() {
 		var tp_t1;
 		var tp_t0;
 		var tp_t11;
@@ -2035,79 +2118,8 @@ TestWebGL.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 			}
 		}
 	}
-	,draw: function() {
-		this.triangles = trilateral_tri__$TriangleArray_TriangleArray_$Impl_$._new([]);
-		this.addPaths();
-		this.pieTests();
-		this.pieArc();
-		this.addShapes();
-		this.addJoinTestForwards();
-	}
-	,setTriangles: function(triangles,triangleColors) {
-		var rgb;
-		var count = 0;
-		var i = 0;
-		var c = 0;
-		var j = 0;
-		var _g = 0;
-		while(_g < triangles.length) {
-			var tri = triangles[_g];
-			++_g;
-			this.vertices[i++] = tri.ax * this.scale + -1.0;
-			this.vertices[i++] = -tri.ay * this.scale + 1.0;
-			this.vertices[i++] = tri.depth;
-			this.vertices[i++] = tri.bx * this.scale + -1.0;
-			this.vertices[i++] = -tri.by * this.scale + 1.0;
-			this.vertices[i++] = tri.depth;
-			this.vertices[i++] = tri.cx * this.scale + -1.0;
-			this.vertices[i++] = -tri.cy * this.scale + 1.0;
-			this.vertices[i++] = tri.depth;
-			if(tri.mark != 0) {
-				var $int = triangleColors[tri.mark];
-				rgb = { r : ($int >> 16 & 255) / 255, g : ($int >> 8 & 255) / 255, b : ($int & 255) / 255};
-			} else {
-				var int1 = triangleColors[tri.colorID];
-				rgb = { r : (int1 >> 16 & 255) / 255, g : (int1 >> 8 & 255) / 255, b : (int1 & 255) / 255};
-			}
-			var _g1 = 0;
-			while(_g1 < 3) {
-				++_g1;
-				this.colors[c++] = rgb.r;
-				this.colors[c++] = rgb.g;
-				this.colors[c++] = rgb.b;
-				this.colors[c++] = 1.;
-				this.indices[j++] = count++;
-			}
-		}
-		var gl = this.gl;
-		var program = this.program;
-		var vertices = this.vertices;
-		var colors = this.colors;
-		gl.bindBuffer(34962,gl.createBuffer());
-		gl.bufferData(34962,new Float32Array(vertices),35044);
-		var position = gl.getAttribLocation(program,"pos");
-		gl.vertexAttribPointer(position,3,5126,false,0,0);
-		gl.enableVertexAttribArray(position);
-		gl.bindBuffer(34962,null);
-		gl.bindBuffer(34962,gl.createBuffer());
-		gl.bufferData(34962,new Float32Array(colors),35044);
-		var col = gl.getAttribLocation(program,"color");
-		gl.vertexAttribPointer(col,4,5126,false,0,0);
-		gl.enableVertexAttribArray(col);
-		gl.bindBuffer(34962,null);
-	}
-	,render_: function(i) {
-		this.render();
-	}
-	,render: function() {
-		this.vertices = [];
-		this.indices = [];
-		this.colors = [];
-		this.setTriangles(this.triangles,this.appColors);
-		htmlHelper_webgl_WebGLSetup.prototype.render.call(this);
-	}
-	,__class__: TestWebGL
-});
+	,__class__: TrilateralTest
+};
 var Type = function() { };
 Type.__name__ = true;
 Type.createEmptyInstance = function(cl) {
