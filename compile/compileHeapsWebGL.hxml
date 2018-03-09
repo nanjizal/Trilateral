@@ -1,0 +1,14 @@
+-js binHeaps/heaps.js
+-cp src
+-cp samples
+
+-lib heaps
+-lib khaMath
+-lib justPath
+-lib fracs
+
+-main testTrilateral.TestHeaps
+#-D js-flatten 
+--next
+-cmd echo '<!DOCTYPE html><meta charset="UTF-8"><html><body><canvas id="webgl" bgColor="#FF181818" width="1024" height="968"></div></canvas><script src="heaps.js"></script></body></html>' >binHeaps/index.html
+-cmd open binHeaps/index.html

@@ -1,0 +1,11 @@
+#version 100
+precision mediump float;
+precision highp int;
+
+varying highp vec3 fragmentColor;
+
+void main()
+{
+    gl_FragData[0] = vec4(fragmentColor, 1.0);
+}
+

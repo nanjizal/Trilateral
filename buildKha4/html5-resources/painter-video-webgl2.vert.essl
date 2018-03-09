@@ -1,0 +1,17 @@
+#version 300 es
+
+uniform mediump mat4 projectionMatrix;
+
+in mediump vec3 vertexPosition;
+out mediump vec2 texCoord;
+in mediump vec2 texPosition;
+out mediump vec4 color;
+in mediump vec4 vertexColor;
+
+void main()
+{
+    gl_Position = projectionMatrix * vec4(vertexPosition, 1.0);
+    texCoord = texPosition;
+    color = vertexColor;
+}
+

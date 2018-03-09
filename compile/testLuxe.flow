@@ -1,0 +1,38 @@
+{
+	luxe:{
+		window: {
+			width:1024,
+			height:768,
+			title:'TrilateralTest',
+			fullscreen:false,
+			resizable:true,
+			borderless:false
+		}
+	},
+
+	project : {
+		name : 'Trilateral',
+		version : '0.0.0',
+		author : 'Nanjizal',
+		app : {
+			main: 'testTrilateral.TestLuxe',
+			name:'TrilateralTest',
+			output: '../binLuxe',
+			codepaths: '../src',
+			package : 'net.nanjizal.trilateral'
+		},
+		build : {
+			dependencies : {
+				luxe : '*',
+				fracs : '*',
+				justPath : '*',
+				khaMath : '*'
+			}
+		},
+
+        files : {
+          assets : 'assets/',
+          index : { path:'custom_index.html => index.html', template:'project', not_listed:true }
+        }
+	}
+}

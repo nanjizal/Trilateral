@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <meta title="TrilateralTest" package="net.nanjizal.trilateral" version="1.0.0" company="Nanjizal" />
+    <app main="testTrilateral.TestFlash" path="../binOpenFL/Exports" file="TestFlash" />
+    <source path="../src/" />
+   <!-- <source poth="../samples/" /> -->
+    <haxelib name="openfl" />
+    <!--  <haxelib name="" /> -->
+    <window width="1024" height="768" background="0x181818" unless="mobile" />
+    <!--assets path="../binOpenFL/Assets" rename="assets" exclude="openfl.svg" /-->
+    <!--<icon path="../binLuxe/Assets/openfl.svg" /-->
+</project>

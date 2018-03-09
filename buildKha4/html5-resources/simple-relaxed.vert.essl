@@ -1,0 +1,14 @@
+#version 100
+
+uniform mediump mat4 MVP;
+
+attribute mediump vec3 pos;
+varying mediump vec3 fragmentColor;
+attribute mediump vec3 col;
+
+void main()
+{
+    gl_Position = MVP * vec4(pos, 1.0);
+    fragmentColor = col;
+}
+

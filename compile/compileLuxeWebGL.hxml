@@ -1,0 +1,1 @@
+-cmd flow run --project compile/testLuxe.flow web

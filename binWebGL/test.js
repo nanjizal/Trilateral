@@ -21,6 +21,50 @@ Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+var Type = function() { };
+Type.__name__ = true;
+Type.createEmptyInstance = function(cl) {
+	function empty() {}; empty.prototype = cl.prototype;
+	return new empty();
+};
+var haxe_io_FPHelper = function() { };
+haxe_io_FPHelper.__name__ = true;
+haxe_io_FPHelper.i32ToFloat = function(i) {
+	var exp = i >>> 23 & 255;
+	var sig = i & 8388607;
+	if(sig == 0 && exp == 0) {
+		return 0.0;
+	}
+	return (1 - (i >>> 31 << 1)) * (1 + Math.pow(2,-23) * sig) * Math.pow(2,exp - 127);
+};
+haxe_io_FPHelper.floatToI32 = function(f) {
+	if(f == 0) {
+		return 0;
+	}
+	var af = f < 0 ? -f : f;
+	var exp = Math.floor(Math.log(af) / 0.6931471805599453);
+	if(exp < -127) {
+		exp = -127;
+	} else if(exp > 128) {
+		exp = 128;
+	}
+	var sig = Math.round((af / Math.pow(2,exp) - 1) * 8388608);
+	if(sig == 8388608 && exp < 128) {
+		sig = 0;
+		++exp;
+	}
+	return (f < 0 ? -2147483648 : 0) | exp + 127 << 23 | sig;
+};
+var htmlHelper_tools_AnimateTimer = function() { };
+htmlHelper_tools_AnimateTimer.__name__ = true;
+htmlHelper_tools_AnimateTimer.loop = function(tim) {
+	window.requestAnimationFrame(htmlHelper_tools_AnimateTimer.loop);
+	if(htmlHelper_tools_AnimateTimer.onFrame != null) {
+		htmlHelper_tools_AnimateTimer.onFrame(htmlHelper_tools_AnimateTimer.counter);
+	}
+	htmlHelper_tools_AnimateTimer.counter++;
+	return true;
+};
 var htmlHelper_webgl_WebGLSetup = function(width_,height_,autoChild) {
 	if(autoChild == null) {
 		autoChild = true;
@@ -84,22 +128,998 @@ htmlHelper_webgl_WebGLSetup.prototype = {
 	}
 	,__class__: htmlHelper_webgl_WebGLSetup
 };
-var TestWebGL = function() {
+var js__$Boot_HaxeError = function(val) {
+	Error.call(this);
+	this.val = val;
+	this.message = String(val);
+	if(Error.captureStackTrace) {
+		Error.captureStackTrace(this,js__$Boot_HaxeError);
+	}
+};
+js__$Boot_HaxeError.__name__ = true;
+js__$Boot_HaxeError.wrap = function(val) {
+	if((val instanceof Error)) {
+		return val;
+	} else {
+		return new js__$Boot_HaxeError(val);
+	}
+};
+js__$Boot_HaxeError.__super__ = Error;
+js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
+	__class__: js__$Boot_HaxeError
+});
+var js_Boot = function() { };
+js_Boot.__name__ = true;
+js_Boot.getClass = function(o) {
+	if((o instanceof Array) && o.__enum__ == null) {
+		return Array;
+	} else {
+		var cl = o.__class__;
+		if(cl != null) {
+			return cl;
+		}
+		var name = js_Boot.__nativeClassName(o);
+		if(name != null) {
+			return js_Boot.__resolveNativeClass(name);
+		}
+		return null;
+	}
+};
+js_Boot.__string_rec = function(o,s) {
+	if(o == null) {
+		return "null";
+	}
+	if(s.length >= 5) {
+		return "<...>";
+	}
+	var t = typeof(o);
+	if(t == "function" && (o.__name__ || o.__ename__)) {
+		t = "object";
+	}
+	switch(t) {
+	case "function":
+		return "<function>";
+	case "object":
+		if(o instanceof Array) {
+			if(o.__enum__) {
+				if(o.length == 2) {
+					return o[0];
+				}
+				var str = o[0] + "(";
+				s += "\t";
+				var _g1 = 2;
+				var _g = o.length;
+				while(_g1 < _g) {
+					var i = _g1++;
+					if(i != 2) {
+						str += "," + js_Boot.__string_rec(o[i],s);
+					} else {
+						str += js_Boot.__string_rec(o[i],s);
+					}
+				}
+				return str + ")";
+			}
+			var l = o.length;
+			var i1;
+			var str1 = "[";
+			s += "\t";
+			var _g11 = 0;
+			var _g2 = l;
+			while(_g11 < _g2) {
+				var i2 = _g11++;
+				str1 += (i2 > 0 ? "," : "") + js_Boot.__string_rec(o[i2],s);
+			}
+			str1 += "]";
+			return str1;
+		}
+		var tostr;
+		try {
+			tostr = o.toString;
+		} catch( e ) {
+			return "???";
+		}
+		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
+			var s2 = o.toString();
+			if(s2 != "[object Object]") {
+				return s2;
+			}
+		}
+		var k = null;
+		var str2 = "{\n";
+		s += "\t";
+		var hasp = o.hasOwnProperty != null;
+		for( var k in o ) {
+		if(hasp && !o.hasOwnProperty(k)) {
+			continue;
+		}
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
+			continue;
+		}
+		if(str2.length != 2) {
+			str2 += ", \n";
+		}
+		str2 += s + k + " : " + js_Boot.__string_rec(o[k],s);
+		}
+		s = s.substring(1);
+		str2 += "\n" + s + "}";
+		return str2;
+	case "string":
+		return o;
+	default:
+		return String(o);
+	}
+};
+js_Boot.__interfLoop = function(cc,cl) {
+	if(cc == null) {
+		return false;
+	}
+	if(cc == cl) {
+		return true;
+	}
+	var intf = cc.__interfaces__;
+	if(intf != null) {
+		var _g1 = 0;
+		var _g = intf.length;
+		while(_g1 < _g) {
+			var i = intf[_g1++];
+			if(i == cl || js_Boot.__interfLoop(i,cl)) {
+				return true;
+			}
+		}
+	}
+	return js_Boot.__interfLoop(cc.__super__,cl);
+};
+js_Boot.__instanceof = function(o,cl) {
+	if(cl == null) {
+		return false;
+	}
+	switch(cl) {
+	case Array:
+		if((o instanceof Array)) {
+			return o.__enum__ == null;
+		} else {
+			return false;
+		}
+		break;
+	case Bool:
+		return typeof(o) == "boolean";
+	case Dynamic:
+		return true;
+	case Float:
+		return typeof(o) == "number";
+	case Int:
+		if(typeof(o) == "number") {
+			return (o|0) === o;
+		} else {
+			return false;
+		}
+		break;
+	case String:
+		return typeof(o) == "string";
+	default:
+		if(o != null) {
+			if(typeof(cl) == "function") {
+				if(o instanceof cl) {
+					return true;
+				}
+				if(js_Boot.__interfLoop(js_Boot.getClass(o),cl)) {
+					return true;
+				}
+			} else if(typeof(cl) == "object" && js_Boot.__isNativeObj(cl)) {
+				if(o instanceof cl) {
+					return true;
+				}
+			}
+		} else {
+			return false;
+		}
+		if(cl == Class ? o.__name__ != null : false) {
+			return true;
+		}
+		if(cl == Enum ? o.__ename__ != null : false) {
+			return true;
+		}
+		return o.__enum__ == cl;
+	}
+};
+js_Boot.__nativeClassName = function(o) {
+	var name = js_Boot.__toStr.call(o).slice(8,-1);
+	if(name == "Object" || name == "Function" || name == "Math" || name == "JSON") {
+		return null;
+	}
+	return name;
+};
+js_Boot.__isNativeObj = function(o) {
+	return js_Boot.__nativeClassName(o) != null;
+};
+js_Boot.__resolveNativeClass = function(name) {
+	return $global[name];
+};
+var js_html__$CanvasElement_CanvasUtil = function() { };
+js_html__$CanvasElement_CanvasUtil.__name__ = true;
+js_html__$CanvasElement_CanvasUtil.getContextWebGL = function(canvas,attribs) {
+	var _g = 0;
+	var _g1 = ["webgl","experimental-webgl"];
+	while(_g < _g1.length) {
+		var name = _g1[_g];
+		++_g;
+		var ctx = canvas.getContext(name,attribs);
+		if(ctx != null) {
+			return ctx;
+		}
+	}
+	return null;
+};
+var js_html_compat_ArrayBuffer = function(a) {
+	if((a instanceof Array) && a.__enum__ == null) {
+		this.a = a;
+		this.byteLength = a.length;
+	} else {
+		var len = a;
+		this.a = [];
+		var _g1 = 0;
+		var _g = len;
+		while(_g1 < _g) this.a[_g1++] = 0;
+		this.byteLength = len;
+	}
+};
+js_html_compat_ArrayBuffer.__name__ = true;
+js_html_compat_ArrayBuffer.sliceImpl = function(begin,end) {
+	var u = new Uint8Array(this,begin,end == null ? null : end - begin);
+	var result = new ArrayBuffer(u.byteLength);
+	new Uint8Array(result).set(u);
+	return result;
+};
+js_html_compat_ArrayBuffer.prototype = {
+	slice: function(begin,end) {
+		return new js_html_compat_ArrayBuffer(this.a.slice(begin,end));
+	}
+	,__class__: js_html_compat_ArrayBuffer
+};
+var js_html_compat_Float32Array = function() { };
+js_html_compat_Float32Array.__name__ = true;
+js_html_compat_Float32Array._new = function(arg1,offset,length) {
+	var arr;
+	if(typeof(arg1) == "number") {
+		arr = [];
+		var _g1 = 0;
+		var _g = arg1;
+		while(_g1 < _g) {
+			var i = _g1++;
+			arr[i] = 0;
+		}
+		arr.byteLength = arr.length << 2;
+		arr.byteOffset = 0;
+		var _g2 = [];
+		var _g21 = 0;
+		var _g11 = arr.length << 2;
+		while(_g21 < _g11) {
+			var i1 = _g21++;
+			_g2.push(0);
+		}
+		arr.buffer = new js_html_compat_ArrayBuffer(_g2);
+	} else if(js_Boot.__instanceof(arg1,js_html_compat_ArrayBuffer)) {
+		var buffer = arg1;
+		if(offset == null) {
+			offset = 0;
+		}
+		if(length == null) {
+			length = buffer.byteLength - offset >> 2;
+		}
+		arr = [];
+		var _g12 = 0;
+		var _g3 = length;
+		while(_g12 < _g3) {
+			var i2 = _g12++;
+			var val = buffer.a[offset++] | buffer.a[offset++] << 8 | buffer.a[offset++] << 16 | buffer.a[offset++] << 24;
+			arr.push(haxe_io_FPHelper.i32ToFloat(val));
+		}
+		arr.byteLength = arr.length << 2;
+		arr.byteOffset = offset;
+		arr.buffer = buffer;
+	} else if((arg1 instanceof Array) && arg1.__enum__ == null) {
+		arr = arg1.slice();
+		var buffer1 = [];
+		var _g4 = 0;
+		while(_g4 < arr.length) {
+			var f = arr[_g4];
+			++_g4;
+			var i3 = haxe_io_FPHelper.floatToI32(f);
+			buffer1.push(i3 & 255);
+			buffer1.push(i3 >> 8 & 255);
+			buffer1.push(i3 >> 16 & 255);
+			buffer1.push(i3 >>> 24);
+		}
+		arr.byteLength = arr.length << 2;
+		arr.byteOffset = 0;
+		arr.buffer = new js_html_compat_ArrayBuffer(buffer1);
+	} else {
+		throw new js__$Boot_HaxeError("TODO " + Std.string(arg1));
+	}
+	arr.subarray = js_html_compat_Float32Array._subarray;
+	arr.set = js_html_compat_Float32Array._set;
+	return arr;
+};
+js_html_compat_Float32Array._set = function(arg,offset) {
+	if(js_Boot.__instanceof(arg.buffer,js_html_compat_ArrayBuffer)) {
+		var a = arg;
+		if(arg.byteLength + offset > this.byteLength) {
+			throw new js__$Boot_HaxeError("set() outside of range");
+		}
+		var _g1 = 0;
+		var _g = arg.byteLength;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this[i + offset] = a[i];
+		}
+	} else if((arg instanceof Array) && arg.__enum__ == null) {
+		var a1 = arg;
+		if(a1.length + offset > this.byteLength) {
+			throw new js__$Boot_HaxeError("set() outside of range");
+		}
+		var _g11 = 0;
+		var _g2 = a1.length;
+		while(_g11 < _g2) {
+			var i1 = _g11++;
+			this[i1 + offset] = a1[i1];
+		}
+	} else {
+		throw new js__$Boot_HaxeError("TODO");
+	}
+};
+js_html_compat_Float32Array._subarray = function(start,end) {
+	var a = js_html_compat_Float32Array._new(this.slice(start,end));
+	a.byteOffset = start * 4;
+	return a;
+};
+var js_html_compat_Uint8Array = function() { };
+js_html_compat_Uint8Array.__name__ = true;
+js_html_compat_Uint8Array._new = function(arg1,offset,length) {
+	var arr;
+	if(typeof(arg1) == "number") {
+		arr = [];
+		var _g1 = 0;
+		var _g = arg1;
+		while(_g1 < _g) {
+			var i = _g1++;
+			arr[i] = 0;
+		}
+		arr.byteLength = arr.length;
+		arr.byteOffset = 0;
+		arr.buffer = new js_html_compat_ArrayBuffer(arr);
+	} else if(js_Boot.__instanceof(arg1,js_html_compat_ArrayBuffer)) {
+		var buffer = arg1;
+		if(offset == null) {
+			offset = 0;
+		}
+		if(length == null) {
+			length = buffer.byteLength - offset;
+		}
+		if(offset == 0) {
+			arr = buffer.a;
+		} else {
+			arr = buffer.a.slice(offset,offset + length);
+		}
+		arr.byteLength = arr.length;
+		arr.byteOffset = offset;
+		arr.buffer = buffer;
+	} else if((arg1 instanceof Array) && arg1.__enum__ == null) {
+		arr = arg1.slice();
+		arr.byteLength = arr.length;
+		arr.byteOffset = 0;
+		arr.buffer = new js_html_compat_ArrayBuffer(arr);
+	} else {
+		throw new js__$Boot_HaxeError("TODO " + Std.string(arg1));
+	}
+	arr.subarray = js_html_compat_Uint8Array._subarray;
+	arr.set = js_html_compat_Uint8Array._set;
+	return arr;
+};
+js_html_compat_Uint8Array._set = function(arg,offset) {
+	if(js_Boot.__instanceof(arg.buffer,js_html_compat_ArrayBuffer)) {
+		var a = arg;
+		if(arg.byteLength + offset > this.byteLength) {
+			throw new js__$Boot_HaxeError("set() outside of range");
+		}
+		var _g1 = 0;
+		var _g = arg.byteLength;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this[i + offset] = a[i];
+		}
+	} else if((arg instanceof Array) && arg.__enum__ == null) {
+		var a1 = arg;
+		if(a1.length + offset > this.byteLength) {
+			throw new js__$Boot_HaxeError("set() outside of range");
+		}
+		var _g11 = 0;
+		var _g2 = a1.length;
+		while(_g11 < _g2) {
+			var i1 = _g11++;
+			this[i1 + offset] = a1[i1];
+		}
+	} else {
+		throw new js__$Boot_HaxeError("TODO");
+	}
+};
+js_html_compat_Uint8Array._subarray = function(start,end) {
+	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
+	a.byteOffset = start;
+	return a;
+};
+var justPath_IPathContext = function() { };
+justPath_IPathContext.__name__ = true;
+justPath_IPathContext.prototype = {
+	__class__: justPath_IPathContext
+};
+var justPath_StoreF6 = function() {
+	this.count = 0;
+	this.l = 0;
+};
+justPath_StoreF6.__name__ = true;
+justPath_StoreF6.prototype = {
+	hasNext: function() {
+		return this.count < this.l + 1;
+	}
+	,next: function() {
+		var out = null;
+		switch(this.count) {
+		case 0:
+			out = this.s0;
+			break;
+		case 1:
+			out = this.s1;
+			break;
+		case 2:
+			out = this.s2;
+			break;
+		case 3:
+			out = this.s3;
+			break;
+		case 4:
+			out = this.s4;
+			break;
+		case 5:
+			out = this.s5;
+			break;
+		default:
+		}
+		this.count++;
+		return out;
+	}
+	,__class__: justPath_StoreF6
+};
+var justPath_SvgPath = function(pathContext_) {
+	this.sy = 1;
+	this.sx = 1;
+	this.dy = 0;
+	this.dx = 0;
+	this.lastY = 0;
+	this.lastX = 0;
+	this.pathContext = pathContext_;
+};
+justPath_SvgPath.__name__ = true;
+justPath_SvgPath.prototype = {
+	parse: function(str_,dx_,dy_,sx_,sy_) {
+		if(sy_ == null) {
+			sy_ = 1;
+		}
+		if(sx_ == null) {
+			sx_ = 1;
+		}
+		if(dy_ == null) {
+			dy_ = 0;
+		}
+		if(dx_ == null) {
+			dx_ = 0;
+		}
+		this.str = str_;
+		this.dx = dx_;
+		this.dy = dy_;
+		this.sx = sx_;
+		this.sy = sy_;
+		this.pos = 0;
+		this.l = this.str.length;
+		this.c = this.str.charCodeAt(this.pos++);
+		this.store = new justPath_StoreF6();
+		while(this.pos < this.l) {
+			switch(this.c) {
+			case 65:
+				console.log("elliptical_Arc - not implemented");
+				this.extractArgs();
+				break;
+			case 66:
+				console.log("bearing - not implemented");
+				throw new js__$Boot_HaxeError("bearing not supported please remove");
+				break;
+			case 67:
+				this.extractArgs();
+				this.controlX = this.store.s2;
+				this.controlY = this.store.s3;
+				this.lastX = this.store.s4;
+				this.lastY = this.store.s5;
+				this.pathContext.curveTo(this.store.s0,this.store.s1,this.controlX,this.controlY,this.lastX,this.lastY);
+				break;
+			case 72:
+				this.extractArgs(false);
+				this.lastX = this.store.s0 * this.sx + this.dx;
+				this.pathContext.lineTo(this.lastX,this.lastY);
+				break;
+			case 76:
+				this.extractArgs();
+				this.lastX = this.store.s0;
+				this.lastY = this.store.s1;
+				this.pathContext.lineTo(this.lastX,this.lastY);
+				break;
+			case 77:
+				this.extractArgs();
+				this.lastX = this.store.s0;
+				this.lastY = this.store.s1;
+				this.pathContext.moveTo(this.lastX,this.lastY);
+				break;
+			case 81:
+				this.extractArgs();
+				this.controlX = this.store.s0;
+				this.controlY = this.store.s1;
+				this.lastX = this.store.s2;
+				this.lastY = this.store.s3;
+				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
+				break;
+			case 83:
+				this.extractArgs();
+				this.controlX = 2 * this.lastX - this.controlX;
+				this.controlY = 2 * this.lastY - this.controlY;
+				this.pathContext.curveTo(this.controlX,this.controlY,this.store.s0,this.store.s1,this.store.s2,this.store.s3);
+				this.controlX = this.store.s0;
+				this.controlY = this.store.s1;
+				break;
+			case 84:
+				this.extractArgs();
+				this.controlX = 2 * this.lastX - this.controlX;
+				this.controlY = 2 * this.lastY - this.controlY;
+				this.lastX = this.store.s0;
+				this.lastY = this.store.s1;
+				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
+				break;
+			case 86:
+				this.extractArgs(false);
+				this.lastY = this.store.s0 * this.sy + this.dy;
+				this.pathContext.lineTo(this.lastX,this.lastY);
+				break;
+			case 90:case 122:
+				this.lastX = 0;
+				this.lastY = 0;
+				break;
+			case 97:
+				console.log("relative elliptical_Arc - not implemented");
+				this.extractArgs();
+				break;
+			case 99:
+				this.extractArgs();
+				this.controlX = this.store.s2 + this.lastX;
+				this.controlY = this.store.s3 + this.lastY;
+				var endX = this.store.s4 + this.lastX;
+				var endY = this.store.s5 + this.lastY;
+				this.pathContext.curveTo(this.store.s0 + this.lastX,this.store.s1 + this.lastY,this.controlX,this.controlY,endX,endY);
+				this.lastX = endX;
+				this.lastY = endY;
+				break;
+			case 104:
+				this.extractArgs(false);
+				this.lastX = this.lastX + this.store.s0 * this.sx + this.dx;
+				this.pathContext.lineTo(this.lastX,this.lastY);
+				break;
+			case 108:
+				this.extractArgs();
+				this.lastX = this.store.s0 + this.lastX;
+				this.lastY = this.store.s1 + this.lastY;
+				this.pathContext.lineTo(this.lastX,this.lastY);
+				break;
+			case 109:
+				this.extractArgs();
+				this.lastX = this.store.s0 + this.lastX;
+				this.lastY = this.store.s1 + this.lastY;
+				this.pathContext.moveTo(this.lastX,this.lastY);
+				break;
+			case 113:
+				this.extractArgs();
+				this.controlX = this.lastX + this.store.s0;
+				this.controlY = this.lastY + this.store.s1;
+				this.lastX = this.store.s0 + this.lastX;
+				this.lastY = this.store.s1 + this.lastY;
+				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
+				break;
+			case 115:
+				this.extractArgs();
+				this.controlX = 2 * this.lastX - this.controlX;
+				this.controlY = 2 * this.lastY - this.controlY;
+				var endX1 = this.store.s2 + this.lastX;
+				var endY1 = this.store.s3 + this.lastY;
+				this.pathContext.curveTo(this.controlX,this.controlY,this.store.s0 + this.lastX,this.store.s1 + this.lastY,endX1,endY1);
+				this.controlX = this.store.s0 + this.lastX;
+				this.controlY = this.store.s1 + this.lastY;
+				this.lastX = endX1;
+				this.lastY = endY1;
+				break;
+			case 116:
+				this.extractArgs();
+				this.controlX = 2 * this.lastX - this.controlX;
+				this.controlY = 2 * this.lastY - this.controlY;
+				this.lastX = this.store.s0 + this.lastY;
+				this.lastY = this.store.s1 + this.lastX;
+				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
+				break;
+			case 118:
+				this.extractArgs(false);
+				this.lastY = this.lastY + this.store.s0 * this.sy + this.dy;
+				this.pathContext.lineTo(this.lastX,this.lastY);
+				break;
+			default:
+			}
+			this.c = this.str.charCodeAt(this.pos++);
+		}
+		return str_;
+	}
+	,extractArgs: function(process) {
+		if(process == null) {
+			process = true;
+		}
+		var _this = this.store;
+		_this.l = 0;
+		_this.s0 = null;
+		_this.s1 = null;
+		_this.s2 = null;
+		_this.s3 = null;
+		_this.s4 = null;
+		_this.s5 = null;
+		this.c = this.str.charCodeAt(this.pos++);
+		var temp = "";
+		try {
+			while(true) {
+				switch(this.c) {
+				case 32:case 44:
+					if(temp != "") {
+						if(temp == "0") {
+							temp = "0.1";
+						}
+						if(process) {
+							if((this.store.l & 1) == 0) {
+								var _this1 = this.store;
+								var v = parseFloat(temp) * this.sx + this.dx;
+								switch(_this1.l) {
+								case 0:
+									_this1.s0 = v;
+									break;
+								case 1:
+									_this1.s1 = v;
+									break;
+								case 2:
+									_this1.s2 = v;
+									break;
+								case 3:
+									_this1.s3 = v;
+									break;
+								case 4:
+									_this1.s4 = v;
+									break;
+								case 5:
+									_this1.s5 = v;
+									break;
+								default:
+								}
+								_this1.l++;
+							} else {
+								var _this2 = this.store;
+								var v1 = parseFloat(temp) * this.sy + this.dy;
+								switch(_this2.l) {
+								case 0:
+									_this2.s0 = v1;
+									break;
+								case 1:
+									_this2.s1 = v1;
+									break;
+								case 2:
+									_this2.s2 = v1;
+									break;
+								case 3:
+									_this2.s3 = v1;
+									break;
+								case 4:
+									_this2.s4 = v1;
+									break;
+								case 5:
+									_this2.s5 = v1;
+									break;
+								default:
+								}
+								_this2.l++;
+							}
+						} else {
+							var _this3 = this.store;
+							var v2 = parseFloat(temp);
+							switch(_this3.l) {
+							case 0:
+								_this3.s0 = v2;
+								break;
+							case 1:
+								_this3.s1 = v2;
+								break;
+							case 2:
+								_this3.s2 = v2;
+								break;
+							case 3:
+								_this3.s3 = v2;
+								break;
+							case 4:
+								_this3.s4 = v2;
+								break;
+							case 5:
+								_this3.s5 = v2;
+								break;
+							default:
+							}
+							_this3.l++;
+						}
+						temp = "";
+					}
+					break;
+				case 45:
+					if(temp != "") {
+						if(temp == "0") {
+							temp = "0.1";
+						}
+						if(process) {
+							if((this.store.l & 1) == 0) {
+								var _this4 = this.store;
+								var v3 = parseFloat(temp) * this.sx + this.dx;
+								switch(_this4.l) {
+								case 0:
+									_this4.s0 = v3;
+									break;
+								case 1:
+									_this4.s1 = v3;
+									break;
+								case 2:
+									_this4.s2 = v3;
+									break;
+								case 3:
+									_this4.s3 = v3;
+									break;
+								case 4:
+									_this4.s4 = v3;
+									break;
+								case 5:
+									_this4.s5 = v3;
+									break;
+								default:
+								}
+								_this4.l++;
+							} else {
+								var _this5 = this.store;
+								var v4 = parseFloat(temp) * this.sy + this.dy;
+								switch(_this5.l) {
+								case 0:
+									_this5.s0 = v4;
+									break;
+								case 1:
+									_this5.s1 = v4;
+									break;
+								case 2:
+									_this5.s2 = v4;
+									break;
+								case 3:
+									_this5.s3 = v4;
+									break;
+								case 4:
+									_this5.s4 = v4;
+									break;
+								case 5:
+									_this5.s5 = v4;
+									break;
+								default:
+								}
+								_this5.l++;
+							}
+						} else {
+							var _this6 = this.store;
+							var v5 = parseFloat(temp);
+							switch(_this6.l) {
+							case 0:
+								_this6.s0 = v5;
+								break;
+							case 1:
+								_this6.s1 = v5;
+								break;
+							case 2:
+								_this6.s2 = v5;
+								break;
+							case 3:
+								_this6.s3 = v5;
+								break;
+							case 4:
+								_this6.s4 = v5;
+								break;
+							case 5:
+								_this6.s5 = v5;
+								break;
+							default:
+							}
+							_this6.l++;
+						}
+					}
+					temp = "-";
+					break;
+				case 46:
+					temp += ".";
+					break;
+				case 48:
+					temp += "0";
+					break;
+				case 49:
+					temp += "1";
+					break;
+				case 50:
+					temp += "2";
+					break;
+				case 51:
+					temp += "3";
+					break;
+				case 52:
+					temp += "4";
+					break;
+				case 53:
+					temp += "5";
+					break;
+				case 54:
+					temp += "6";
+					break;
+				case 55:
+					temp += "7";
+					break;
+				case 56:
+					temp += "8";
+					break;
+				case 57:
+					temp += "9";
+					break;
+				default:
+					if(temp != "") {
+						if(temp == "0") {
+							temp = "0.1";
+						}
+						if(process) {
+							if((this.store.l & 1) == 0) {
+								var _this7 = this.store;
+								var v6 = parseFloat(temp) * this.sx + this.dx;
+								switch(_this7.l) {
+								case 0:
+									_this7.s0 = v6;
+									break;
+								case 1:
+									_this7.s1 = v6;
+									break;
+								case 2:
+									_this7.s2 = v6;
+									break;
+								case 3:
+									_this7.s3 = v6;
+									break;
+								case 4:
+									_this7.s4 = v6;
+									break;
+								case 5:
+									_this7.s5 = v6;
+									break;
+								default:
+								}
+								_this7.l++;
+							} else {
+								var _this8 = this.store;
+								var v7 = parseFloat(temp) * this.sy + this.dy;
+								switch(_this8.l) {
+								case 0:
+									_this8.s0 = v7;
+									break;
+								case 1:
+									_this8.s1 = v7;
+									break;
+								case 2:
+									_this8.s2 = v7;
+									break;
+								case 3:
+									_this8.s3 = v7;
+									break;
+								case 4:
+									_this8.s4 = v7;
+									break;
+								case 5:
+									_this8.s5 = v7;
+									break;
+								default:
+								}
+								_this8.l++;
+							}
+						} else {
+							var _this9 = this.store;
+							var v8 = parseFloat(temp);
+							switch(_this9.l) {
+							case 0:
+								_this9.s0 = v8;
+								break;
+							case 1:
+								_this9.s1 = v8;
+								break;
+							case 2:
+								_this9.s2 = v8;
+								break;
+							case 3:
+								_this9.s3 = v8;
+								break;
+							case 4:
+								_this9.s4 = v8;
+								break;
+							case 5:
+								_this9.s5 = v8;
+								break;
+							default:
+							}
+							_this9.l++;
+						}
+						temp = "";
+					}
+					this.pos--;
+					throw "__break__";
+				}
+				this.c = this.str.charCodeAt(this.pos++);
+			}
+		} catch( e ) { if( e != "__break__" ) throw e; }
+	}
+	,__class__: justPath_SvgPath
+};
+var khaMath_Matrix4 = function(_00,_10,_20,_30,_01,_11,_21,_31,_02,_12,_22,_32,_03,_13,_23,_33) {
+	this._00 = _00;
+	this._10 = _10;
+	this._20 = _20;
+	this._30 = _30;
+	this._01 = _01;
+	this._11 = _11;
+	this._21 = _21;
+	this._31 = _31;
+	this._02 = _02;
+	this._12 = _12;
+	this._22 = _22;
+	this._32 = _32;
+	this._03 = _03;
+	this._13 = _13;
+	this._23 = _23;
+	this._33 = _33;
+};
+khaMath_Matrix4.__name__ = true;
+khaMath_Matrix4.prototype = {
+	__class__: khaMath_Matrix4
+};
+var testTrilateral_TestWebGL = function() {
+	this.upDown = false;
+	this.downDown = false;
+	this.rightDown = false;
+	this.leftDown = false;
 	htmlHelper_webgl_WebGLSetup.call(this,1140,1140);
 	this.scale = 0.00175438596491228073;
 	this.darkBackground();
 	this.modelViewProjection = new khaMath_Matrix4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 	this.setupProgram("attribute vec3 pos;" + "attribute vec4 color;" + "varying vec4 vcol;" + "uniform mat4 modelViewProjection;" + "void main(void) {" + " gl_Position = modelViewProjection * vec4(pos, 1.0);" + " vcol = color;" + "}","precision mediump float;" + "varying vec4 vcol;" + "void main(void) {" + " gl_FragColor = vcol;" + "}");
-	this.trilateralTest = new TrilateralTest(570,$bind(this,this.setMatrix),$bind(this,this.setAnimate));
+	this.trilateralTest = new testTrilateral_TrilateralTest(570,$bind(this,this.setMatrix),$bind(this,this.setAnimate));
 	this.trilateralTest.setup();
 	this.render();
+	window.document.onkeydown = $bind(this,this.keyDown);
+	window.document.onkeyup = $bind(this,this.keyUp);
 };
-TestWebGL.__name__ = true;
-TestWebGL.main = function() {
-	new TestWebGL();
+testTrilateral_TestWebGL.__name__ = true;
+testTrilateral_TestWebGL.main = function() {
+	new testTrilateral_TestWebGL();
 };
-TestWebGL.__super__ = htmlHelper_webgl_WebGLSetup;
-TestWebGL.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
+testTrilateral_TestWebGL.__super__ = htmlHelper_webgl_WebGLSetup;
+testTrilateral_TestWebGL.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 	setAnimate: function() {
 		if(htmlHelper_tools_AnimateTimer.s == null) {
 			htmlHelper_tools_AnimateTimer.s = window.document.createElement("style");
@@ -118,7 +1138,15 @@ TestWebGL.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		this.bgGreen = 0.09375;
 		this.bgBlue = 0.09375;
 	}
-	,setTriangles: function(triangles,triangleColors) {
+	,render_: function(i) {
+		this.render();
+	}
+	,render: function() {
+		this.vertices = [];
+		this.indices = [];
+		this.colors = [];
+		var triangles = this.trilateralTest.triangles;
+		var triangleColors = this.trilateralTest.appColors;
 		var rgb;
 		var count = 0;
 		var i = 0;
@@ -170,20 +1198,51 @@ TestWebGL.prototype = $extend(htmlHelper_webgl_WebGLSetup.prototype,{
 		gl.vertexAttribPointer(col,4,5126,false,0,0);
 		gl.enableVertexAttribArray(col);
 		gl.bindBuffer(34962,null);
-	}
-	,render_: function(i) {
-		this.render();
-	}
-	,render: function() {
-		this.vertices = [];
-		this.indices = [];
-		this.colors = [];
-		this.setTriangles(this.trilateralTest.triangles,this.trilateralTest.appColors);
 		htmlHelper_webgl_WebGLSetup.prototype.render.call(this);
 	}
-	,__class__: TestWebGL
+	,keyDown: function(e) {
+		e.preventDefault();
+		switch(e.keyCode) {
+		case 37:
+			this.leftDown = true;
+			break;
+		case 38:
+			this.upDown = true;
+			break;
+		case 39:
+			this.rightDown = true;
+			break;
+		case 40:
+			this.downDown = true;
+			break;
+		default:
+		}
+		this.leftDown = false;
+		this.rightDown = false;
+		this.downDown = false;
+		this.upDown = false;
+	}
+	,keyUp: function(e) {
+		e.preventDefault();
+		switch(e.keyCode) {
+		case 37:
+			this.leftDown = false;
+			break;
+		case 38:
+			this.upDown = false;
+			break;
+		case 39:
+			this.rightDown = false;
+			break;
+		case 40:
+			this.downDown = false;
+			break;
+		default:
+		}
+	}
+	,__class__: testTrilateral_TestWebGL
 });
-var TrilateralTest = function(stageRadius_,setMatrix_,setAnimate_) {
+var testTrilateral_TrilateralTest = function(stageRadius_,setMatrix_,setAnimate_) {
 	this.bird_d = "M210.333,65.331C104.367,66.105-12.349,150.637,1.056,276.449c4.303,40.393,18.533,63.704,52.171,79.03c36.307,16.544,57.022,54.556,50.406,112.954c-9.935,4.88-17.405,11.031-19.132,20.015c7.531-0.17,14.943-0.312,22.59,4.341c20.333,12.375,31.296,27.363,42.979,51.72c1.714,3.572,8.192,2.849,8.312-3.078c0.17-8.467-1.856-17.454-5.226-26.933c-2.955-8.313,3.059-7.985,6.917-6.106c6.399,3.115,16.334,9.43,30.39,13.098c5.392,1.407,5.995-3.877,5.224-6.991c-1.864-7.522-11.009-10.862-24.519-19.229c-4.82-2.984-0.927-9.736,5.168-8.351l20.234,2.415c3.359,0.763,4.555-6.114,0.882-7.875c-14.198-6.804-28.897-10.098-53.864-7.799c-11.617-29.265-29.811-61.617-15.674-81.681c12.639-17.938,31.216-20.74,39.147,43.489c-5.002,3.107-11.215,5.031-11.332,13.024c7.201-2.845,11.207-1.399,14.791,0c17.912,6.998,35.462,21.826,52.982,37.309c3.739,3.303,8.413-1.718,6.991-6.034c-2.138-6.494-8.053-10.659-14.791-20.016c-3.239-4.495,5.03-7.045,10.886-6.876c13.849,0.396,22.886,8.268,35.177,11.218c4.483,1.076,9.741-1.964,6.917-6.917c-3.472-6.085-13.015-9.124-19.18-13.413c-4.357-3.029-3.025-7.132,2.697-6.602c3.905,0.361,8.478,2.271,13.908,1.767c9.946-0.925,7.717-7.169-0.883-9.566c-19.036-5.304-39.891-6.311-61.665-5.225c-43.837-8.358-31.554-84.887,0-90.363c29.571-5.132,62.966-13.339,99.928-32.156c32.668-5.429,64.835-12.446,92.939-33.85c48.106-14.469,111.903,16.113,204.241,149.695c3.926,5.681,15.819,9.94,9.524-6.351c-15.893-41.125-68.176-93.328-92.13-132.085c-24.581-39.774-14.34-61.243-39.957-91.247c-21.326-24.978-47.502-25.803-77.339-17.365c-23.461,6.634-39.234-7.117-52.98-31.273C318.42,87.525,265.838,64.927,210.333,65.331zM445.731,203.01c6.12,0,11.112,4.919,11.112,11.038c0,6.119-4.994,11.111-11.112,11.111s-11.038-4.994-11.038-11.111C434.693,207.929,439.613,203.01,445.731,203.01z";
 	this.cubictest_d = "M100,200 C100,100 250,100 250,200S400,300 400,200";
 	this.quadtest_d = "M200,300 Q400,50 600,300 T1000,300";
@@ -192,8 +1251,8 @@ var TrilateralTest = function(stageRadius_,setMatrix_,setAnimate_) {
 	this.modelViewProjection = new khaMath_Matrix4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 	this.setMatrix = setMatrix_;
 };
-TrilateralTest.__name__ = true;
-TrilateralTest.prototype = {
+testTrilateral_TrilateralTest.__name__ = true;
+testTrilateral_TrilateralTest.prototype = {
 	setup: function() {
 		this.centre = { x : this.stageRadius, y : this.stageRadius};
 		this.quarter = this.stageRadius / 2;
@@ -2125,1021 +3184,7 @@ TrilateralTest.prototype = {
 			}
 		}
 	}
-	,__class__: TrilateralTest
-};
-var Type = function() { };
-Type.__name__ = true;
-Type.createEmptyInstance = function(cl) {
-	function empty() {}; empty.prototype = cl.prototype;
-	return new empty();
-};
-var haxe_io_FPHelper = function() { };
-haxe_io_FPHelper.__name__ = true;
-haxe_io_FPHelper.i32ToFloat = function(i) {
-	var exp = i >>> 23 & 255;
-	var sig = i & 8388607;
-	if(sig == 0 && exp == 0) {
-		return 0.0;
-	}
-	return (1 - (i >>> 31 << 1)) * (1 + Math.pow(2,-23) * sig) * Math.pow(2,exp - 127);
-};
-haxe_io_FPHelper.floatToI32 = function(f) {
-	if(f == 0) {
-		return 0;
-	}
-	var af = f < 0 ? -f : f;
-	var exp = Math.floor(Math.log(af) / 0.6931471805599453);
-	if(exp < -127) {
-		exp = -127;
-	} else if(exp > 128) {
-		exp = 128;
-	}
-	var sig = Math.round((af / Math.pow(2,exp) - 1) * 8388608);
-	if(sig == 8388608 && exp < 128) {
-		sig = 0;
-		++exp;
-	}
-	return (f < 0 ? -2147483648 : 0) | exp + 127 << 23 | sig;
-};
-var htmlHelper_tools_AnimateTimer = function() { };
-htmlHelper_tools_AnimateTimer.__name__ = true;
-htmlHelper_tools_AnimateTimer.loop = function(tim) {
-	window.requestAnimationFrame(htmlHelper_tools_AnimateTimer.loop);
-	if(htmlHelper_tools_AnimateTimer.onFrame != null) {
-		htmlHelper_tools_AnimateTimer.onFrame(htmlHelper_tools_AnimateTimer.counter);
-	}
-	htmlHelper_tools_AnimateTimer.counter++;
-	return true;
-};
-var js__$Boot_HaxeError = function(val) {
-	Error.call(this);
-	this.val = val;
-	this.message = String(val);
-	if(Error.captureStackTrace) {
-		Error.captureStackTrace(this,js__$Boot_HaxeError);
-	}
-};
-js__$Boot_HaxeError.__name__ = true;
-js__$Boot_HaxeError.wrap = function(val) {
-	if((val instanceof Error)) {
-		return val;
-	} else {
-		return new js__$Boot_HaxeError(val);
-	}
-};
-js__$Boot_HaxeError.__super__ = Error;
-js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
-	__class__: js__$Boot_HaxeError
-});
-var js_Boot = function() { };
-js_Boot.__name__ = true;
-js_Boot.getClass = function(o) {
-	if((o instanceof Array) && o.__enum__ == null) {
-		return Array;
-	} else {
-		var cl = o.__class__;
-		if(cl != null) {
-			return cl;
-		}
-		var name = js_Boot.__nativeClassName(o);
-		if(name != null) {
-			return js_Boot.__resolveNativeClass(name);
-		}
-		return null;
-	}
-};
-js_Boot.__string_rec = function(o,s) {
-	if(o == null) {
-		return "null";
-	}
-	if(s.length >= 5) {
-		return "<...>";
-	}
-	var t = typeof(o);
-	if(t == "function" && (o.__name__ || o.__ename__)) {
-		t = "object";
-	}
-	switch(t) {
-	case "function":
-		return "<function>";
-	case "object":
-		if(o instanceof Array) {
-			if(o.__enum__) {
-				if(o.length == 2) {
-					return o[0];
-				}
-				var str = o[0] + "(";
-				s += "\t";
-				var _g1 = 2;
-				var _g = o.length;
-				while(_g1 < _g) {
-					var i = _g1++;
-					if(i != 2) {
-						str += "," + js_Boot.__string_rec(o[i],s);
-					} else {
-						str += js_Boot.__string_rec(o[i],s);
-					}
-				}
-				return str + ")";
-			}
-			var l = o.length;
-			var i1;
-			var str1 = "[";
-			s += "\t";
-			var _g11 = 0;
-			var _g2 = l;
-			while(_g11 < _g2) {
-				var i2 = _g11++;
-				str1 += (i2 > 0 ? "," : "") + js_Boot.__string_rec(o[i2],s);
-			}
-			str1 += "]";
-			return str1;
-		}
-		var tostr;
-		try {
-			tostr = o.toString;
-		} catch( e ) {
-			return "???";
-		}
-		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
-			var s2 = o.toString();
-			if(s2 != "[object Object]") {
-				return s2;
-			}
-		}
-		var k = null;
-		var str2 = "{\n";
-		s += "\t";
-		var hasp = o.hasOwnProperty != null;
-		for( var k in o ) {
-		if(hasp && !o.hasOwnProperty(k)) {
-			continue;
-		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
-			continue;
-		}
-		if(str2.length != 2) {
-			str2 += ", \n";
-		}
-		str2 += s + k + " : " + js_Boot.__string_rec(o[k],s);
-		}
-		s = s.substring(1);
-		str2 += "\n" + s + "}";
-		return str2;
-	case "string":
-		return o;
-	default:
-		return String(o);
-	}
-};
-js_Boot.__interfLoop = function(cc,cl) {
-	if(cc == null) {
-		return false;
-	}
-	if(cc == cl) {
-		return true;
-	}
-	var intf = cc.__interfaces__;
-	if(intf != null) {
-		var _g1 = 0;
-		var _g = intf.length;
-		while(_g1 < _g) {
-			var i = intf[_g1++];
-			if(i == cl || js_Boot.__interfLoop(i,cl)) {
-				return true;
-			}
-		}
-	}
-	return js_Boot.__interfLoop(cc.__super__,cl);
-};
-js_Boot.__instanceof = function(o,cl) {
-	if(cl == null) {
-		return false;
-	}
-	switch(cl) {
-	case Array:
-		if((o instanceof Array)) {
-			return o.__enum__ == null;
-		} else {
-			return false;
-		}
-		break;
-	case Bool:
-		return typeof(o) == "boolean";
-	case Dynamic:
-		return true;
-	case Float:
-		return typeof(o) == "number";
-	case Int:
-		if(typeof(o) == "number") {
-			return (o|0) === o;
-		} else {
-			return false;
-		}
-		break;
-	case String:
-		return typeof(o) == "string";
-	default:
-		if(o != null) {
-			if(typeof(cl) == "function") {
-				if(o instanceof cl) {
-					return true;
-				}
-				if(js_Boot.__interfLoop(js_Boot.getClass(o),cl)) {
-					return true;
-				}
-			} else if(typeof(cl) == "object" && js_Boot.__isNativeObj(cl)) {
-				if(o instanceof cl) {
-					return true;
-				}
-			}
-		} else {
-			return false;
-		}
-		if(cl == Class ? o.__name__ != null : false) {
-			return true;
-		}
-		if(cl == Enum ? o.__ename__ != null : false) {
-			return true;
-		}
-		return o.__enum__ == cl;
-	}
-};
-js_Boot.__nativeClassName = function(o) {
-	var name = js_Boot.__toStr.call(o).slice(8,-1);
-	if(name == "Object" || name == "Function" || name == "Math" || name == "JSON") {
-		return null;
-	}
-	return name;
-};
-js_Boot.__isNativeObj = function(o) {
-	return js_Boot.__nativeClassName(o) != null;
-};
-js_Boot.__resolveNativeClass = function(name) {
-	return $global[name];
-};
-var js_html__$CanvasElement_CanvasUtil = function() { };
-js_html__$CanvasElement_CanvasUtil.__name__ = true;
-js_html__$CanvasElement_CanvasUtil.getContextWebGL = function(canvas,attribs) {
-	var _g = 0;
-	var _g1 = ["webgl","experimental-webgl"];
-	while(_g < _g1.length) {
-		var name = _g1[_g];
-		++_g;
-		var ctx = canvas.getContext(name,attribs);
-		if(ctx != null) {
-			return ctx;
-		}
-	}
-	return null;
-};
-var js_html_compat_ArrayBuffer = function(a) {
-	if((a instanceof Array) && a.__enum__ == null) {
-		this.a = a;
-		this.byteLength = a.length;
-	} else {
-		var len = a;
-		this.a = [];
-		var _g1 = 0;
-		var _g = len;
-		while(_g1 < _g) this.a[_g1++] = 0;
-		this.byteLength = len;
-	}
-};
-js_html_compat_ArrayBuffer.__name__ = true;
-js_html_compat_ArrayBuffer.sliceImpl = function(begin,end) {
-	var u = new Uint8Array(this,begin,end == null ? null : end - begin);
-	var result = new ArrayBuffer(u.byteLength);
-	new Uint8Array(result).set(u);
-	return result;
-};
-js_html_compat_ArrayBuffer.prototype = {
-	slice: function(begin,end) {
-		return new js_html_compat_ArrayBuffer(this.a.slice(begin,end));
-	}
-	,__class__: js_html_compat_ArrayBuffer
-};
-var js_html_compat_Float32Array = function() { };
-js_html_compat_Float32Array.__name__ = true;
-js_html_compat_Float32Array._new = function(arg1,offset,length) {
-	var arr;
-	if(typeof(arg1) == "number") {
-		arr = [];
-		var _g1 = 0;
-		var _g = arg1;
-		while(_g1 < _g) {
-			var i = _g1++;
-			arr[i] = 0;
-		}
-		arr.byteLength = arr.length << 2;
-		arr.byteOffset = 0;
-		var _g2 = [];
-		var _g21 = 0;
-		var _g11 = arr.length << 2;
-		while(_g21 < _g11) {
-			var i1 = _g21++;
-			_g2.push(0);
-		}
-		arr.buffer = new js_html_compat_ArrayBuffer(_g2);
-	} else if(js_Boot.__instanceof(arg1,js_html_compat_ArrayBuffer)) {
-		var buffer = arg1;
-		if(offset == null) {
-			offset = 0;
-		}
-		if(length == null) {
-			length = buffer.byteLength - offset >> 2;
-		}
-		arr = [];
-		var _g12 = 0;
-		var _g3 = length;
-		while(_g12 < _g3) {
-			var i2 = _g12++;
-			var val = buffer.a[offset++] | buffer.a[offset++] << 8 | buffer.a[offset++] << 16 | buffer.a[offset++] << 24;
-			arr.push(haxe_io_FPHelper.i32ToFloat(val));
-		}
-		arr.byteLength = arr.length << 2;
-		arr.byteOffset = offset;
-		arr.buffer = buffer;
-	} else if((arg1 instanceof Array) && arg1.__enum__ == null) {
-		arr = arg1.slice();
-		var buffer1 = [];
-		var _g4 = 0;
-		while(_g4 < arr.length) {
-			var f = arr[_g4];
-			++_g4;
-			var i3 = haxe_io_FPHelper.floatToI32(f);
-			buffer1.push(i3 & 255);
-			buffer1.push(i3 >> 8 & 255);
-			buffer1.push(i3 >> 16 & 255);
-			buffer1.push(i3 >>> 24);
-		}
-		arr.byteLength = arr.length << 2;
-		arr.byteOffset = 0;
-		arr.buffer = new js_html_compat_ArrayBuffer(buffer1);
-	} else {
-		throw new js__$Boot_HaxeError("TODO " + Std.string(arg1));
-	}
-	arr.subarray = js_html_compat_Float32Array._subarray;
-	arr.set = js_html_compat_Float32Array._set;
-	return arr;
-};
-js_html_compat_Float32Array._set = function(arg,offset) {
-	if(js_Boot.__instanceof(arg.buffer,js_html_compat_ArrayBuffer)) {
-		var a = arg;
-		if(arg.byteLength + offset > this.byteLength) {
-			throw new js__$Boot_HaxeError("set() outside of range");
-		}
-		var _g1 = 0;
-		var _g = arg.byteLength;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this[i + offset] = a[i];
-		}
-	} else if((arg instanceof Array) && arg.__enum__ == null) {
-		var a1 = arg;
-		if(a1.length + offset > this.byteLength) {
-			throw new js__$Boot_HaxeError("set() outside of range");
-		}
-		var _g11 = 0;
-		var _g2 = a1.length;
-		while(_g11 < _g2) {
-			var i1 = _g11++;
-			this[i1 + offset] = a1[i1];
-		}
-	} else {
-		throw new js__$Boot_HaxeError("TODO");
-	}
-};
-js_html_compat_Float32Array._subarray = function(start,end) {
-	var a = js_html_compat_Float32Array._new(this.slice(start,end));
-	a.byteOffset = start * 4;
-	return a;
-};
-var js_html_compat_Uint8Array = function() { };
-js_html_compat_Uint8Array.__name__ = true;
-js_html_compat_Uint8Array._new = function(arg1,offset,length) {
-	var arr;
-	if(typeof(arg1) == "number") {
-		arr = [];
-		var _g1 = 0;
-		var _g = arg1;
-		while(_g1 < _g) {
-			var i = _g1++;
-			arr[i] = 0;
-		}
-		arr.byteLength = arr.length;
-		arr.byteOffset = 0;
-		arr.buffer = new js_html_compat_ArrayBuffer(arr);
-	} else if(js_Boot.__instanceof(arg1,js_html_compat_ArrayBuffer)) {
-		var buffer = arg1;
-		if(offset == null) {
-			offset = 0;
-		}
-		if(length == null) {
-			length = buffer.byteLength - offset;
-		}
-		if(offset == 0) {
-			arr = buffer.a;
-		} else {
-			arr = buffer.a.slice(offset,offset + length);
-		}
-		arr.byteLength = arr.length;
-		arr.byteOffset = offset;
-		arr.buffer = buffer;
-	} else if((arg1 instanceof Array) && arg1.__enum__ == null) {
-		arr = arg1.slice();
-		arr.byteLength = arr.length;
-		arr.byteOffset = 0;
-		arr.buffer = new js_html_compat_ArrayBuffer(arr);
-	} else {
-		throw new js__$Boot_HaxeError("TODO " + Std.string(arg1));
-	}
-	arr.subarray = js_html_compat_Uint8Array._subarray;
-	arr.set = js_html_compat_Uint8Array._set;
-	return arr;
-};
-js_html_compat_Uint8Array._set = function(arg,offset) {
-	if(js_Boot.__instanceof(arg.buffer,js_html_compat_ArrayBuffer)) {
-		var a = arg;
-		if(arg.byteLength + offset > this.byteLength) {
-			throw new js__$Boot_HaxeError("set() outside of range");
-		}
-		var _g1 = 0;
-		var _g = arg.byteLength;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this[i + offset] = a[i];
-		}
-	} else if((arg instanceof Array) && arg.__enum__ == null) {
-		var a1 = arg;
-		if(a1.length + offset > this.byteLength) {
-			throw new js__$Boot_HaxeError("set() outside of range");
-		}
-		var _g11 = 0;
-		var _g2 = a1.length;
-		while(_g11 < _g2) {
-			var i1 = _g11++;
-			this[i1 + offset] = a1[i1];
-		}
-	} else {
-		throw new js__$Boot_HaxeError("TODO");
-	}
-};
-js_html_compat_Uint8Array._subarray = function(start,end) {
-	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
-	a.byteOffset = start;
-	return a;
-};
-var justPath_IPathContext = function() { };
-justPath_IPathContext.__name__ = true;
-justPath_IPathContext.prototype = {
-	__class__: justPath_IPathContext
-};
-var justPath_StoreF6 = function() {
-	this.count = 0;
-	this.l = 0;
-};
-justPath_StoreF6.__name__ = true;
-justPath_StoreF6.prototype = {
-	hasNext: function() {
-		return this.count < this.l + 1;
-	}
-	,next: function() {
-		var out = null;
-		switch(this.count) {
-		case 0:
-			out = this.s0;
-			break;
-		case 1:
-			out = this.s1;
-			break;
-		case 2:
-			out = this.s2;
-			break;
-		case 3:
-			out = this.s3;
-			break;
-		case 4:
-			out = this.s4;
-			break;
-		case 5:
-			out = this.s5;
-			break;
-		default:
-		}
-		this.count++;
-		return out;
-	}
-	,__class__: justPath_StoreF6
-};
-var justPath_SvgPath = function(pathContext_) {
-	this.sy = 1;
-	this.sx = 1;
-	this.dy = 0;
-	this.dx = 0;
-	this.lastY = 0;
-	this.lastX = 0;
-	this.pathContext = pathContext_;
-};
-justPath_SvgPath.__name__ = true;
-justPath_SvgPath.prototype = {
-	parse: function(str_,dx_,dy_,sx_,sy_) {
-		if(sy_ == null) {
-			sy_ = 1;
-		}
-		if(sx_ == null) {
-			sx_ = 1;
-		}
-		if(dy_ == null) {
-			dy_ = 0;
-		}
-		if(dx_ == null) {
-			dx_ = 0;
-		}
-		this.str = str_;
-		this.dx = dx_;
-		this.dy = dy_;
-		this.sx = sx_;
-		this.sy = sy_;
-		this.pos = 0;
-		this.l = this.str.length;
-		this.c = this.str.charCodeAt(this.pos++);
-		this.store = new justPath_StoreF6();
-		while(this.pos < this.l) {
-			switch(this.c) {
-			case 65:
-				console.log("elliptical_Arc - not implemented");
-				this.extractArgs();
-				break;
-			case 66:
-				console.log("bearing - not implemented");
-				throw new js__$Boot_HaxeError("bearing not supported please remove");
-				break;
-			case 67:
-				this.extractArgs();
-				this.controlX = this.store.s2;
-				this.controlY = this.store.s3;
-				this.lastX = this.store.s4;
-				this.lastY = this.store.s5;
-				this.pathContext.curveTo(this.store.s0,this.store.s1,this.controlX,this.controlY,this.lastX,this.lastY);
-				break;
-			case 72:
-				this.extractArgs(false);
-				this.lastX = this.store.s0 * this.sx + this.dx;
-				this.pathContext.lineTo(this.lastX,this.lastY);
-				break;
-			case 76:
-				this.extractArgs();
-				this.lastX = this.store.s0;
-				this.lastY = this.store.s1;
-				this.pathContext.lineTo(this.lastX,this.lastY);
-				break;
-			case 77:
-				this.extractArgs();
-				this.lastX = this.store.s0;
-				this.lastY = this.store.s1;
-				this.pathContext.moveTo(this.lastX,this.lastY);
-				break;
-			case 81:
-				this.extractArgs();
-				this.controlX = this.store.s0;
-				this.controlY = this.store.s1;
-				this.lastX = this.store.s2;
-				this.lastY = this.store.s3;
-				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
-				break;
-			case 83:
-				this.extractArgs();
-				this.controlX = 2 * this.lastX - this.controlX;
-				this.controlY = 2 * this.lastY - this.controlY;
-				this.pathContext.curveTo(this.controlX,this.controlY,this.store.s0,this.store.s1,this.store.s2,this.store.s3);
-				this.controlX = this.store.s0;
-				this.controlY = this.store.s1;
-				break;
-			case 84:
-				this.extractArgs();
-				this.controlX = 2 * this.lastX - this.controlX;
-				this.controlY = 2 * this.lastY - this.controlY;
-				this.lastX = this.store.s0;
-				this.lastY = this.store.s1;
-				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
-				break;
-			case 86:
-				this.extractArgs(false);
-				this.lastY = this.store.s0 * this.sy + this.dy;
-				this.pathContext.lineTo(this.lastX,this.lastY);
-				break;
-			case 90:case 122:
-				this.lastX = 0;
-				this.lastY = 0;
-				break;
-			case 97:
-				console.log("relative elliptical_Arc - not implemented");
-				this.extractArgs();
-				break;
-			case 99:
-				this.extractArgs();
-				this.controlX = this.store.s2 + this.lastX;
-				this.controlY = this.store.s3 + this.lastY;
-				var endX = this.store.s4 + this.lastX;
-				var endY = this.store.s5 + this.lastY;
-				this.pathContext.curveTo(this.store.s0 + this.lastX,this.store.s1 + this.lastY,this.controlX,this.controlY,endX,endY);
-				this.lastX = endX;
-				this.lastY = endY;
-				break;
-			case 104:
-				this.extractArgs(false);
-				this.lastX = this.lastX + this.store.s0 * this.sx + this.dx;
-				this.pathContext.lineTo(this.lastX,this.lastY);
-				break;
-			case 108:
-				this.extractArgs();
-				this.lastX = this.store.s0 + this.lastX;
-				this.lastY = this.store.s1 + this.lastY;
-				this.pathContext.lineTo(this.lastX,this.lastY);
-				break;
-			case 109:
-				this.extractArgs();
-				this.lastX = this.store.s0 + this.lastX;
-				this.lastY = this.store.s1 + this.lastY;
-				this.pathContext.moveTo(this.lastX,this.lastY);
-				break;
-			case 113:
-				this.extractArgs();
-				this.controlX = this.lastX + this.store.s0;
-				this.controlY = this.lastY + this.store.s1;
-				this.lastX = this.store.s0 + this.lastX;
-				this.lastY = this.store.s1 + this.lastY;
-				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
-				break;
-			case 115:
-				this.extractArgs();
-				this.controlX = 2 * this.lastX - this.controlX;
-				this.controlY = 2 * this.lastY - this.controlY;
-				var endX1 = this.store.s2 + this.lastX;
-				var endY1 = this.store.s3 + this.lastY;
-				this.pathContext.curveTo(this.controlX,this.controlY,this.store.s0 + this.lastX,this.store.s1 + this.lastY,endX1,endY1);
-				this.controlX = this.store.s0 + this.lastX;
-				this.controlY = this.store.s1 + this.lastY;
-				this.lastX = endX1;
-				this.lastY = endY1;
-				break;
-			case 116:
-				this.extractArgs();
-				this.controlX = 2 * this.lastX - this.controlX;
-				this.controlY = 2 * this.lastY - this.controlY;
-				this.lastX = this.store.s0 + this.lastY;
-				this.lastY = this.store.s1 + this.lastX;
-				this.pathContext.quadTo(this.controlX,this.controlY,this.lastX,this.lastY);
-				break;
-			case 118:
-				this.extractArgs(false);
-				this.lastY = this.lastY + this.store.s0 * this.sy + this.dy;
-				this.pathContext.lineTo(this.lastX,this.lastY);
-				break;
-			default:
-			}
-			this.c = this.str.charCodeAt(this.pos++);
-		}
-		return str_;
-	}
-	,extractArgs: function(process) {
-		if(process == null) {
-			process = true;
-		}
-		var _this = this.store;
-		_this.l = 0;
-		_this.s0 = null;
-		_this.s1 = null;
-		_this.s2 = null;
-		_this.s3 = null;
-		_this.s4 = null;
-		_this.s5 = null;
-		this.c = this.str.charCodeAt(this.pos++);
-		var temp = "";
-		try {
-			while(true) {
-				switch(this.c) {
-				case 32:case 44:
-					if(temp != "") {
-						if(temp == "0") {
-							temp = "0.1";
-						}
-						if(process) {
-							if((this.store.l & 1) == 0) {
-								var _this1 = this.store;
-								var v = parseFloat(temp) * this.sx + this.dx;
-								switch(_this1.l) {
-								case 0:
-									_this1.s0 = v;
-									break;
-								case 1:
-									_this1.s1 = v;
-									break;
-								case 2:
-									_this1.s2 = v;
-									break;
-								case 3:
-									_this1.s3 = v;
-									break;
-								case 4:
-									_this1.s4 = v;
-									break;
-								case 5:
-									_this1.s5 = v;
-									break;
-								default:
-								}
-								_this1.l++;
-							} else {
-								var _this2 = this.store;
-								var v1 = parseFloat(temp) * this.sy + this.dy;
-								switch(_this2.l) {
-								case 0:
-									_this2.s0 = v1;
-									break;
-								case 1:
-									_this2.s1 = v1;
-									break;
-								case 2:
-									_this2.s2 = v1;
-									break;
-								case 3:
-									_this2.s3 = v1;
-									break;
-								case 4:
-									_this2.s4 = v1;
-									break;
-								case 5:
-									_this2.s5 = v1;
-									break;
-								default:
-								}
-								_this2.l++;
-							}
-						} else {
-							var _this3 = this.store;
-							var v2 = parseFloat(temp);
-							switch(_this3.l) {
-							case 0:
-								_this3.s0 = v2;
-								break;
-							case 1:
-								_this3.s1 = v2;
-								break;
-							case 2:
-								_this3.s2 = v2;
-								break;
-							case 3:
-								_this3.s3 = v2;
-								break;
-							case 4:
-								_this3.s4 = v2;
-								break;
-							case 5:
-								_this3.s5 = v2;
-								break;
-							default:
-							}
-							_this3.l++;
-						}
-						temp = "";
-					}
-					break;
-				case 45:
-					if(temp != "") {
-						if(temp == "0") {
-							temp = "0.1";
-						}
-						if(process) {
-							if((this.store.l & 1) == 0) {
-								var _this4 = this.store;
-								var v3 = parseFloat(temp) * this.sx + this.dx;
-								switch(_this4.l) {
-								case 0:
-									_this4.s0 = v3;
-									break;
-								case 1:
-									_this4.s1 = v3;
-									break;
-								case 2:
-									_this4.s2 = v3;
-									break;
-								case 3:
-									_this4.s3 = v3;
-									break;
-								case 4:
-									_this4.s4 = v3;
-									break;
-								case 5:
-									_this4.s5 = v3;
-									break;
-								default:
-								}
-								_this4.l++;
-							} else {
-								var _this5 = this.store;
-								var v4 = parseFloat(temp) * this.sy + this.dy;
-								switch(_this5.l) {
-								case 0:
-									_this5.s0 = v4;
-									break;
-								case 1:
-									_this5.s1 = v4;
-									break;
-								case 2:
-									_this5.s2 = v4;
-									break;
-								case 3:
-									_this5.s3 = v4;
-									break;
-								case 4:
-									_this5.s4 = v4;
-									break;
-								case 5:
-									_this5.s5 = v4;
-									break;
-								default:
-								}
-								_this5.l++;
-							}
-						} else {
-							var _this6 = this.store;
-							var v5 = parseFloat(temp);
-							switch(_this6.l) {
-							case 0:
-								_this6.s0 = v5;
-								break;
-							case 1:
-								_this6.s1 = v5;
-								break;
-							case 2:
-								_this6.s2 = v5;
-								break;
-							case 3:
-								_this6.s3 = v5;
-								break;
-							case 4:
-								_this6.s4 = v5;
-								break;
-							case 5:
-								_this6.s5 = v5;
-								break;
-							default:
-							}
-							_this6.l++;
-						}
-					}
-					temp = "-";
-					break;
-				case 46:
-					temp += ".";
-					break;
-				case 48:
-					temp += "0";
-					break;
-				case 49:
-					temp += "1";
-					break;
-				case 50:
-					temp += "2";
-					break;
-				case 51:
-					temp += "3";
-					break;
-				case 52:
-					temp += "4";
-					break;
-				case 53:
-					temp += "5";
-					break;
-				case 54:
-					temp += "6";
-					break;
-				case 55:
-					temp += "7";
-					break;
-				case 56:
-					temp += "8";
-					break;
-				case 57:
-					temp += "9";
-					break;
-				default:
-					if(temp != "") {
-						if(temp == "0") {
-							temp = "0.1";
-						}
-						if(process) {
-							if((this.store.l & 1) == 0) {
-								var _this7 = this.store;
-								var v6 = parseFloat(temp) * this.sx + this.dx;
-								switch(_this7.l) {
-								case 0:
-									_this7.s0 = v6;
-									break;
-								case 1:
-									_this7.s1 = v6;
-									break;
-								case 2:
-									_this7.s2 = v6;
-									break;
-								case 3:
-									_this7.s3 = v6;
-									break;
-								case 4:
-									_this7.s4 = v6;
-									break;
-								case 5:
-									_this7.s5 = v6;
-									break;
-								default:
-								}
-								_this7.l++;
-							} else {
-								var _this8 = this.store;
-								var v7 = parseFloat(temp) * this.sy + this.dy;
-								switch(_this8.l) {
-								case 0:
-									_this8.s0 = v7;
-									break;
-								case 1:
-									_this8.s1 = v7;
-									break;
-								case 2:
-									_this8.s2 = v7;
-									break;
-								case 3:
-									_this8.s3 = v7;
-									break;
-								case 4:
-									_this8.s4 = v7;
-									break;
-								case 5:
-									_this8.s5 = v7;
-									break;
-								default:
-								}
-								_this8.l++;
-							}
-						} else {
-							var _this9 = this.store;
-							var v8 = parseFloat(temp);
-							switch(_this9.l) {
-							case 0:
-								_this9.s0 = v8;
-								break;
-							case 1:
-								_this9.s1 = v8;
-								break;
-							case 2:
-								_this9.s2 = v8;
-								break;
-							case 3:
-								_this9.s3 = v8;
-								break;
-							case 4:
-								_this9.s4 = v8;
-								break;
-							case 5:
-								_this9.s5 = v8;
-								break;
-							default:
-							}
-							_this9.l++;
-						}
-						temp = "";
-					}
-					this.pos--;
-					throw "__break__";
-				}
-				this.c = this.str.charCodeAt(this.pos++);
-			}
-		} catch( e ) { if( e != "__break__" ) throw e; }
-	}
-	,__class__: justPath_SvgPath
-};
-var khaMath_Matrix4 = function(_00,_10,_20,_30,_01,_11,_21,_31,_02,_12,_22,_32,_03,_13,_23,_33) {
-	this._00 = _00;
-	this._10 = _10;
-	this._20 = _20;
-	this._30 = _30;
-	this._01 = _01;
-	this._11 = _11;
-	this._21 = _21;
-	this._31 = _31;
-	this._02 = _02;
-	this._12 = _12;
-	this._22 = _22;
-	this._32 = _32;
-	this._03 = _03;
-	this._13 = _13;
-	this._23 = _23;
-	this._33 = _33;
-};
-khaMath_Matrix4.__name__ = true;
-khaMath_Matrix4.prototype = {
-	__class__: khaMath_Matrix4
+	,__class__: testTrilateral_TrilateralTest
 };
 var trilateral_geom_Algebra = function() { };
 trilateral_geom_Algebra.__name__ = true;
@@ -4266,5 +4311,5 @@ js_html_compat_Float32Array.BYTES_PER_ELEMENT = 4;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
 trilateral_geom_Algebra.quadStep = 0.03;
 trilateral_geom_Algebra.cubicStep = 0.03;
-TestWebGL.main();
+testTrilateral_TestWebGL.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

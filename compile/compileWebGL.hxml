@@ -1,15 +1,17 @@
 # run from ../compile.hxml as paths are not appended with ../ so won't work from this folder.
 -js binWebGL/test.js
 -cp src
--cp test
+-cp samples
 #-D trilateral_debug
 #-D trilateral_debugPoints
 #-D trilateral_includeSegments
+
 -lib htmlHelper
 -lib khaMath
 -lib justPath
 -lib fracs
--main TestWebGL
+
+-main testTrilateral.TestWebGL
 -D js-flatten 
 -dce full
 --next

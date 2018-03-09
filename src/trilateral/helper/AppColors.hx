@@ -1,6 +1,6 @@
 package trilateral.helper;
 //TODO: need to check color requirements for other targets from Quick
-#if kha 
+#if (kha||heaps) 
 @:enum
 abstract AppColors( Int ) to Int from Int {
     var Violet      = 0xFF9400D3;

@@ -1,0 +1,4 @@
+-cmd lsof -ti:3000 | xargs kill
+#--next
+-cmd lime test compile/project.xml html5
+#--port=3011

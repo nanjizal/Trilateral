@@ -1,4 +1,11 @@
 # Trilateral
-Haxe code for drawing lines and some simple shapes with triangles currently more minimal that justTriangles but a lot cleaner, likely to be extended.
+Haxe code for drawing lines and shapes with triangles.
 
-[Test demo ](https://nanjizal.github.io/Trilateral/bin/)
+[WebGL](https://nanjizal.github.io/Trilateral/binWebGL/)
+[Kha2](https://nanjizal.github.io/Trilateral/binKha2/html5/)
+[Kha4](https://nanjizal.github.io/Trilateral/binKha4/html5/)
+[Heaps](https://nanjizal.github.io/Trilateral/binHeaps/)
+[Luxe](https://nanjizal.github.io/Trilateral/binLuxe/)
+[NME](https://nanjizal.github.io/Trilateral/binNme/jsprime/TestFlash/)
+[OpenFL](https://nanjizal.github.io/Trilateral/binOpenFL/Exports/html5/release/bin/)
+[Canvas](https://nanjizal.github.io/Trilateral/binCanvas/)

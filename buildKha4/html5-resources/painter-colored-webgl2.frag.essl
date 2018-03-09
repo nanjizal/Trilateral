@@ -1,0 +1,12 @@
+#version 300 es
+precision mediump float;
+precision mediump int;
+
+out vec4 FragColor;
+in vec4 fragmentColor;
+
+void main()
+{
+    FragColor = fragmentColor;
+}
+

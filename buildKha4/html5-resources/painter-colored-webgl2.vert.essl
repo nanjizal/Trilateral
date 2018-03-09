@@ -1,0 +1,14 @@
+#version 300 es
+
+uniform mediump mat4 projectionMatrix;
+
+in mediump vec3 vertexPosition;
+out mediump vec4 fragmentColor;
+in mediump vec4 vertexColor;
+
+void main()
+{
+    gl_Position = projectionMatrix * vec4(vertexPosition, 1.0);
+    fragmentColor = vertexColor;
+}
+
