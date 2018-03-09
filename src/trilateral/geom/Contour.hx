@@ -210,7 +210,6 @@ class Contour {
         var start: Pi2pi = theta0;
         var start2: Float = start;
         var delta = start2 + dif/2 + Math.PI;
-        trace( 'delta ' + delta );
         jx = ax + h * Math.sin( delta );
         jy = ay + h * Math.cos( delta );
     }

@@ -36,14 +36,21 @@ class TestWebGL extends WebGLSetup {
         super( stageRadius*2, stageRadius*2 );
         scale = 1/(stageRadius);
         darkBackground();
-        trilateralTest =  new TrilateralTest( stageRadius );
-        trilateralTest.setup();
-        setupProgram( vertex, fragment );
         modelViewProjection = Matrix4.identity();
+        setupProgram( vertex, fragment );
         // does not need drawing every frame unless spinning
-         AnimateTimer.create();
-         AnimateTimer.onFrame = render_;
+        trilateralTest =  new TrilateralTest( stageRadius, setMatrix, setAnimate );
+        trilateralTest.setup();
         render();
+    }
+    public inline
+    function setAnimate(){
+        AnimateTimer.create();
+        AnimateTimer.onFrame = render_;
+    }
+    public inline
+    function setMatrix( matrix4: Matrix4 ): Void {
+        modelViewProjection = matrix4;
     }
     function darkBackground(){
         var dark = 0x18/256;
@@ -98,10 +105,10 @@ class TestWebGL extends WebGLSetup {
         trilateralTest.render(); // not currently needed
         setTriangles( trilateralTest.triangles, cast trilateralTest.appColors );
         super.render();
-    }
+        }/*
     var theta: Float = 0;
     inline function spin(): Matrix4{
         if( theta > Math.PI/2 ) theta = -Math.PI/2;
         return Matrix4.rotationZ( theta += Math.PI/100 ).multmat( Matrix4.rotationY( theta ) );
-    }
+    }*/
 }

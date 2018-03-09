@@ -1,12 +1,11 @@
 package;
-
+import khaMath.Matrix4;
 import trilateral.tri.Triangle;
 import trilateral.tri.TrilateralArray;
 import trilateral.geom.Contour;
 import trilateral.tri.TriangleArray;
 import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
-
 import trilateral.path.Crude;         // just overlap nothing between very dirty
 import trilateral.path.RoundEnd;      // create isolated rounded lines not ideal as end of each line overlap but very robust.
 import trilateral.path.MediumOverlap; // when the lines overlap slightly
@@ -14,37 +13,38 @@ import trilateral.path.Medium;        // this is for triangles between angles
 import trilateral.path.FineOverlap;   // when the lines overlap slightly
 import trilateral.path.Fine;          // this is triangles with curved corners
 import trilateral.path.FillOnly;      // no drawing this is just useful if you want the shape without drawing the contour.
-
 import trilateral.helper.Shapes;
 import trilateral.helper.AppColors;
-
 import justPath.SvgPath;
 import justPath.PathContextTrace;
-
 import fracs.Angles;
 import trilateral.polys.Poly;
 import trilateral.geom.Point;
-
 #if trilateral_includeSegments
 import trilateral.segment.SixteenSeg;
 import trilateral.segment.SevenSeg;
 #end
-
 class TrilateralTest {
-    public var appColors:         Array<AppColors> = [ Black, Red, Orange, Yellow, Green, Blue, Indigo, Violet
-                                            , LightGrey, MidGrey, DarkGrey, NearlyBlack, White
-                                            , BlueAlpha, GreenAlpha, RedAlpha ];
-    public var triangles: TriangleArray;
-    var centre:         Point;
-    var bottomLeft:     Point;
-    var bottomRight:    Point;
-    var topLeft:        Point;
-    var topRight:       Point;
-    var stageRadius:    Float; // Int ?
-    var quarter:        Float;
+    public var appColors:       Array<AppColors> = [ Black, Red, Orange, Yellow, Green, Blue, Indigo, Violet
+                                                   , LightGrey, MidGrey, DarkGrey, NearlyBlack, White
+                                                   , BlueAlpha, GreenAlpha, RedAlpha ];
+    public var triangles:       TriangleArray;
+    var setMatrix:              Matrix4->Void;
+    var modelViewProjection:    Matrix4;
+    var theta:                  Float = 0;
+    var centre:                 Point;
+    var bottomLeft:             Point;
+    var bottomRight:            Point;
+    var topLeft:                Point;
+    var topRight:               Point;
+    var stageRadius:            Float; // Int ?
+    var quarter:                Float;
     public
-    function new( stageRadius_: Float ){
-        stageRadius = stageRadius_;
+    function new( stageRadius_: Float, setMatrix_: Matrix4->Void, setAnimate_: Void->Void ){
+        stageRadius         = stageRadius_;
+        modelViewProjection = Matrix4.identity();
+        setMatrix = setMatrix_;
+        // setAnimate_(); // if you want it to draw every frame, or update triangles
     }
     public
     function setup(){
@@ -54,13 +54,18 @@ class TrilateralTest {
         bottomRight     = { x: stageRadius + quarter, y: stageRadius + quarter };
         topLeft         = { x: stageRadius - quarter, y: stageRadius - quarter };
         topRight        = { x: stageRadius + quarter, y: stageRadius - quarter };
-        draw();
+        draw(); // initial draw scene
+    }
+    public inline
+    function update(){
+        // not used yet 
     }
     public inline
     function render(){
-    
+        // setMatrix( spin() ); // if you want to rotate the image
     }
-    //-----------------------------------------------------------
+    //______________________________________________________________
+    //
     function draw(){
         triangles = new TriangleArray();
         addPaths();
@@ -68,11 +73,16 @@ class TrilateralTest {
         pieArc();
         addShapes();
         addJoinTestForwards();
-        // heavier compile tests with segments not really needed!
-        #if trilateral_includeSegments
+        #if trilateral_includeSegments // heavier compile tests with segments not really needed!
         addSixteen();
         addSeven();
         #end
+    }
+    //______________________________________________________________
+    //
+    inline function spin(): Matrix4{
+        if( theta > Math.PI/2 ) theta = -Math.PI/2;
+        return Matrix4.rotationZ( theta += Math.PI/100 ).multmat( Matrix4.rotationY( theta ) );
     }
     function findColorID( col: AppColors ){
         return appColors.indexOf( col );
