@@ -5,7 +5,7 @@ Haxe code for drawing lines and shapes with triangles.
 [Kha2](https://nanjizal.github.io/Trilateral/buildKha2/html5/)
 [Kha4](https://nanjizal.github.io/Trilateral/buildKha4/html5/)
 [Heaps](https://nanjizal.github.io/Trilateral/binHeaps/)
-[Luxe](https://nanjizal.github.io/Trilateral/binLuxe/)
+[Luxe](https://nanjizal.github.io/Trilateral/binLuxe/web/)
 [NME](https://nanjizal.github.io/Trilateral/binNme/jsprime/TestFlash/)
 [OpenFL](https://nanjizal.github.io/Trilateral/binOpenFL/Exports/html5/release/bin/)
 [Canvas](https://nanjizal.github.io/Trilateral/binCanvas/)
