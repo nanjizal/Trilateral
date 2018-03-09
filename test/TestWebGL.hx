@@ -39,7 +39,7 @@ import trilateral.segment.SevenSeg;
 
 using htmlHelper.webgl.WebGLSetup;
 
-class Test extends WebGLSetup {
+class TestWebGL extends WebGLSetup {
     var webgl: WebGLSetup;
     var appColors:         Array<AppColors> = [ Black, Red, Orange, Yellow, Green, Blue, Indigo, Violet
                                             , LightGrey, MidGrey, DarkGrey, NearlyBlack, White
@@ -69,7 +69,7 @@ class Test extends WebGLSetup {
         'void main(void) {' +
             ' gl_FragColor = vcol;' +
         '}';
-    public static function main(){ new Test(); }
+    public static function main(){ new TestWebGL(); }
     var scale = 0.002;
     public inline static var stageRadius: Int = 570;
     var quarter: Float;
