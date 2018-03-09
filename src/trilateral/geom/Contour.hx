@@ -77,6 +77,7 @@ class Contour {
     public var angle2: Float;
     
     public function reset(){
+        angleA = null;
         count = 0;
         kax = null;
         kay = null;
@@ -90,7 +91,20 @@ class Contour {
         nby = null;
         ncx = null;
         ncy = null;
+        ax = null;
+        ay = null;
+        bx = null;
+        by = null;
+        cx = null;
+        cy = null;
         dx = null;
+        dy = null;
+        ex = null;
+        ey = null;
+        fx = null;
+        fy = null;
+        gx = null;
+        gy = null;
     }
     //TODO: create lower limit for width   0.00001; ?
     public var count = 0;
@@ -102,9 +116,9 @@ class Contour {
     function triangleJoin( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false, ?overlap: Bool = false ){
         var oldAngle = ( dx != null )? angle1: null;  // I am not sure I can move this to curveJoins because angle1 is set by computeDE
         halfA = Math.PI/2;
-        //  if( dxOld != null ){
+        //if( dxOld != null ){  // this makes it a lot faster but a bit of path in some instance disappear needs more thought to remove....
             // dx dy ex ey
-        // } else {
+        //} else {
             // only calculate p3, p4 if missing - not sure if there are any strange cases this misses, seems to work and reduces calculations
             ax = bx_;
             ay = by_;
@@ -113,7 +127,7 @@ class Contour {
             beta = Math.PI/2 - halfA;           // thickness
             r = ( width_/2 )*Math.cos( beta );  // thickness
             computeDE();
-        // }
+            //}
         //switch lines round to get other side but make sure you finish on p1 so that p3 and p4 are useful
         ax = ax_;
         ay = ay_;
@@ -132,7 +146,7 @@ class Contour {
                 theta1 = thetaComputeAdj( dxPrev, dyPrev );
             }
             var dif = Angles.differencePrefer( theta0, theta1, SMALL );
-            if( !overlap ) computeJ( width_, theta0, dif ); // don't calculate j if your just overlapping quads
+            if( !overlap && count != 0 ) computeJ( width_, theta0, dif ); // don't calculate j if your just overlapping quads
             
             if( count == 0 && ( endLine == begin || endLine == both ) ) addPie( ax, ay, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
             
@@ -152,11 +166,11 @@ class Contour {
             if( overlap ){
                 overlapQuad(); // not normal
             }else {
-                addQuads( clockWise );
+                if( count != 0 ) addQuads( clockWise );
                 addInitialQuads( clockWise );
             }
             storeLastQuads();
-        if( curveEnds && !overlap ) addSmallTriangles( clockWise );
+        if( curveEnds && !overlap && count != 0 ) addSmallTriangles( clockWise );
         jxOld = jx;
         jyOld = jy;
         lastClock = clockWise;
@@ -196,6 +210,7 @@ class Contour {
         var start: Pi2pi = theta0;
         var start2: Float = start;
         var delta = start2 + dif/2 + Math.PI;
+        trace( 'delta ' + delta );
         jx = ax + h * Math.sin( delta );
         jy = ay + h * Math.cos( delta );
     }

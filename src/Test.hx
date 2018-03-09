@@ -131,7 +131,7 @@ class Test extends WebGLSetup {
         //var path = new RoundEnd(); // currently Fine has issues.
         //var path = new MediumOverlap( null, null, both ); // overlap triangles between, and round at 
                                                             // beginning posible not at end because need move.
-        var path = new FineOverlap( null, null, both );
+        var path = new Fine( null, null, both );
         // var path = new FillOnly();
         //var path = new Crude();
         //var path = new Medium();
@@ -160,7 +160,7 @@ class Test extends WebGLSetup {
     }
     function addCubicCurve(){
         //var path = new RoundEnd();
-        var path = new FineOverlap( null, null, both );
+        var path = new Fine( null, null, both );
         path.width = 1;
         path.widthFunction = function( width: Float, x: Float, y: Float, x_: Float, y_: Float ): Float{
             return width+0.008;
