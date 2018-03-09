@@ -115,15 +115,19 @@ class Test extends WebGLSetup {
     function addShapes(){
         var size = 80;
         var shapes = new Shapes( triangles, appColors );
-        shapes.star( ( bottomLeft.x + centre.x )/2, ( bottomLeft.y + centre.y )/2,      size,  Orange );
-        shapes.diamond( ( topLeft.x + centre.x )/2, ( topLeft.y + centre.y )/2,     0.7*size,  Yellow );
+        shapes.star( ( bottomLeft.x + centre.x )/2, ( bottomLeft.y + centre.y )/2,      size,  Orange  );
+        shapes.diamond( ( topLeft.x + centre.x )/2, ( topLeft.y + centre.y )/2,     0.7*size,  Yellow  );
+        shapes.diamondOutline( ( topLeft.x + centre.x )/2
+                                                 , ( topLeft.y + centre.y )/2,  0.7*size, 6,   MidGrey );
         shapes.square( ( bottomRight.x + centre.x )/2
-                                                 , ( bottomRight.y + centre.y )/2,  0.7*size,  Green  );
-        shapes.rectangle( centre.x - 100, centre.y - 50,                        size*2, size,  Blue   );
-        shapes.circle( ( topRight.x + centre.x )/2, ( topRight.y + centre.y )/2,        size,  Indigo );
-        shapes.spiralLines( centre.x, centre.y, 15, 60, 0.08, 0.05,                            Red    );
+                                                 , ( bottomRight.y + centre.y )/2,  0.7*size,  Green   );
+        shapes.squareOutline( ( bottomRight.x + centre.x )/2
+                                            , ( bottomRight.y + centre.y )/2, 0.7*size, 6,     MidGrey );
+        shapes.rectangle( centre.x - 100, centre.y - 50,                        size*2, size,  Blue    );
+        shapes.circle( ( topRight.x + centre.x )/2, ( topRight.y + centre.y )/2,        size,  Indigo  );
+        shapes.spiralLines( centre.x, centre.y, 15, 60, 0.08, 0.05,                            Red     );
         shapes.roundedRectangle( topLeft.x - size
-                              ,( topLeft.y + bottomLeft.y )/2 - size/2, size*2, size, 30,      Violet );
+                              ,( topLeft.y + bottomLeft.y )/2 - size/2, size*2, size, 30,      Violet  );
         shapes.roundedRectangleOutline( topLeft.x - size
                               ,( topLeft.y + bottomLeft.y )/2 - size/2, size*2, size,  6, 30,  MidGrey );
     }

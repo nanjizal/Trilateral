@@ -21,21 +21,35 @@ class Shapes {
     public inline
     function star( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ): Int{
         triangles.addPair(  refCount++
-                        ,   Star.create( { x: x, y: y }, radius, theta )
+                        ,   Star.create( x, y, radius, theta )
                         ,   colors.indexOf( color ) );
         return refCount - 1;
     }
     public inline
     function diamond( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ): Int {
         triangles.addPair(  refCount++
-                        ,   Quad.diamond( { x: x, y: y }, radius )
+                        ,   Quad.diamond( x, y, radius )
+                        ,   colors.indexOf( color ) );
+        return refCount - 1;
+    }
+    public inline
+    function diamondOutline( x: Float, y: Float, radius: Float, thick: Float, color: AppColors, ?theta: Float = 0 ): Int {
+        triangles.addArray( refCount++
+                        ,   Quad.diamondOutline( x, y, thick, radius )
                         ,   colors.indexOf( color ) );
         return refCount - 1;
     }
     public inline
     function square( x: Float, y: Float, radius: Float, color: AppColors, ?theta: Float = 0 ): Int {
         triangles.addPair(  refCount++
-                        ,   Quad.square( { x: x, y: y }, radius )
+                        ,   Quad.square( x, y, radius )
+                        ,   colors.indexOf( color ) );
+        return refCount - 1;
+    }
+    public inline
+    function squareOutline( x: Float, y: Float, radius: Float, thick: Float, color: AppColors, ?theta: Float = 0 ): Int {
+        triangles.addArray( refCount++
+                        ,   Quad.squareOutline( x, y, radius, thick )
                         ,   colors.indexOf( color ) );
         return refCount - 1;
     }
