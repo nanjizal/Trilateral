@@ -1,8 +1,8 @@
 # some are not easy to get running without -cmd ?
-compile/compileWebGL.hxml
-compile/compileHeapsWebGL.hxml
+# compile/compileWebGL.hxml
+# compile/compileHeapsWebGL.hxml
 #-cmd node Kha/make -t html5
 #-cmd haxe compile/compileLuxeWebGL.hxml
 # compile/compileNME.hxml
-#-cmd haxe compile/compileLime.hxml
-compile/compileCanvas.hxml
+-cmd haxe compile/compileLime.hxml
+# compile/compileCanvas.hxml

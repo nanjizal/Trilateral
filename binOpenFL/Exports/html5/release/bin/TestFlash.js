@@ -984,7 +984,7 @@ var ApplicationMain = function() { };
 $hxClasses["ApplicationMain"] = ApplicationMain;
 ApplicationMain.__name__ = ["ApplicationMain"];
 ApplicationMain.main = function() {
-	lime_system_System.__registerEntryPoint("TestFlash",ApplicationMain.create,{ build : "38", company : "Nanjizal", file : "TestFlash", fps : 60, name : "TrilateralTest", orientation : "", packageName : "net.nanjizal.trilateral", version : "1.0.0", windows : [{ allowHighDPI : false, alwaysOnTop : false, antialiasing : 0, background : 1579032, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : true, height : 768, hidden : null, maximized : null, minimized : null, parameters : { }, resizable : true, stencilBuffer : true, title : "TrilateralTest", vsync : false, width : 1024, x : null, y : null}]});
+	lime_system_System.__registerEntryPoint("TestFlash",ApplicationMain.create,{ build : "44", company : "Nanjizal", file : "TestFlash", fps : 60, name : "TrilateralTest", orientation : "", packageName : "net.nanjizal.trilateral", version : "1.0.0", windows : [{ allowHighDPI : false, alwaysOnTop : false, antialiasing : 0, background : 1579032, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : true, height : 768, hidden : null, maximized : null, minimized : null, parameters : { }, resizable : true, stencilBuffer : true, title : "TrilateralTest", vsync : false, width : 1024, x : null, y : null}]});
 };
 ApplicationMain.create = function(config) {
 	var app = new openfl_display_Application();
@@ -2986,7 +2986,7 @@ testTrilateral_TestFlash.prototype = $extend(openfl_display_Sprite.prototype,{
 		var _g = triangles.length;
 		while(_g1 < _g) {
 			tri = triangles[_g1++];
-			this.g.lineStyle(0,-16777216,0);
+			this.g.lineStyle(0,gameColors[tri.colorID],1);
 			this.g.moveTo(-1. + tri.ax,1. + tri.ay);
 			this.g.beginFill(gameColors[tri.colorID]);
 			this.g.lineTo(-1. + tri.ax,1. + tri.ay);
@@ -3048,7 +3048,7 @@ testTrilateral_TestFlash.prototype = $extend(openfl_display_Sprite.prototype,{
 		var _g = triangles.length;
 		while(_g1 < _g) {
 			tri = triangles[_g1++];
-			this.g.lineStyle(0,-16777216,0);
+			this.g.lineStyle(0,gameColors[tri.colorID],1);
 			this.g.moveTo(-1. + tri.ax,1. + tri.ay);
 			this.g.beginFill(gameColors[tri.colorID]);
 			this.g.lineTo(-1. + tri.ax,1. + tri.ay);
@@ -3058,11 +3058,6 @@ testTrilateral_TestFlash.prototype = $extend(openfl_display_Sprite.prototype,{
 		}
 	}
 	,resize: function(e) {
-		var s = openfl_Lib.current.stage;
-		var view = this.viewSprite;
-		view.set_scaleX(view.set_scaleY(Math.min(s.stageWidth,s.stageHeight) / 1.5));
-		view.set_x(s.stageWidth / 2 - view.get_width() / 2);
-		view.set_y(s.stageHeight / 2);
 	}
 	,__class__: testTrilateral_TestFlash
 });
@@ -31059,7 +31054,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 570754;
+	this.version = 953792;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = ["lime","utils","AssetCache"];

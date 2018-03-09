@@ -166,7 +166,7 @@ class TestFlash extends Sprite{
         for( i in 0...triangles.length ){
             tri = triangles[ i ];
             #if openfl 
-            g.lineStyle( 0, 0xFF0000, 0 );
+            g.lineStyle( 0, gameColors[ tri.colorID ], 1 ); // TODO: check this does not mess up
             #end
             g.moveTo( ox + tri.ax * s, oy + tri.ay * s );
             g.beginFill( gameColors[ tri.colorID ] );
