@@ -41,7 +41,7 @@ class TrilateralTest {
     var topLeft:        Point;
     var topRight:       Point;
     var stageRadius:    Float; // Int ?
-    var quarter: Float;
+    var quarter:        Float;
     public
     function new( stageRadius_: Float ){
         stageRadius = stageRadius_;
@@ -60,6 +60,7 @@ class TrilateralTest {
     function render(){
     
     }
+    //-----------------------------------------------------------
     function draw(){
         triangles = new TriangleArray();
         addPaths();
