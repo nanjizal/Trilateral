@@ -1,6 +1,6 @@
 TODO and Problems.
 
-1) 
+1) SEEMS A LOT BETTER NOW... is it fixed??
 'Fine' path drawing class is currently not working because 'Contour' does not have angle guards that justTriangle did.
 The problem seems to show when crossing zero in a sine wave, probably need the corner curve code to be limited when an angle is near 0.
 
