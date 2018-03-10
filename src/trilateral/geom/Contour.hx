@@ -4,10 +4,10 @@ import trilateral.geom.Algebra;
 import trilateral.tri.TrilateralArray;
 import trilateral.tri.TrilateralPair;
 import trilateral.polys.Poly;
-import fracs.Pi2pi;
-import fracs.Fraction;
-//import fracs.ZeroTo2pi;
-import fracs.Angles;
+import angle.Pi2pi;
+import angle.Fraction;
+//import angle.ZeroTo2pi;
+import angle.Angles;
 
 @:enum
 abstract EndLineCurve( Int ){

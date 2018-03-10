@@ -3,8 +3,8 @@ import trilateral.tri.Triangle;
 import trilateral.geom.Point;
 import trilateral.tri.Trilateral;
 import trilateral.tri.TrilateralPair;
-import fracs.Fraction;
-import fracs.Pi2pi;
+import angle.Fraction;
+import angle.Pi2pi;
 typedef QuadPoint = { A: Point, B: Point, C: Point, D: Point };
 class Algebra {
     public inline static

@@ -1,0 +1,12 @@
+{
+    "name"         : "trilateral",
+    "url"          : "https://github.com/nanjizal/trilateral#trilateral",
+    "license"      : "MIT",
+    "tags"         : ["cross","triangle","drawing"],
+    "description"  : "Trilateral - Triangle vector drawing library for GPU graphics",
+    "version"      : "0.0.1",
+    "classPath"    : "src",
+    "releasenote"  : "Initial release",
+    "contributors" : ["Nanjizal"],
+    "dependencies" : {}
+}
