@@ -1,7 +1,5 @@
 package trilateral.path;
-import justPath.IPathContext;
 import trilateral.tri.TrilateralArray;
-import trilateral.tri.TrilateralPair;
 import trilateral.geom.Contour;
 // This is not ideal as it lets quads overlap but does not require calculation of inner angle
 class MediumOverlap extends Base {

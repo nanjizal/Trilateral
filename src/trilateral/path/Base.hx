@@ -1,5 +1,5 @@
 package trilateral.path;
-import justPath.IPathContext;
+import trilateral.justPath.IPathContext;
 import trilateral.tri.TrilateralArray;
 import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
