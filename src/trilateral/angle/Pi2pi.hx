@@ -1,7 +1,7 @@
-package angle;
-import angle.Fraction;
+package trilateral.angle;
+import trilateral.angle.Fraction;
 @forward
-abstract ZeroTo2pi( Float ) to Float {
+abstract Pi2pi( Float ) to Float {
     // private can't create directly
     inline 
     function new( f: Float ){
@@ -10,69 +10,69 @@ abstract ZeroTo2pi( Float ) to Float {
     @:from
     static inline public 
     function fromFloat( f: Float ) {
-        return new ZeroTo2pi( Angles.zeroto2pi( f ) );
+        return new Pi2pi( Angles.pi2pi( f ) );
     }
-    @:op(A > B) static function gt( a:ZeroTo2pi, b:ZeroTo2pi ) : Bool;
-    @:op(A < B) static function lt( a:ZeroTo2pi, b:ZeroTo2pi ) : Bool;
-    @:op(A == B) static function et( a:ZeroTo2pi, b:ZeroTo2pi ) : Bool;
-    @:op(A >= B) static function gte( a:ZeroTo2pi, b:ZeroTo2pi ) : Bool;
-    @:op(A <= B) static function lte( a:ZeroTo2pi, b:ZeroTo2pi ) : Bool;
+    @:op(A > B) static function gt( a:Pi2pi, b:Pi2pi ) : Bool;
+    @:op(A < B) static function lt( a:Pi2pi, b:Pi2pi ) : Bool;
+    @:op(A == B) static function et( a:Pi2pi, b:Pi2pi ) : Bool;
+    @:op(A >= B) static function gte( a:Pi2pi, b:Pi2pi ) : Bool;
+    @:op(A <= B) static function lte( a:Pi2pi, b:Pi2pi ) : Bool;
     @:op(A + B)
-    public function additionPi( b: ZeroTo2pi ): ZeroTo2pi {
+    public function additionPi( b: Pi2pi ): Pi2pi {
         var f: Float = this + b;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f; 
     }
     @:op(A - B)
-    public function subtractionPi( b: ZeroTo2pi ): ZeroTo2pi {
+    public function subtractionPi( b: Pi2pi ): Pi2pi {
         var f: Float = this;
         var f2: Float = b;
         f -= f2;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f;
     }
     @:op(A / B)
-    public function dividePi( b: ZeroTo2pi ): ZeroTo2pi {
+    public function dividePi( b: Pi2pi ): Pi2pi {
         var f: Float = this;
         var f2: Float = b;
         f /= f2;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f; 
     }
     @:op(A * B)
-    public function timesPi( b: ZeroTo2pi ): ZeroTo2pi {
+    public function timesPi( b: Pi2pi ): Pi2pi {
         var f: Float = this;
         var f2: Float = b;
         f *= f2;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f; 
     }
     @:op(A + B)
-    public function addition( b: Float ): ZeroTo2pi {
+    public function addition( b: Float ): Pi2pi {
         var f: Float = this;
         f += b;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f; 
     }
     @:op(A - B)
-    public function subtraction( b: Float ): ZeroTo2pi {
+    public function subtraction( b: Float ): Pi2pi {
         var f: Float = this;
         f -= b;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f; 
     }
     @:op(A / B)
-    public function divide( b: Float ): ZeroTo2pi {
+    public function divide( b: Float ): Pi2pi {
         var f: Float = this;
         f /= b;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f; 
     }
     @:op(A * B)
-    public function times( b: Float ): ZeroTo2pi {
+    public function times( b: Float ): Pi2pi {
         var f: Float = this;
         f *= b;
-        var p: ZeroTo2pi = f;
+        var p: Pi2pi = f;
         return f; 
     }
     public var degrees( get, set ): Float;
@@ -88,8 +88,8 @@ abstract ZeroTo2pi( Float ) to Float {
     }
     @:from
     inline static
-    function fromFraction( val: Fraction ):ZeroTo2pi {
-        return new ZeroTo2pi( val.toFloat()*Math.PI );
+    function fromFraction( val: Fraction ):Pi2pi {
+        return new Pi2pi( val.toFloat()*Math.PI );
     }
     @:to
     inline function tofraction(): Fraction {
@@ -99,8 +99,8 @@ abstract ZeroTo2pi( Float ) to Float {
     }
     @:from
     inline static
-    function fromString( val: String ):ZeroTo2pi {
+    function fromString( val: String ):Pi2pi {
         var frac: Fraction = val;
-        return new ZeroTo2pi( frac.toFloat()*Math.PI );
+        return new Pi2pi( frac.toFloat()*Math.PI );
     }
 }

@@ -4,7 +4,7 @@ import trilateral.tri.TrilateralArray;
 import trilateral.geom.Algebra;
 import trilateral.pairs.Quad;
 import trilateral.geom.Point;
-import angle.Angles;
+import trilateral.angle.Angles;
 @:enum
 abstract PolySides( Int ) from Int to Int {
     var triangle        = 3;

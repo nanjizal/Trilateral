@@ -1,6 +1,6 @@
-package justPath;
+package trilateral.justPath;
 
-class StoreF6{
+class StoreF8{
     var l: Int = 0;
     public var s0: Null<Float>;
     public var s1: Null<Float>;
@@ -8,6 +8,8 @@ class StoreF6{
     public var s3: Null<Float>;
     public var s4: Null<Float>;
     public var s5: Null<Float>;
+    public var s6: Null<Float>;
+    public var s7: Null<Float>;
     public function new(){}
     inline public function clear(){
         l = 0;
@@ -17,6 +19,8 @@ class StoreF6{
         s3 = null;
         s4 = null;
         s5 = null;
+        s6 = null;
+        s7 = null;
     }
     inline public function length(): Int {
         return l;
@@ -35,6 +39,10 @@ class StoreF6{
                 s4 = v;
             case 5: 
                 s5 = v;
+            case 6:
+                s6 = v;
+            case 7:
+                s7 = v;
             default:
                 //
         }
@@ -61,6 +69,12 @@ class StoreF6{
             case 5:
                 out = s5; 
                 s5 = null;
+            case 6:
+                out = s6;
+                s6 = null;
+            case 7:
+                out = s7;
+                s6 = null;
             default:
                 //
         }
@@ -69,6 +83,8 @@ class StoreF6{
     }
     
     inline public function unshift( v: Null<Float> ){
+        s7 = s6;
+        s6 = s5;
         s5 = s4;
         s4 = s3;
         s3 = s2;
@@ -76,7 +92,7 @@ class StoreF6{
         s0 = v;
         l++;
     }
-    inline public function shift(): Null<Float>{
+    inline public function shift(): Null<Float> {
         var out = s0;
         if( l != 0 ){
             s0 = s1;
@@ -84,13 +100,15 @@ class StoreF6{
             s2 = s3;
             s3 = s4;
             s4 = s5;
-            s5 = null;
+            s5 = s6;
+            s6 = s7;
+            s7 = null;
             l--;
         }
         return out;
     }
     inline public function toString(): String{
-        return '$s0, $s1, $s2, $s3, $s4, $s5';
+        return '$s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7';
     }
     inline public function populatedToString(): String{
         var out: String = '';
@@ -107,6 +125,10 @@ class StoreF6{
                 out = '$s0, $s1, $s2, $s3, $s4';
             case 5: 
                 out = '$s0, $s1, $s2, $s3, $s4, $s5';
+            case 6:
+                out = '$s0, $s1, $s2, $s3, $s4, $s5, $s6';
+            case 7:
+                out = '$s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7';
             default:
                 //
         }
@@ -134,6 +156,10 @@ class StoreF6{
                 out = s4;
             case 5:
                 out = s5; 
+            case 6:
+                out = s6;
+            case 7:
+                out = s7;
             default:
                 //
         }
@@ -158,6 +184,10 @@ class StoreF6{
                 out = s4;
             case 5:
                 out = s5; 
+            case 6:
+                out = s6;
+            case 7:
+                out = s7;
             default:
                 //
         }
@@ -178,13 +208,17 @@ class StoreF6{
                 out = s4;
             case 5:
                 out = s5; 
+            case 6:
+                out = s6;
+            case 7:
+                out = s7;
             default:
                 //
         }
         return out;
     }
     inline public function toArray(){
-        var arr = new Array<Null<Float>>();
+        var arr = new Array<Float>();
         count = 0;
         for( i in this ){
             arr.push( i );

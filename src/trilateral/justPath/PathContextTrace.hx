@@ -1,4 +1,4 @@
-package justPath;
+package trilateral.justPath;
 
 class PathContextTrace implements IPathContext {
     public function new(){

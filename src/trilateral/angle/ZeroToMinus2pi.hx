@@ -1,5 +1,5 @@
-package angle;
-import angle.Fraction;
+package trilateral.angle;
+import trilateral.angle.Fraction;
 @forward
 abstract ZeroToMinus2pi( Float ) to Float {
     // private can't create directly

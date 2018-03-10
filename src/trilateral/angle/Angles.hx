@@ -1,6 +1,6 @@
-package angle;
-import angle.Pi2pi;
-import angle.ZeroTo2Pi;
+package trilateral.angle;
+import trilateral.angle.Pi2pi;
+import trilateral.angle.ZeroTo2Pi;
 enum DifferencePreference {
     CLOCKWISE;
     ANTICLOCKWISE;

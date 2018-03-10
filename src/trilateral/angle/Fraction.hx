@@ -1,5 +1,5 @@
-package angle; 
-import angle.Fraction;
+package trilateral.angle; 
+import trilateral.angle.Fraction;
 // numerator/denominator
 // perhaps need to add sign?
 typedef Fractional = {
@@ -155,7 +155,7 @@ class Fracs {
         var decimal = Math.abs( Std.parseFloat( decimalVal ) );
         return Math.isNaN(decimal)? 0. : decimal;
     }
-    @:allow(angle.Fraction)
+    @:allow(trilateral.angle.Fraction)
     static
     function approximateFractions( f: Float ):FractionArray{
         var positive = ( f <= 0 )? false: true;

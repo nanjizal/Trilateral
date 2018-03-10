@@ -1,7 +1,7 @@
-package justPath;
-import justPath.StoreF8;
-import justPath.StoreF6;
-import justPath.IPathContext;
+package trilateral.justPath;
+import trilateral.justPath.StoreF8;
+import trilateral.justPath.StoreF6;
+import trilateral.justPath.IPathContext;
 class SvgPath{
     var str : String;
     var pos : Int;
