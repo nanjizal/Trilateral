@@ -92,7 +92,7 @@ class Base implements IPathContext {
     function plotCoord( arr: Array<Float> ): Void {
         var l = arr.length;
         var i = 2;
-        lineTo( arr[ i ], arr[ i + 1 ] );
+        moveTo( arr[ 0 ], arr[ 1 ] );
         while( i < l ){
             lineTo( arr[ i ], arr[ i + 1 ] );
             i += 2;
