@@ -76,23 +76,34 @@ class Base implements IPathContext {
     function quadTo( x1: Float, y1: Float, x2: Float, y2: Float ): Void {
         tempArr = [];
         Algebra.quadCurve( tempArr, x, y, x1, y1, x2, y2 );
-        plotCoord( tempArr );
+        plotCoord( tempArr, false );
         x = x2;
         y = y2;
+    }
+    // x1,y1 is a point on the curve rather than the control point, taken from my divtatic project.
+    public inline
+    function quadThru( x1: Float, y1: Float, x2: Float, y2: Float ): Void {
+        var newx: Float = ( ( 2*x1 ) - .5*( x + x2 ) );
+        var newy: Float = ( ( 2*y1 ) - .5*( y + y2 ) );
+        return quadTo( newx, newy, x2, 2y );
     }
     public inline
     function curveTo( x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float ): Void {
         tempArr = [];
         Algebra.cubicCurve( tempArr, x, y, x1, y1, x2, y2, x3, y3 );
-        plotCoord( tempArr );
+        plotCoord( tempArr, false );
         x = x3;
         y = y3;
     }
-    public
-    function plotCoord( arr: Array<Float> ): Void {
+    public inline
+    function plotCoord( arr: Array<Float>, ?withMove: Bool = true ): Void {
         var l = arr.length;
         var i = 2;
-        moveTo( arr[ 0 ], arr[ 1 ] );
+        if( withMove ){ // normally when just plotting points you will do it withMove but from a curve not.
+            moveTo( arr[ 0 ], arr[ 1 ] );
+        } else {
+            lineTo( arr[ 0 ], arr[ 1 ] );
+        }
         while( i < l ){
             lineTo( arr[ i ], arr[ i + 1 ] );
             i += 2;
