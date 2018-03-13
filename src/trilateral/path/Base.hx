@@ -83,8 +83,8 @@ class Base implements IPathContext {
     // x1,y1 is a point on the curve rather than the control point, taken from my divtatic project.
     public inline
     function quadThru( x1: Float, y1: Float, x2: Float, y2: Float ): Void {
-        var newx: Float = ( ( 2*x1 ) - .5*( x + x2 ) );
-        var newy: Float = ( ( 2*y1 ) - .5*( y + y2 ) );
+        var newx = 2*x1 - .5*( x + x2 );
+        var newy = 2*y1 - .5*( y + y2 );
         return quadTo( newx, newy, x2, 2y );
     }
     public inline
