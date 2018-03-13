@@ -85,7 +85,7 @@ class Base implements IPathContext {
     function quadThru( x1: Float, y1: Float, x2: Float, y2: Float ): Void {
         var newx = 2*x1 - 0.5*( x + x2 );
         var newy = 2*y1 - 0.5*( y + y2 );
-        return quadTo( newx, newy, x2, 2y );
+        return quadTo( newx, newy, x2, y2 );
     }
     public inline
     function curveTo( x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float ): Void {
