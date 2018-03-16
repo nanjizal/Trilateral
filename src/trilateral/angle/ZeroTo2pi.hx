@@ -21,7 +21,7 @@ abstract ZeroTo2pi( Float ) to Float {
     public function additionPi( b: ZeroTo2pi ): ZeroTo2pi {
         var f: Float = this + b;
         var p: ZeroTo2pi = f;
-        return f; 
+        return p; 
     }
     @:op(A - B)
     public function subtractionPi( b: ZeroTo2pi ): ZeroTo2pi {
@@ -29,7 +29,7 @@ abstract ZeroTo2pi( Float ) to Float {
         var f2: Float = b;
         f -= f2;
         var p: ZeroTo2pi = f;
-        return f;
+        return p;
     }
     @:op(A / B)
     public function dividePi( b: ZeroTo2pi ): ZeroTo2pi {
@@ -37,7 +37,7 @@ abstract ZeroTo2pi( Float ) to Float {
         var f2: Float = b;
         f /= f2;
         var p: ZeroTo2pi = f;
-        return f; 
+        return p; 
     }
     @:op(A * B)
     public function timesPi( b: ZeroTo2pi ): ZeroTo2pi {
@@ -45,35 +45,35 @@ abstract ZeroTo2pi( Float ) to Float {
         var f2: Float = b;
         f *= f2;
         var p: ZeroTo2pi = f;
-        return f; 
+        return p; 
     }
     @:op(A + B)
     public function addition( b: Float ): ZeroTo2pi {
         var f: Float = this;
         f += b;
         var p: ZeroTo2pi = f;
-        return f; 
+        return p; 
     }
     @:op(A - B)
     public function subtraction( b: Float ): ZeroTo2pi {
         var f: Float = this;
         f -= b;
         var p: ZeroTo2pi = f;
-        return f; 
+        return p; 
     }
     @:op(A / B)
     public function divide( b: Float ): ZeroTo2pi {
         var f: Float = this;
         f /= b;
         var p: ZeroTo2pi = f;
-        return f; 
+        return p; 
     }
     @:op(A * B)
     public function times( b: Float ): ZeroTo2pi {
         var f: Float = this;
         f *= b;
         var p: ZeroTo2pi = f;
-        return f; 
+        return p; 
     }
     public var degrees( get, set ): Float;
     public inline 
@@ -82,7 +82,7 @@ abstract ZeroTo2pi( Float ) to Float {
         return f*180/Math.PI;
     }
     public inline 
-    function set_degrees( val:Float ): Float {
+    function set_degrees( val: Float ): Float {
         this = Math.PI*val/180;
         return val;
     }

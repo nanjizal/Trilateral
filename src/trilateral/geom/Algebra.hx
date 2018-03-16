@@ -5,6 +5,8 @@ import trilateral.tri.Trilateral;
 import trilateral.tri.TrilateralPair;
 import trilateral.angle.Fraction;
 import trilateral.angle.Pi2pi;
+import trilateral.angle.ZeroTo2pi;
+import trilateral.geom.EllipseArc;
 typedef QuadPoint = { A: Point, B: Point, C: Point, D: Point };
 class Algebra {
     public inline static
@@ -87,6 +89,51 @@ class Algebra {
         p[ l++ ] =  dx;
         p[ l++ ] =  dy;
         return p;
+    }
+    /*
+    static var arc( get, null ): EllipseArc;
+    static inline function get_arc(): EllipseArc {
+        return new EllipseArc();
+    }
+    */
+    public static
+    var arcStep: Float = 0.03;
+    public static inline
+    function ellipticArcCurve( p: Array<Float>, x0: Float, y0: Float
+                        ,    rx: Float, ry: Float
+                        ,    theta_: Float
+                        ,    large: Bool, sweep: Bool
+                        ,    x1: Float, y1: Float ): Array<Float> {
+        var l = p.length;
+        p[ l++ ] = x0;
+        p[ l++ ] = y0;
+        return if( x0 == x1 && y0 == y1 ){// If the endpoints are identical, then this is equivalent to omitting the elliptical arc segment entirely.
+            trace('skipping drawing arc as ends are equal');
+            p;
+        } else if( rx == 0 || ry == 0 ){ // If rx = 0 or ry = 0 then this arc is treated as a straight line segment joining the endpoints.    
+            trace('drawing arc as straight line as either rx or ry are 0');
+            p[ l++ ] = x1;
+            p[ l++ ] = y1;
+            p;
+        } else {
+            var arc = new EllipseArc();
+            var theta: ZeroTo2pi = theta_;
+            arc.setup( x0, y0, rx, ry, theta, large, sweep, x1, y1 );
+            arc.calculateApproxLength();
+            var approxDistance = arc.length;
+            if( approxDistance == 0 ) approxDistance = 0.000001;
+            var step =  Math.min( 1/( approxDistance ), arcStep );
+            var t = step;
+            while( t < 1. ){
+                arc.calculateforT( t );
+                p[ l++ ] = arc.px;
+                p[ l++ ] = arc.py;
+                t += step;
+            }
+            p[ l++ ] =  x1;
+            p[ l++ ] =  y1;
+            p;
+        }
     }
     public static inline
     function calculateQuadStep( ax: Float, ay: Float, bx: Float, by: Float, cx: Float, cy: Float ): Float {

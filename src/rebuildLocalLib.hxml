@@ -1,0 +1,9 @@
+-cmd zip -r trilateral.zip *
+## need to get 7za and add to path for window
+##-cmd 7za a -r trilateral.zip *
+--next
+-cmd haxelib remove trilateral
+--next
+-cmd haxelib local trilateral.zip
+--next
+-cmd rm trilateral.zip

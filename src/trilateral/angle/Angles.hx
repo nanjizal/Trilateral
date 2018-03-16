@@ -1,6 +1,6 @@
 package trilateral.angle;
 import trilateral.angle.Pi2pi;
-import trilateral.angle.ZeroTo2Pi;
+import trilateral.angle.ZeroTo2pi;
 enum DifferencePreference {
     CLOCKWISE;
     ANTICLOCKWISE;
@@ -21,7 +21,7 @@ class Angles{
             angle; // don't really want any maths to touch it if it's within range as it may effect value slightly
         } else {
             var a = angle % ( 2 * Math.PI );
-            ( a >= 0 )? a : ( a + 2 * Math.PI );
+            return ( a >= 0 )? a : ( a + 2 * Math.PI );
         }
     }
     public inline static function zerotoMinus2pi( angle: Float ): Float {

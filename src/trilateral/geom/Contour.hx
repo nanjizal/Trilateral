@@ -348,7 +348,7 @@ class Contour {
          return dist( dxOld, dyOld, x, y ) > dist( exOld, eyOld, x, y );
     }
     public inline 
-    function line( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?endLineCurve: EndLineCurve ){
+    function line( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?endLineCurve: EndLineCurve = no ){
                     // thick
         ax = bx_;
         ay = by_;
@@ -370,7 +370,6 @@ class Contour {
         bx = bx_;
         by = by_;
         computeDE();
-        
         switch( endLineCurve ){
             case no: 
                 // don't draw ends
