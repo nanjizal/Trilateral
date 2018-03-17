@@ -13,7 +13,9 @@ class EllipseArc {
     public
     var angle:              ZeroTo2pi;
     // center
+    public
     var cx:                 Float;
+    public
     var cy:                 Float;
     var rx:                 Float;
     var ry:                 Float;
@@ -21,6 +23,10 @@ class EllipseArc {
     public var py:          Float;
     var sin:                Float;
     var cos:                Float;
+    var startX:             Float;
+    var startY:             Float;
+    var endX:               Float;
+    var endY:               Float;
     public var length:      Float;
     public function new(){
         
@@ -29,18 +35,19 @@ class EllipseArc {
     function angleBetween( x0: Float, y0: Float, x1: Float, y1: Float ){
         var p = x0*x1 + y0*y1;
         var n = Math.sqrt( ( x0*x0 + y0*y0 )*( x1*x1 + y1*y1 ) );
-        var sign = ( x0*y1 - y0*x1 < 0 ) ? -1 : 1;
+        var sign = ( x0*y1 - y0*x1 < 0 )? -1 : 1;
         var angle = sign*Math.acos( p / n );
         //var angle = Math.atan2(v0.y, v0.x) - Math.atan2(v1.y,  v1.x);
         return angle;
     }
-    public function setup(   x0: Float, y0: Float
-                        ,    rx: Float, ry: Float
-                        ,    theta: ZeroTo2pi
-                        ,    large: Bool, sweep: Bool
-                        ,    x1: Float, y1: Float ){
-        rx = Math.abs( rx );// In accordance to: http://www.w3.org/TR/SVG/implnote.html#ArcOutOfRangeParameters
-        ry = Math.abs( ry );
+    public 
+    function setup(   x0: Float, y0: Float
+                ,    rx_: Float, ry_: Float
+                ,    theta: ZeroTo2pi
+                ,    large: Bool, sweep: Bool
+                ,    x1: Float, y1: Float ){
+        rx = Math.abs( rx_ );// In accordance to: http://www.w3.org/TR/SVG/implnote.html#ArcOutOfRangeParameters
+        ry = Math.abs( ry_ );
         // Following "Conversion from endpoint to center parameterization"
         // http://www.w3.org/TR/SVG/implnote.html#ArcConversionEndpointToCenter
         // Step #1: Compute transformedPoint
@@ -66,37 +73,41 @@ class EllipseArc {
             ry2 = ry*ry;
         }
         // Compute transformedCenter
-        var cRadicand = rx2*ry2 - rx2*tx2 - ry2*tx2 / rx2*tx2 + ry2*tx2;
+        var cRadicand = ( rx2*ry2 - rx2*tx2 - ry2*tx2 ) / ( rx2*tx2 + ry2*tx2 );
         // Make sure this never drops below zero because of precision
         cRadicand = ( cRadicand < 0 )? 0 : cRadicand;
         var cCoef = ( ( large != sweep ) ? 1: -1 ) * Math.sqrt( cRadicand );
         var tcx = cCoef*(  (rx*ty) / ry );
         var tcy = cCoef*( -(ry*tx) / rx );
         // Compute center
-        var cx = cos*tcx - sin*tcy + avgX;
-        var cy = sin*tcx + cos*tcy + avgY;
+        cx = cos*tcx - sin*tcy + avgX;
+        cy = sin*tcx + cos*tcy + avgY;
         // Compute start/sweep angles
         // Start angle of the elliptical arc prior to the stretch and rotate operations.
         // Difference between the start and end angles
-        var svx = ( tx - tcx )/rx;
-        var svy = ( ty - tcy )/ry;
+        startX = ( tx - tcx )/rx;
+        startY = ( ty - tcy )/ry;
         // TODO: look to see if ZeroTo2pi and Pi2pi could help?
-        startAngle = angleBetween( 1, 0, svx, svy );  // this is problem
-        var evx = ( -tx - tcx )/rx;
-        var evy = ( -ty - tcy )/ry;
-        sweepAngle = angleBetween( svx, svy, evx, evy ); // This is problem
+        startAngle = angleBetween( 1, 0, startX, startX );  // this is problem
+        endX = ( -tx - tcx )/rx;
+        endY = ( -ty - tcy )/ry;
+        //endAngle = angleBetween( 1, 0, endX, endY );
+        sweepAngle = angleBetween( startX, startY, endX, endY ); // This is problem
+        
         /*
         if( !sweep && sweepAngle > 0 ){
             sweepAngle -= 2*Math.PI;
         } else if( sweep && sweepAngle < 0){
             sweepAngle += 2*Math.PI;
-        }*/
+        }
+        */
         // We use % instead of `mod(..)` because we want it to be -360deg to 360deg(but actually in radians)
          // sweepAngle %= 2*Math.PI;
+        
         endAngle = startAngle + sweepAngle;
     }
     // Call this repeatedly from 0->1 to create points on an Elliptical Arc.
-    public inline
+    public
     function calculateforT( t: Float ) {
         angle = startAngle + ( sweepAngle * t );
         var eX = rx * Math.cos( angle ); // ellipse component
