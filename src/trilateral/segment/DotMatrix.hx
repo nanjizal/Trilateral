@@ -1,5 +1,5 @@
-package segment;
-import bits.Binary8;
+package trilateral.segment;
+import trilateral.bits.Binary8;
 @:forward
 abstract DotMatrix( Array<Binary8> ) from Array<Binary8> to Array<Binary8> {
     public

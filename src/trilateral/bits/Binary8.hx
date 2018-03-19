@@ -1,4 +1,4 @@
-package bits;
+package trilateral.bits;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 
