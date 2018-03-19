@@ -25,6 +25,12 @@ abstract DotMatrix( Array<Binary8> ) from Array<Binary8> to Array<Binary8> {
         }
         return b8;
     }
+    public function valueByIndex( i: Int, dig: Int ){
+        var x = i%dig;
+        var y = Math.floor( i / dig );
+        return this[ y ][ x + 8 - dig ];
+    }
+    
     public inline
     function clone():DotMatrix{
         var arr = [];

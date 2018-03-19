@@ -21,6 +21,7 @@ class Character5x7 {
     public var ratio:       Float;
     public var bgIndex:     Int;
     public var shapeIndex:  Int;
+    public var endIndex:    Int;
     public var onColor:     Int;
     public var offColor:    Int;
     public var bgColor:     Int;
@@ -36,23 +37,36 @@ class Character5x7 {
         offColor    = offColor_;
         bgColor     = bgColor_;
     }
-    public inline
+    public
     function updateColor(){
         if( dotMatrix != null ){
+            var first = 0;
             var count = shapeIndex;
-            for( j in 0...dotMatrix.length ){
-                for( k in 0...5 ){
-                    var isOn = dotMatrix[ j ][ 3 + k ];
-                    var tris = shapes.findShapeById( count );  
-                    tris.map( function( triangle: Triangle ){ 
-                        if( isOn ) {
-                            triangle.colorID = onColor;
-                        } else {
-                            triangle.colorID = offColor;
-                        }
-                    } );
-                    count++;
+            var tris = shapes.triangles;
+            var len = tris.length;
+            var total = 7*5;
+            for( i in 0...len ){
+                // find first triangle with correct id
+                if( tris[i].id == count ) {
+                    first = i;
+                    break;
                 }
+            }
+            var triangle = tris[ first ];
+            for( dotId in 0...total ){
+                var isOn = dotMatrix.valueByIndex( dotId, 5 );
+                var triangle = tris[ first ];
+                while( triangle.id == count ){
+                    if( isOn ) {
+                        triangle.colorID = onColor;
+                    } else {
+                        triangle.colorID = offColor;
+                    }
+                    first++;
+                    triangle = tris[ first ];
+                    if( triangle == null ) break;
+                }
+                count++;
             }
         }
     }
@@ -106,13 +120,13 @@ class Character5x7 {
                     case Circle:
                         shapes.circle( px, py, radius, colorID );
                     case Square:
-                        shapes.square( px - radius, py - radius, radius*2, colorID );
+                        shapes.square( px, py, radius, colorID );
                     case LandScape:
                         shapes.rectangle( px - radiusW, py - radiusH, radiusW*2, radiusH*2, colorID );
                     case Portrait:
                         shapes.rectangle( px - radiusW, py - radiusH, radiusW*2, radiusH*2, colorID );
                     case Star:
-                        shapes.star( px, px, radius, colorID );
+                        shapes.star( px, py, radius, colorID );
                     case RoundedLandScape:
                         shapes.roundedRectangle( px - radiusW, py - radiusH, radiusW*2, radiusH*2, radius/(ratio*2), colorID );
                     case RoundedPortrait:
@@ -123,5 +137,6 @@ class Character5x7 {
             px = startX;
             py += dy;
         }
+        var endIndex = shapes.refCount - 1;
     }
 }
