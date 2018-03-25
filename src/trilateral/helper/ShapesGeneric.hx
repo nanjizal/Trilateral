@@ -72,6 +72,20 @@ class ShapesGeneric {
         return refCount - 1;
     }
     public inline
+    function shape( x: Float, y: Float, radius: Float, color: Int, sides: Int, ?theta: Float = 0 ): Int {
+        triangles.addArray( refCount++
+                        ,   Poly.shape( x, y, radius, sides, theta )
+                        ,   color );
+        return refCount - 1;
+    }
+    public inline
+    function ellipse( x: Float, y: Float, rx: Float, ry: Float, color: Int, ?sides: Int, ?theta: Float = 0 ): Int {
+        triangles.addArray( refCount++
+                        ,   Poly.ellipse( x, y, radius, sides )
+                        ,   color );
+        return refCount - 1;
+    }
+    public inline
     function roundedRectangle( x: Float, y: Float, width: Float, height: Float, radius: Float, color: Int ): Int {
         triangles.addArray( refCount++
                         ,   Poly.roundedRectangle( x, y, width, height, radius )

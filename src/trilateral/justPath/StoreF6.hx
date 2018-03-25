@@ -8,6 +8,7 @@ class StoreF6{
     public var s3: Null<Float>;
     public var s4: Null<Float>;
     public var s5: Null<Float>;
+    public var s6: StoreF6;
     public function new(){}
     inline public function clear(){
         l = 0;
@@ -17,6 +18,7 @@ class StoreF6{
         s3 = null;
         s4 = null;
         s5 = null;
+        s6 = null;
     }
     inline public function length(): Int {
         return l;
@@ -36,7 +38,8 @@ class StoreF6{
             case 5: 
                 s5 = v;
             default:
-                //
+                if( s6 == null ) s6 = new StoreF6();
+                s6.push( v );
         }
         l++;
     }
@@ -62,13 +65,15 @@ class StoreF6{
                 out = s5; 
                 s5 = null;
             default:
-                //
+                if( s6 != null ) s6.pop();
         }
         l--;
         return out;
     }
     
     inline public function unshift( v: Null<Float> ){
+        if( s6 == null ) s6 = new StoreF6();
+        s6.unshift( s5 );
         s5 = s4;
         s4 = s3;
         s3 = s2;
@@ -85,12 +90,17 @@ class StoreF6{
             s3 = s4;
             s4 = s5;
             s5 = null;
+            if( s6 != null ) s5 = s6.shift();
             l--;
         }
         return out;
     }
     inline public function toString(): String{
-        return '$s0, $s1, $s2, $s3, $s4, $s5';
+        return if( s6 == null ){
+            '$s0, $s1, $s2, $s3, $s4, $s5';
+        } else {
+            '$s0, $s1, $s2, $s3, $s4, $s5' + s6.toString();
+        }
     }
     inline public function populatedToString(): String{
         var out: String = '';
@@ -108,7 +118,10 @@ class StoreF6{
             case 5: 
                 out = '$s0, $s1, $s2, $s3, $s4, $s5';
             default:
-                //
+                out = '$s0, $s1, $s2, $s3, $s4, $s5';
+                if( s6 != null ){
+                    out = out + s6.populatedToString();
+                } 
         }
         return out;
     }
@@ -118,6 +131,7 @@ class StoreF6{
     }
     inline public function resetIterator(){
         count = 0;
+        if( s6 != null ) s6.resetIterator();
     }
     inline public function next() {
         var out: Null<Float> = null;
@@ -135,7 +149,7 @@ class StoreF6{
             case 5:
                 out = s5; 
             default:
-                //
+                out = s6.next();
         }
         count++;
         return out;
@@ -159,7 +173,7 @@ class StoreF6{
             case 5:
                 out = s5; 
             default:
-                //
+                out = s6.last();
         }
         return out;
     }
@@ -179,13 +193,14 @@ class StoreF6{
             case 5:
                 out = s5; 
             default:
-                //
+                out = s6.penultimate();
         }
         return out;
     }
     inline public function toArray(){
         var arr = new Array<Null<Float>>();
         count = 0;
+        // not implemented for s6... not sure on this one... maybe not using.
         for( i in this ){
             arr.push( i );
         }
