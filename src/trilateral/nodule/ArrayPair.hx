@@ -1,5 +1,5 @@
 package trilateral.nodule;
-import nodule.ArrayPair;
+import trilateral.nodule.ArrayPair;
 typedef ValuePair = {
     var name: String;
     var value: String;

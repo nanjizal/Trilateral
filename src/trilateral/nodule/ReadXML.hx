@@ -1,4 +1,4 @@
-package trilateral.nodule;
+package nodule;
 @:enum
 abstract NoKey( Int ) to Int from Int {
     var backspace = 8;
@@ -129,11 +129,11 @@ class ReadXML {
                             var toggle = true;
                             while( strIter.c  != '>'.code ){
                                 switch( strIter.c ){
-                                    case ' '.code, '='.code:
+                                    case ' '.code, '='.code, '/'.code:
                                         strIter.next();
                                     default:
                                         strIter.resetBuffer();
-                                        while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code ){
+                                        while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code && strIter.c != '/'.code ){
                                             if( strIter.c != 34 && strIter.c != 39 ) strIter.addChar(); // any speach marks 
                                             strIter.next();
                                         }
@@ -254,11 +254,11 @@ class ReadXML {
                             var toggle = true;
                             while( strIter.c  != '>'.code ){
                                 switch( strIter.c ){
-                                    case ' '.code, '='.code:
+                                    case ' '.code, '='.code, '/'.code:
                                         strIter.next();
                                     default:
                                         strIter.resetBuffer();
-                                        while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code ){
+                                        while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code && strIter.c != '/'.code ){
                                             if( strIter.c != 34 && strIter.c != 39 ) strIter.addChar(); // any speach marks 
                                             strIter.next();
                                         }
@@ -351,7 +351,7 @@ class ReadXML {
                         default:
                             // opening tag
                             strIter.resetBuffer();
-                            while( strIter.c  != '>'.code && strIter.c != ' '.code ){
+                            while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '/'.code ){
                                 strIter.addChar();
                                 strIter.next();
                             }
@@ -369,7 +369,7 @@ class ReadXML {
                             var toggle = true;
                             while( strIter.c  != '>'.code ){
                                 switch( strIter.c ){
-                                    case ' '.code, '='.code:
+                                    case ' '.code, '='.code, '/'.code:
                                         strIter.next();
                                     default:
                                         strIter.resetBuffer();
