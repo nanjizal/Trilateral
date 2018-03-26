@@ -1,4 +1,4 @@
-package nodule;
+package trilateral.nodule;
 @:enum
 abstract NoKey( Int ) to Int from Int {
     var backspace = 8;
