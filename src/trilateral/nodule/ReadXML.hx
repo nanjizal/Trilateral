@@ -102,61 +102,93 @@ class ReadXML {
                         default:
                             // opening tag
                             strIter.resetBuffer();
-                            while( strIter.c  != '>'.code && strIter.c != ' '.code ){
+                            while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '/'.code ){
                                 strIter.addChar();
                                 strIter.next();
                             }
                             var s = strIter.toStr();
-                            // trace( '<' + s + '>' );
-                            var node = new Nodule();
-                            node.name = s;
-                            nodule = node;
-                            parent.addChild( nodule );
-                            parent = nodule;
+                            if( strIter.c != '/'.code ) {
                             
-                            //if( s != '' && s != null && s != ' ' && s != '\t' ){
-                                var node2 = Xml.createElement( s );
-                                //trace( 'add node ' + s );
-                                //var node2 = Xml.createElement( 'fred' );// s
-                                xml = node2;
-                                parentXml.addChild( xml );
-                                parentXml = xml;
-                                //}
+                                // trace( '<' + s + '>' );
+                                var node = new Nodule();
+                                node.name = s;
+                                nodule = node;
+                                parent.addChild( nodule );
+                                parent = nodule;
+                            
+                                //if( s != '' && s != null && s != ' ' && s != '\t' ){
+                                    var node2 = Xml.createElement( s );
+                                    //trace( 'add node ' + s );
+                                    //var node2 = Xml.createElement( 'fred' );// s
+                                    xml = node2;
+                                    parentXml.addChild( xml );
+                                    parentXml = xml;
+                                    //}
                             
                             
-                            var att: Nodule = null;
-                            var attName: String = '';
-                            var toggle = true;
-                            while( strIter.c  != '>'.code ){
-                                switch( strIter.c ){
-                                    case ' '.code, '='.code, '/'.code:
-                                        strIter.next();
-                                    default:
-                                        strIter.resetBuffer();
-                                        while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code && strIter.c != '/'.code ){
-                                            if( strIter.c != 34 && strIter.c != 39 ) strIter.addChar(); // any speach marks 
+                                var att: Nodule = null;
+                                var attName: String = '';
+                                var toggle = true;
+                                while( strIter.c  != '>'.code ){
+                                    switch( strIter.c ){
+                                        case ' '.code, '='.code, '/'.code:
                                             strIter.next();
-                                        }
-                                        var s = strIter.toStr();
-                                        if( toggle ){
-                                            var att_ = new Nodule();
-                                            att = att_;
-                                            att.name = s;
-                                            nodule.addAttribute( att );
-                                        } else {
-                                            att.content = s;
-                                            // add attribute
-                                            // trace( '@' + att.name + " : "  + att.content );
-                                        }
-                                        if( toggle ){
-                                            attName = s;
-                                        } else {
-                                            //trace( 'att value ' + s );
-                                            if( attName != null ) xml.set( attName, s );
-                                            // add attribute
-                                             // trace( '@' + attName + " : "  + s );
-                                        }
-                                        toggle = !toggle;
+                                        default:
+                                            strIter.resetBuffer();
+                                            var inSpeach = false;
+                                            while( strIter.c  != '>'.code && strIter.c != '='.code ){
+                                                if( strIter.c != 34 && strIter.c != 39 ) {
+                                                    strIter.addChar(); // any speach marks 
+                                                } else {
+                                                    inSpeach = !inSpeach; //to help ignore slashes in speach marks.
+                                                }
+                                                strIter.next();
+                                                if( !inSpeach ){
+                                                    if( strIter.c == ' '.code ){
+                                                        break;
+                                                    } else if( strIter.c == '/'.code ) {
+                                                        if( parent != null ) if( parent.parent != null ) parent = parent.parent;
+                                                        if( parentXml != null ) if( parentXml.parent != null ) parentXml = parentXml.parent;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            var s = strIter.toStr();
+                                            if( toggle ){
+                                                var att_ = new Nodule();
+                                                att = att_;
+                                                att.name = s;
+                                                nodule.addAttribute( att );
+                                            } else {
+                                                att.content = s;
+                                                // add attribute
+                                                // trace( '@' + att.name + " : "  + att.content );
+                                            }
+                                            if( toggle ){
+                                                attName = s;
+                                            } else {
+                                                //trace( 'att value ' + s );
+                                                if( attName != null ) xml.set( attName, s );
+                                                // add attribute
+                                                 // trace( '@' + attName + " : "  + s );
+                                            }
+                                            toggle = !toggle;
+                                    }
+                                }
+                            }else {
+                                strIter.next();
+                                strIter.resetBuffer();
+                                while( strIter.c  != '>'.code ){
+                                    strIter.addChar();
+                                    strIter.next();
+                                }
+                                var s = strIter.toStr();
+                                if( s == parent.name ){
+                                    parent = parent.parent;
+                                }
+                            
+                                if( s == parentXml.nodeName ){
+                                    parentXml = parentXml.parent;
                                 }
                             }
                     }
@@ -239,39 +271,66 @@ class ReadXML {
                         default:
                             // opening tag
                             strIter.resetBuffer();
-                            while( strIter.c  != '>'.code && strIter.c != ' '.code ){
+                            while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '/'.code ){
                                 strIter.addChar();
                                 strIter.next();
                             }
                             var s = strIter.toStr();
-                            var node = new Nodule();
-                            node.name = s;
-                            nodule = node;
-                            parent.addChild( nodule );
-                            parent = nodule;
-                            var att: Nodule = null;
-                            var attName: String = '';
-                            var toggle = true;
-                            while( strIter.c  != '>'.code ){
-                                switch( strIter.c ){
-                                    case ' '.code, '='.code, '/'.code:
-                                        strIter.next();
-                                    default:
-                                        strIter.resetBuffer();
-                                        while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code && strIter.c != '/'.code ){
-                                            if( strIter.c != 34 && strIter.c != 39 ) strIter.addChar(); // any speach marks 
+                            // need to check '/' for special cases
+                            if( strIter.c != '/'.code ) {
+                                var node = new Nodule();
+                                node.name = s;
+                                nodule = node;
+                                parent.addChild( nodule );
+                                parent = nodule;
+                                var att: Nodule = null;
+                                var attName: String = '';
+                                var toggle = true;
+                                while( strIter.c  != '>'.code ){
+                                    switch( strIter.c ){
+                                        case ' '.code, '='.code, '/'.code:
                                             strIter.next();
-                                        }
-                                        var s = strIter.toStr();
-                                        if( toggle ){
-                                            var att_ = new Nodule();
-                                            att = att_;
-                                            att.name = s;
-                                            nodule.addAttribute( att );
-                                        } else {
-                                            att.content = s;
-                                        }
-                                        toggle = !toggle;
+                                        default:
+                                            strIter.resetBuffer();
+                                            var inSpeach = false;
+                                            while( strIter.c  != '>'.code && strIter.c != '='.code ){
+                                                if( strIter.c != 34 && strIter.c != 39 ) {
+                                                    strIter.addChar(); // any speach marks 
+                                                } else {
+                                                    inSpeach = !inSpeach; //to help ignore slashes in speach marks.
+                                                }
+                                                strIter.next();
+                                                if( !inSpeach ){
+                                                    if( strIter.c == ' '.code ){
+                                                        break;
+                                                    } else if( strIter.c == '/'.code ) {
+                                                        if( parent != null ) if( parent.parent != null ) parent = parent.parent;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            var s = strIter.toStr();
+                                            if( toggle ){
+                                                var att_ = new Nodule();
+                                                att = att_;
+                                                att.name = s;
+                                                nodule.addAttribute( att );
+                                            } else {
+                                                att.content = s;
+                                            }
+                                            toggle = !toggle;
+                                    }
+                                }
+                            } else {
+                                strIter.next();
+                                strIter.resetBuffer();
+                                while( strIter.c  != '>'.code ){
+                                    strIter.addChar();
+                                    strIter.next();
+                                }
+                                var s = strIter.toStr();
+                                if( s == parent.name ){
+                                    parent = parent.parent;
                                 }
                             }
                     }
@@ -356,34 +415,56 @@ class ReadXML {
                                 strIter.next();
                             }
                             var s = strIter.toStr();
-                            // attributes
-                            var node2 = Xml.createElement( s );
-                            xml = node2;
-                            if( parentXml != null ) {
-                                parentXml.addChild( xml );
-                            } else {
-                                rootXML = xml;
-                            }
-                            parentXml = xml;
-                            var attName: String = '';
-                            var toggle = true;
-                            while( strIter.c  != '>'.code ){
-                                switch( strIter.c ){
-                                    case ' '.code, '='.code, '/'.code:
-                                        strIter.next();
-                                    default:
-                                        strIter.resetBuffer();
-                                        while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code ){
-                                            if( strIter.c != 34 && strIter.c != 39 ) strIter.addChar(); // any speach marks 
+                            if( strIter.c != '/'.code ) {
+                                // attributes
+                                var node2 = Xml.createElement( s );
+                                xml = node2;
+                                if( parentXml != null ) {
+                                    parentXml.addChild( xml );
+                                } else {
+                                    rootXML = xml;
+                                }
+                                parentXml = xml;
+                                var attName: String = '';
+                                var toggle = true;
+                                while( strIter.c  != '>'.code ){
+                                    switch( strIter.c ){
+                                        case ' '.code, '='.code, '/'.code:
                                             strIter.next();
-                                        }
-                                        var s = strIter.toStr();
-                                        if( toggle ){
-                                            attName = s;
-                                        } else {
-                                            if( attName != null ) xml.set( attName, s );
-                                        }
-                                        toggle = !toggle;
+                                        default:
+                                            strIter.resetBuffer();
+                                            var inSpeach = false;
+                                            while( strIter.c  != '>'.code && strIter.c != ' '.code && strIter.c != '='.code ){
+                                                if( strIter.c != 34 && strIter.c != 39 ) {
+                                                    strIter.addChar(); // any speach marks 
+                                                } else {
+                                                    inSpeach = !inSpeach; //to help ignore slashes in speach marks.
+                                                }
+                                                strIter.next();
+                                                if( !inSpeach && strIter.c == '/'.code ) {
+                                                    if( parentXml != null ) if( parentXml.parent != null ) parentXml = parentXml.parent;
+                                                    break;
+                                                }
+                                            }
+                                            var s = strIter.toStr();
+                                            if( toggle ){
+                                                attName = s;
+                                            } else {
+                                                if( attName != null ) xml.set( attName, s );
+                                            }
+                                            toggle = !toggle;
+                                    }
+                                } 
+                            } else {
+                                strIter.next();
+                                strIter.resetBuffer();
+                                while( strIter.c  != '>'.code ){
+                                    strIter.addChar();
+                                    strIter.next();
+                                }
+                                var s = strIter.toStr();
+                                if( s == parentXml.nodeName ){
+                                    parentXml = parentXml.parent;
                                 }
                             }
                     }
