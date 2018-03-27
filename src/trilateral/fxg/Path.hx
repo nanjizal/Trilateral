@@ -35,7 +35,7 @@ abstract Path( Nodule ) from Nodule to Nodule {
             var attPairs = new AttributePairs();
             var attPairs = stroke[ 0 ].firstChild.attributes( attPairs );//SolidColorStroke
             for( pair in attPairs ){
-                if( pair.name == 'weight' ) lineWidth = Std.parseFloat( pair.value );
+                if( pair.name == 'weight' ) lineWidth = Std.parseFloat( pair.value )/2;
                 if( pair.name == 'color' )  lineColor = parseColor( pair.value );
             }
         }
