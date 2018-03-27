@@ -3,6 +3,7 @@ import trilateral.nodule.Nodule;
 import trilateral.nodule.AttributePairs;
 import trilateral.path.FillOnly;
 import trilateral.path.Crude;
+import trilateral.path.Fine;
 import trilateral.path.Base;
 import trilateral.justPath.SvgPath;
 import trilateral.tri.TriangleArray;
@@ -13,19 +14,22 @@ abstract Path( Nodule ) from Nodule to Nodule {
         this = n;
     }
     public function render( count: Int, tri: TriangleArray, colors: Array<Int>
-                            , fillFunc: TriangleArray -> Int -> Array<Float> -> Int -> Void ){
+                        ,   pathFactory: Void->Base
+                        ,   fillFunc: TriangleArray -> Int -> Array<Float> -> Int -> Void ){
         var d = this.firstAttribute.content;
         var kid = new Array<Nodule>();
         this.childNodules( kid );
         var fill        = kid.filter( function(v) { return ( v.name == 'fill' ); } );
         var stroke      = kid.filter( function(v) { return( v.name == 'stroke' ); } );
-        var solidColor: Int = 0;
-        var lineColor:  Int = 0;
+        var solidColor: Int = 0xFF000000; // defaults to black
+        var lineColor:  Int = 0xFF000000; // defaults to black 
         var lineWidth:  Float = 0.;
         var hasFill     = ( fill.length != 0 );
         var hasStroke   = ( stroke.length != 0 );
         if( hasFill ){
-            solidColor = parseColor( fill[0].firstChild.firstAttribute.content );
+            if( fill[0].firstChild.firstAttribute != null ){
+                solidColor = parseColor( fill[0].firstChild.firstAttribute.content );
+            }
         }
         if( hasStroke ){
             var attPairs = new AttributePairs();
@@ -36,16 +40,16 @@ abstract Path( Nodule ) from Nodule to Nodule {
             }
         }
         if( hasFill && hasStroke ){
-            var crude = new Crude();
-            crude.width = lineWidth;
-            var svgPath = new SvgPath( crude );
+            var pen = pathFactory();
+            pen.width = lineWidth;
+            var svgPath = new SvgPath( pen );
             svgPath.parse( d );
             var id = colors.indexOf( solidColor );
             if( id == -1 ) {
                 id = colors.length;
                 colors[id] = solidColor;
             }
-            var p = crude.points;
+            var p = pen.points;
             var l = p.length;
             var j = 0;
             for( i in 0...l ){
@@ -59,7 +63,7 @@ abstract Path( Nodule ) from Nodule to Nodule {
                 id = colors.length;
                 colors[ id ] = lineColor;
             }
-            tri.addArray( count, crude.trilateralArray, id );
+            tri.addArray( count, pen.trilateralArray, id );
         } else if( hasFill ){
             var fillOnly = new FillOnly();
             fillOnly.width = 1;
@@ -80,16 +84,16 @@ abstract Path( Nodule ) from Nodule to Nodule {
                 }
             }
         } else if( hasStroke ){
-            var crude = new Crude();
-            crude.width = lineWidth;
-            var svgPath = new SvgPath( crude );
+            var pen = pathFactory();
+            pen.width = lineWidth;
+            var svgPath = new SvgPath( pen );
             svgPath.parse( d );
             var id = colors.indexOf( lineColor );
             if( id == -1 ) {
                 id = colors.length;
                 colors[ id ] = lineColor;
             }
-            tri.addArray( count, crude.trilateralArray, id );
+            tri.addArray( count, pen.trilateralArray, id );
         }
     }
     public inline function parseColor( hashColor: String ): Int {
