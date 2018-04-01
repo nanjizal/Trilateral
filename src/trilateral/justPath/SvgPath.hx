@@ -1,6 +1,7 @@
 package trilateral.justPath;
 import trilateral.justPath.StoreF8;
 import trilateral.justPath.StoreF6;
+import trilateral.justPath.EllipseArc;
 import trilateral.justPath.IPathContext;
 class SvgPath{
     var str = '';
@@ -303,9 +304,31 @@ class SvgPath{
                         }
                     }
                 case 'A'.code:
+                    
                     trace( 'elliptical_Arc - not implemented in justPath yet but WIP in main codebase' );
                     trace( 'this instruction skipped');
                     extractArgs();
+                    var sx      = lastX;
+                    var sy      = lastY;
+                    var xr      = store.shift();
+                    var yr      = store.shift();
+                    var phi     = store.shift();
+                    var large   = Std.int( store.shift() );
+                    var sweep   = Std.int( store.shift() );
+                    lastX       = store.shift();
+                    lastY       = store.shift();
+                    /* For debug
+                    var quickTriangle = function( x0: Float, y0: Float, off: Float ){
+                        pathContext.moveTo( x0, y0 - off );
+                        pathContext.lineTo( x0 + off, y0 + off );
+                        pathContext.lineTo( x0 - off, y0 + off );
+                        pathContext.lineTo( x0, y0 - off );
+                    }
+                    */
+                    var ellipseData: EllipseArcData = new ConverterArc( sx, sy, xr, yr, phi, large, sweep, lastX, lastY );
+                    var ellipse  = new EllipseArc( ellipseData );
+                    ellipse.lineRender( pathContext.moveTo, pathContext.lineTo, Math.PI/18 );
+                    
                 case 'a'.code:
                     trace( 'relative elliptical_Arc - not implemented in justPath yet but WIP in main codebase' );
                     trace( 'this instruction skipped');
@@ -329,12 +352,13 @@ class SvgPath{
     // Assumes all values are float
     // new lines not yet implemented
     // scientifc numbers not implemented yet
-    function extractArgs( ?process: Bool = true ) {
+    inline function extractArgs( ?process: Bool = true ) {
         store.clear();
         //pos++;
         c = nextChar();
         var count = 0;
         var temp: String = '';
+        var exit = false;
         while( true ) {
             switch( c ) {
                 case '-'.code:
@@ -404,8 +428,9 @@ class SvgPath{
                     // Useful for debug:
                     //trace(' default ' + store.populatedToString() );
                     pos--;
-                    break;
+                    exit = true; // break; here causes a throw in older haxe which is not ideal.
             }
+            if( exit ) break;
             c = nextChar();
         }
     }
