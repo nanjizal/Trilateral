@@ -4,7 +4,6 @@ import trilateral.tri.TrilateralArray;
 import trilateral.tri.TrilateralPair;
 import trilateral.geom.Algebra;
 import trilateral.geom.Contour;
-import trilateral.geom.EllipseArc;
 typedef Dim = {
     var minX: Float;
     var maxX: Float;
@@ -95,17 +94,6 @@ class Base implements IPathContext {
         plotCoord( tempArr, false );
         x = x3;
         y = y3;
-    }
-    public inline
-    function ellipticArc( rx: Float, ry: Float
-                        , theta: Float
-                        , largeArcFlag: Bool, sweep: Bool
-                        , x1: Float, y1: Float ){
-        tempArr = [];
-        Algebra.ellipticArcCurve( tempArr, x, y, rx, ry, theta, largeArcFlag, sweep, x1, y1 );
-        plotCoord( tempArr, false );
-        x = x1;
-        y = y1;
     }
     public inline
     function plotCoord( arr: Array<Float>, ?withMove: Bool = true ): Void {

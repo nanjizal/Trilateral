@@ -1,4 +1,4 @@
-package trilateral.justPath;
+package trilateral.justPath.transform;
 import trilateral.justPath.IPathContext;
 class ScaleContext implements IPathContext {
     public var pathContext: IPathContext;

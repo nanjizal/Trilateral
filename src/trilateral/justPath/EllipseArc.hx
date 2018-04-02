@@ -14,8 +14,6 @@ typedef EllipseArcData = {
     // pre-calculate to reduce point calculations
     var phiSin: Float;
     var phiCos: Float;
-    public var ax: Float;
-    public var ay: Float;
 }
 @:forward
 class EllipseArc{
@@ -25,10 +23,10 @@ class EllipseArc{
     public function new( arc_: EllipseArcData ){
         arc = arc_;
     }
-    public function alphaPoint(){
+    public function alphaPoint(){ // mainly for testing
         calculatePoint( arc.alpha );
     }
-    public function omegaPoint(){
+    public function omegaPoint(){ // mainly for testing
         calculatePoint( arc.omega );
     }
     public function lineRender( moveTo:  Float->Float->Void, lineTo: Float->Float->Void
@@ -136,7 +134,7 @@ abstract ConverterArc( EllipseArcData ) from EllipseArcData to EllipseArcData {
         }
         this = { cx: cx, cy: cy, rx: rx, ry: ry
             , alpha: alpha, omega: omega, delta: -delta, phi: phi
-            , phiSin: Math.sin( phi ), phiCos: Math.cos( phi ), ax: ax, ay: ay  }
+            , phiSin: Math.sin( phi ), phiCos: Math.cos( phi ) }
     }
     static inline function zeroto2pi( angle: Float ): Float {
         return if( angle >= 0 && angle > Math.PI ){

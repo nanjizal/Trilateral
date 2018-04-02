@@ -1,4 +1,4 @@
-package trilateral.justPath;
+package trilateral.justPath.transform;
 // used for simple matrix translations, x and y locations are stored on it directly.
 // minimal implementation.
 typedef M3data = { ?x: Float, ?y: Float

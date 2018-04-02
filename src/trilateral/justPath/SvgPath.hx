@@ -17,16 +17,14 @@ class SvgPath{
     public function new( pathContext_: IPathContext ){
         pathContext = pathContext_;
     }
+    function quickTriangle( x0: Float, y0: Float, off: Float ){ // only used for visual debug ie: Ellipse Arc.
+        pathContext.moveTo( x0, y0 - off );
+        pathContext.lineTo( x0 + off, y0 + off );
+        pathContext.lineTo( x0 - off, y0 + off );
+        pathContext.lineTo( x0, y0 - off );
+    }
     // currently not much protection against malformed, or unusual path data.
     public function parse( str_: String ): String {
-        /* For debug
-        var quickTriangle = function( x0: Float, y0: Float, off: Float ){
-            pathContext.moveTo( x0, y0 - off );
-            pathContext.lineTo( x0 + off, y0 + off );
-            pathContext.lineTo( x0 - off, y0 + off );
-            pathContext.lineTo( x0, y0 - off );
-        }
-        */
         str = str_;
         pos = 0;
         l = str.length;
