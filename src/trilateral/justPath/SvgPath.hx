@@ -13,22 +13,21 @@ class SvgPath{
     var c = 0;
     var l = 0;
     var pathContext: IPathContext;
-    var store: StoreF6;
-    var dx = 0.;
-    var dy = 0.;
-    var sx = 1.;
-    var sy = 1.;
+    var store:       StoreF6;
     public function new( pathContext_: IPathContext ){
         pathContext = pathContext_;
     }
     // currently not much protection against malformed, or unusual path data.
-    public function parse( str_: String, ?dx_: Float = 0, ?dy_: Float = 0, ?sx_: Float = 1, sy_: Float = 1 ): String {
+    public function parse( str_: String ): String {
+        /* For debug
+        var quickTriangle = function( x0: Float, y0: Float, off: Float ){
+            pathContext.moveTo( x0, y0 - off );
+            pathContext.lineTo( x0 + off, y0 + off );
+            pathContext.lineTo( x0 - off, y0 + off );
+            pathContext.lineTo( x0, y0 - off );
+        }
+        */
         str = str_;
-        dx = dx_;
-        dy = dy_;
-        sx = sx_;
-        sy = sy_;
-        
         pos = 0;
         l = str.length;
         c = nextChar();
@@ -91,44 +90,44 @@ class SvgPath{
                 case 'H'.code:
                     extractArgs( false );
                     if( store.length() == 1 ){
-                        lastX = store.s0*sx + dx;
+                        lastX = store.s0;
                         pathContext.lineTo( lastX, lastY );
                     } else if( store.length() > 1 ){
                         while( store.length() > 0 ){
-                            lastX = store.shift()*sx + dx;
+                            lastX = store.shift();
                             pathContext.lineTo( lastX, lastY );
                         }
                     }
                 case 'h'.code:
                     extractArgs( false );
                     if( store.length() == 1 ){
-                        lastX = lastX + store.s0*sx + dx;
+                        lastX = lastX + store.s0;
                         pathContext.lineTo( lastX, lastY );
                     } else if( store.length() > 1 ){
                         while( store.length() > 0 ){
-                            lastX = lastX + store.shift()*sx + dx;
+                            lastX = lastX + store.shift();
                             pathContext.lineTo( lastX, lastY );
                         }
                     }
                 case 'V'.code:
                     extractArgs( false );
                     if( store.length() == 1 ){
-                        lastY = store.shift()*sy + dy;
+                        lastY = store.shift();
                         pathContext.lineTo( lastX, lastY );
                     } else if( store.length() > 1 ){
                         while( store.length() > 0 ){
-                            lastY = store.shift()*sy + dy;
+                            lastY = store.shift();
                             pathContext.lineTo( lastX, lastY );
                         }
                     }
                 case 'v'.code:
                     extractArgs( false );
                     if( store.length() == 1 ){
-                        lastY = lastY + store.s0*sy + dy;
+                        lastY = lastY + store.s0;
                         pathContext.lineTo( lastX, lastY );
                     } else if( store.length() > 1 ){
                         while( store.length() > 0 ){
-                            lastY = lastY + store.shift()*sy + dy;
+                            lastY = lastY + store.shift();
                             pathContext.lineTo( lastX, lastY );
                         }
                     }
@@ -304,10 +303,39 @@ class SvgPath{
                         }
                     }
                 case 'A'.code:
-                    
-                    trace( 'elliptical_Arc - not implemented in justPath yet but WIP in main codebase' );
-                    trace( 'this instruction skipped');
                     extractArgs();
+                    if( store.length() == 7 ){
+                        var sx      = lastX;
+                        var sy      = lastY;
+                        var xr      = store.shift();
+                        var yr      = store.shift();
+                        var phi     = store.shift();
+                        var large   = Std.int( store.shift() );
+                        var sweep   = Std.int( store.shift() );
+                        lastX       = store.shift();
+                        lastY       = store.shift();
+                        var ellipseData: EllipseArcData = new ConverterArc( sx, sy, xr, yr, phi, large, sweep, lastX, lastY );
+                        var ellipse  = new EllipseArc( ellipseData );
+                        ellipse.lineRender( pathContext.moveTo, pathContext.lineTo, Math.PI/18 );
+                    } else if( store.length() > 7 ){
+                        while( store.length() > 6 ){
+                            var sx      = lastX;
+                            var sy      = lastY;
+                            var xr      = store.shift();
+                            var yr      = store.shift();
+                            var phi     = store.shift();
+                            var large   = Std.int( store.shift() );
+                            var sweep   = Std.int( store.shift() );
+                            lastX       = store.shift();
+                            lastY       = store.shift();
+                            var ellipseData: EllipseArcData = new ConverterArc( sx, sy, xr, yr, phi, large, sweep, lastX, lastY );
+                            var ellipse  = new EllipseArc( ellipseData );
+                            ellipse.lineRender( pathContext.moveTo, pathContext.lineTo, Math.PI/18 );
+                        }
+                    }
+                case 'a'.code:
+                extractArgs();
+                if( store.length() == 7 ){
                     var sx      = lastX;
                     var sy      = lastY;
                     var xr      = store.shift();
@@ -315,24 +343,27 @@ class SvgPath{
                     var phi     = store.shift();
                     var large   = Std.int( store.shift() );
                     var sweep   = Std.int( store.shift() );
-                    lastX       = store.shift();
-                    lastY       = store.shift();
-                    /* For debug
-                    var quickTriangle = function( x0: Float, y0: Float, off: Float ){
-                        pathContext.moveTo( x0, y0 - off );
-                        pathContext.lineTo( x0 + off, y0 + off );
-                        pathContext.lineTo( x0 - off, y0 + off );
-                        pathContext.lineTo( x0, y0 - off );
-                    }
-                    */
+                    lastX       = store.shift() + lastX;
+                    lastY       = store.shift() + lastY;
                     var ellipseData: EllipseArcData = new ConverterArc( sx, sy, xr, yr, phi, large, sweep, lastX, lastY );
                     var ellipse  = new EllipseArc( ellipseData );
                     ellipse.lineRender( pathContext.moveTo, pathContext.lineTo, Math.PI/18 );
-                    
-                case 'a'.code:
-                    trace( 'relative elliptical_Arc - not implemented in justPath yet but WIP in main codebase' );
-                    trace( 'this instruction skipped');
-                    extractArgs();
+                } else if( store.length() > 7 ){
+                    while( store.length() > 6 ){
+                        var sx      = lastX;
+                        var sy      = lastY;
+                        var xr      = store.shift();
+                        var yr      = store.shift();
+                        var phi     = store.shift();
+                        var large   = Std.int( store.shift() );
+                        var sweep   = Std.int( store.shift() );
+                        lastX       = store.shift() + lastX;
+                        lastY       = store.shift() + lastY;
+                        var ellipseData: EllipseArcData = new ConverterArc( sx, sy, xr, yr, phi, large, sweep, lastX, lastY );
+                        var ellipse  = new EllipseArc( ellipseData );
+                        ellipse.lineRender( pathContext.moveTo, pathContext.lineTo, Math.PI/18 );
+                    }
+                }
                 case 'Z'.code, 'z'.code: 
                     lastX = 0;
                     lastY = 0;
@@ -348,6 +379,7 @@ class SvgPath{
         }
         return str_;
     }
+    
     // Extract the args
     // Assumes all values are float
     // new lines not yet implemented
@@ -363,12 +395,12 @@ class SvgPath{
             switch( c ) {
                 case '-'.code:
                     if( temp != '' ){
-                        if( temp == '0' ) temp = '0.1';
+                        //if( temp == '0' ) temp = '0.1';
                         if( process ){
                             if( ( store.length() & 1) == 0 ) { // x 
-                                store.push( Std.parseFloat( temp )*sx + dx );
+                                store.push( Std.parseFloat( temp ) );
                             } else { // y
-                                store.push( Std.parseFloat( temp )*sy + dy );
+                                store.push( Std.parseFloat( temp ) );
                             }
                         } else {
                             store.push( Std.parseFloat( temp ) );
@@ -399,12 +431,12 @@ class SvgPath{
                     temp = temp + '9';
                 case ' '.code,','.code:
                     if( temp != '' ){
-                        if( temp == '0' ) temp = '0.1';
+                        //if( temp == '0' ) temp = '0.1';
                         if( process ){
                             if( ( store.length() & 1) == 0 ) { // x 
-                                store.push( Std.parseFloat( temp )*sx + dx );
+                                store.push( Std.parseFloat( temp ) );
                             } else { // y
-                                store.push( Std.parseFloat( temp )*sy + dy );
+                                store.push( Std.parseFloat( temp ) );
                             }
                         } else { // for special cases V,v,H,h where only one var is stored.
                             store.push( Std.parseFloat( temp ) );
@@ -413,12 +445,12 @@ class SvgPath{
                     }
                 default:
                     if( temp != '' ){
-                        if( temp == '0' ) temp = '0.1';
+                        //if( temp == '0' ) temp = '0.1';
                         if( process ){
                             if( ( store.length() & 1) == 0 ) { // x 
-                                store.push( Std.parseFloat( temp )*sx + dx );
+                                store.push( Std.parseFloat( temp ) );
                             } else { // y
-                                store.push( Std.parseFloat( temp )*sy + dy );
+                                store.push( Std.parseFloat( temp ) );
                             }
                         } else { // for special cases V,v,H,h where only one var is stored.
                             store.push( Std.parseFloat( temp ) );
