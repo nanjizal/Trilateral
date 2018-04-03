@@ -1,6 +1,6 @@
 package trilateral.justPath.transform;
 import trilateral.justPath.IPathContext;
-class TransformationContext implements IPathContext {
+class TranslationContext implements IPathContext {
     public var pathContext: IPathContext;
     public var dx: Float;
     public var dy: Float;
