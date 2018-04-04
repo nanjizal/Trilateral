@@ -4,6 +4,10 @@ Haxe code for drawing lines and shapes with triangles.
 Example code can be found at:
 [TrilateralBazaar](https://github.com/nanjizal/TrilateralBazaar/)
 
+Some functionality has now been moved to:
+[TrilateralXtra](https://github.com/nanjizal/TrilateralXtra/)
+( for instance 7 segment and FXG )
+
 And the demos in TrilateralBazaar repo:
 
 [WebGL](https://nanjizal.github.io/TrilateralBazaar/demo/binWebGL/)
