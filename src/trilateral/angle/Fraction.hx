@@ -165,7 +165,7 @@ class Fracs {
         var maxNumerator = getMaxNumerator( f2 );
         var d2 = f2;
         var calcD: Float;
-        var prevCalcD: Float = null;
+        var prevCalcD: Null<Float> = null;
         var arrFraction = new FractionArray();
         var j: Int = 0;
         for( i in 2...1000 ){

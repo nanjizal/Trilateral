@@ -25,24 +25,24 @@ class Contour {
     var by: Float; // 1
     var cx: Float; // 2
     var cy: Float; // 2
-    var dx: Float; // 3
-    var dy: Float; // 3
-    var ex: Float; // 4
-    var ey: Float; // 4
+    var dx: Null<Float>; // 3     // computeDE checks null
+    var dy: Null<Float>; // 3
+    var ex: Null<Float>; // 4
+    var ey: Null<Float>; // 4
     
-    var fx: Float; // q0
+    /*var fx: Float; // q0
     var fy: Float;
     var gx: Float; // q1
-    var gy: Float;
+    var gy: Float;*/
     
-    var dxPrev: Float;
-    var dyPrev: Float;
-    var exPrev: Float;
-    var eyPrev: Float;
-    var dxOld: Float;
-    var dyOld: Float;
-    var exOld: Float;
-    var eyOld: Float;    
+    var dxPrev: Null<Float>; // computeDE checks null
+    var dyPrev: Null<Float>;
+    var exPrev: Null<Float>;
+    var eyPrev: Null<Float>;
+    var dxOld: Null<Float>;
+    var dyOld: Null<Float>;
+    var exOld: Null<Float>;
+    var eyOld: Null<Float>;
     var jx: Float;
     var jy: Float;
     var lastClock: Bool;
@@ -73,38 +73,40 @@ class Contour {
     public var beta: Float;
     var r: Float;
     public var theta: Float;
-    public var angle1: Float;
+    public var angle1: Null<Float>;  // triangleJoin checks null
     public var angle2: Float;
     
     public function reset(){
-        angleA = null;
+        angleA = 0; //null;
         count = 0;
-        kax = null;
-        kay = null;
-        kbx = null;
-        kby = null;
-        kcx = null; 
-        kcy = null;
-        nax = null;
-        nay = null;
-        nbx = null;
-        nby = null;
-        ncx = null;
-        ncy = null;
-        ax = null;
-        ay = null;
-        bx = null;
-        by = null;
-        cx = null;
-        cy = null;
+        kax = 0; //null;
+        kay = 0; //null;
+        kbx = 0; //null;
+        kby = 0; //null;
+        kcx = 0; //null; 
+        kcy = 0; //null;
+        nax = 0; //null;
+        nay = 0; //null;
+        nbx = 0; //null;
+        nby = 0; //null;
+        ncx = 0; //null;
+        ncy = 0; //null;
+        ax = 0; //null;
+        ay = 0; //null;
+        bx = 0; //null;
+        by = 0; //null;
+        cx = 0; //null;
+        cy = 0; //null;
+        
         dx = null;
         dy = null;
         ex = null;
         ey = null;
-        fx = null;
+        
+        /*fx = null;
         fy = null;
         gx = null;
-        gy = null;
+        gy = null;*/
     }
     //TODO: create lower limit for width   0.00001; ?
     public var count = 0;

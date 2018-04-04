@@ -101,6 +101,34 @@ class Algebra {
         if( approxDistance == 0 ) approxDistance = 0.000001;
         return Math.min( 1/( approxDistance*0.707 ), cubicStep );
     }
+    /* NOT STABLE ENOUGH :(  - may remove soon!
+    public static inline
+    function eggPoints( p: Array<Float>, x: Float, y: Float, width: Float, ?sides: Int = 70 ){
+        var sidesHalf: Int = Std.int( sides/2 ) + 1;
+        var px: Float = 0;
+        var py: Float = 0;
+        var a = 5;
+        var b = 0.7*a;
+        var l = 0;
+        for( i in 0...Std.int( sides/2 ) ){
+            if( i != 0 ){
+                 px = i/5;
+                 py = Math.sqrt( px ) * Math.sqrt( Math.abs(
+                                                     (a-b) -2*px + Math.sqrt( 4*b*px + Math.pow( a-b, 2 ) ) )
+                                                    )/Math.sqrt( 2 );
+                 //py = Math.sqrt( 
+                 //    Math.abs( -20*Math.pow( px, 2 ) - px*Math.sqrt( 280*px + 9 ) + 3*px ) 
+                 //    )/( 2*Math.sqrt( 5 ) );
+            }
+            p[ Std.int( sides*2 ) - l ] = px*width + x;
+            p[ l ] = px*width + x;
+            l++;
+            p[ Std.int( sides*2 ) - l ] = -py*width + y;
+            p[ l ] = py*width + y;
+            l++;
+        }
+    }
+    */
     // may not be most optimal
     public inline static
     function lineAB( A: Point, B: Point, width: Float ){
