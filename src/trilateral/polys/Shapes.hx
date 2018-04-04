@@ -80,7 +80,7 @@ class Shapes {
     public inline
     function ellipse( x: Float, y: Float, rx: Float, ry: Float, color: Int, ?sides: Int, ?theta: Float = 0 ): Int {
         triangles.addArray( refCount++
-                        ,   Poly.ellipse( x, y, radius, sides )
+                        ,   Poly.ellipse( x, y, rx, ry, sides )
                         ,   color );
         return refCount - 1;
     }
