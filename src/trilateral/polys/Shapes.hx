@@ -8,8 +8,7 @@ import trilateral.pairs.Star;
 import trilateral.pairs.Quad;
 import trilateral.pairs.Line;
 import trilateral.polys.Poly;
-// TO replace Shapes, but till all demos are updated it is called ShapesGeneric
-class ShapesGeneric {
+class Shapes {
     public var triangles:     TriangleArray;
     var colors:        Array<Int>;
     public var refCount: Int = 0; // allow you to reference a shape by an index, ie you can collect all triangles with specific id number.
