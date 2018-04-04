@@ -1,4 +1,4 @@
-package trilateral.helper;
+package trilateral.polys;
 import trilateral.tri.TriangleArray;
 import trilateral.tri.TrianglePair;
 import trilateral.tri.TrilateralPair;
