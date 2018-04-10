@@ -98,4 +98,21 @@ class Shapes {
                         ,   color );
         return refCount - 1;
     }
+    public inline
+    function spiralLines( x: Float, y: Float, radius: Float, nolines: Int, startWid: Float, stepWid: Float, color: Int ): Int {
+        var theta = 0.;
+        var line: TrilateralPair;
+        var wid = startWid;
+        for( i in 0...nolines ){
+            var p0 = { x: x, y: y };
+            var p1 = { x: x + radius*Math.sin( theta ), y: y + radius*Math.cos( theta ) };
+            theta += (Math.PI*2)/nolines;
+            line = Line.create( p0, p1, wid+= stepWid );
+            triangles.addPair(  refCount
+                            ,   line
+                            ,   color );
+        }
+        refCount++;
+        return refCount - 1;
+    }
 }

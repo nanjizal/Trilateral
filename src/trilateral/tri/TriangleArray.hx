@@ -8,6 +8,20 @@ abstract TriangleArray(Array<Triangle>) from Array<Triangle> to Array<Triangle> 
     function new( ?t: Array<Triangle> ) {
         this = ( t == null )? getEmpty(): t;
     }
+    public inline
+    function changeFillColorByID( id: Int, colorID: Int, ?startID: Int = 0, ?endID: Int = 0 ){
+        var tri: Triangle;
+        if( endID == 0 ) endID = this.length;
+        for( i in startID...endID ){
+            tri = this[ i ];
+            if( tri.id == id ) {
+                tri.colorID = colorID;
+                tri.colorA = colorID;
+                tri.colorB = colorID;
+                tri.colorC = colorID;
+            }
+        }
+    }
     public inline static 
     function getEmpty(){
         return new TriangleArray( new Array<Triangle>() );
