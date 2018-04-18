@@ -6,4 +6,4 @@
 --next
 -cmd haxelib local trilateral.zip
 --next
--cmd rm trilateral.zip  
+-cmd rm trilateral.zip

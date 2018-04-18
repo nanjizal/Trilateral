@@ -29,6 +29,27 @@ class Base implements IPathContext {
         points[0] = new Array<Float>();
         dim = new Array<Dim>();
     }
+    public function pointsNoEndOverlap(): Array<Array<Float>> {
+        var p: Array<Float>;
+        var l: Int;
+        var j = 0;
+        var pointsClean = new Array<Array<Float>>();
+        for( i in 0...points.length ){
+            p = points[ i ];
+            if( p.length > 2 ) pointsClean[ j++ ] = p; // remove empty arrays by only storing full ones.
+        }
+        points = pointsClean;
+        for( i in 0...points.length ){
+            p = points[ i ];
+            l = p.length;
+            var repeat = ( p[ 0 ] == p[ l - 2 ] && p[ 1 ] == p[ l - 1 ] );
+            if( repeat ){
+                points[ i ].pop();
+                points[ i ].pop();
+            }
+        }
+        return points;
+    }
     inline function initDim(): Dim{
         return { minX: Math.POSITIVE_INFINITY, maxX: Math.NEGATIVE_INFINITY, minY: Math.POSITIVE_INFINITY, maxY: Math.NEGATIVE_INFINITY };
     }
