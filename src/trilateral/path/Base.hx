@@ -46,7 +46,40 @@ class Base implements IPathContext {
             if( repeat ){
                 points[ i ].pop();
                 points[ i ].pop();
+                l -= 2;
             }
+            /*  Possible functionality for correcting anti-clockwise 
+            var cc = 0.;
+            var k = 0;
+            var x1: Float;
+            var y1: Float;
+            var x2: Float;
+            var y2: Float;
+            var last = l-2;
+            while( k < l ){
+                x1 = p[ k ];
+                y1 = p[ k + 1 ];
+                if( k == last ){
+                    x2 = p[ 0 ];
+                    y2 = p[ 1 ];
+                } else {
+                    x2 = p[ k + 2 ];
+                    y2 = p[ k + 3 ];
+                }
+                cc += ( x2 - x1 ) * ( y2 + y1 ); //(x1 * y2 - x2 * y1)
+                k += 2;
+            }
+            var reverse = cc < 0;
+            trace( ' reverse ' + cc  );
+            if( reverse ){
+                trace( 'reversing points for shape number ' + i  );
+                k = 0;
+                while( k < l ){
+                    x1 = p[ k ];
+                    p[ k ] = p[ k + 1 ];
+                    p[ k + 1 ] = x1;
+                }
+            }*/
         }
         return points;
     }
