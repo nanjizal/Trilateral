@@ -1,5 +1,6 @@
 package trilateral.tri;
 import trilateral.tri.Triangle;
+import trilateral.geom.Point;
 import trilateral.tri.TriangleArray;
 import trilateral.geom.Algebra;
 abstract TriangleGradient( Triangle ) from Triangle to Triangle {
@@ -50,7 +51,7 @@ abstract TriangleGradient( Triangle ) from Triangle to Triangle {
                                             ): TrianglePair {
         //   A   B
         //   D   C
-        var line = Algebra.rotateVectorLine( pos, dim, theta, pivotX, pivotY );
+        var line = Algebra.rotateVectorLine( pos_, dim_, theta, pivotX, pivotY );
         if( horizontal ){
             return { t0: new TriangleGradient( id_, line.A, line.B, line.D, depth_, colorID_, colorID2_, 1 )
                 ,    t1: new TriangleGradient( id_, line.B, line.C, line.D, depth_, colorID2_, colorID_, 2 ) };
@@ -70,7 +71,7 @@ abstract TriangleGradient( Triangle ) from Triangle to Triangle {
                                                 ){
         if( colors.length == 0 ) return;
         var left = x_; 
-        var top = -y_;
+        var top = y_;
         var wid = wid_;
         var hi = hi_;
         if( colors.length == 1 ) colors.push( colors[ 0 ] );
@@ -78,16 +79,16 @@ abstract TriangleGradient( Triangle ) from Triangle to Triangle {
         var loops = colors.length - 1;
         if( horizontal_ ){
             var step: Float = wid/sections;
-            var dim = { x: step, y: -hi };
+            var dim = { x: step, y: hi };
             for( i in 0...loops ){
                 var pos = { x: left + i*step, y: top };
                 triangles.pushPair( TriangleGradient.quadGradient( id_, pos, dim, 0, colors[ i ], colors[ i + 1 ], horizontal_, theta, pivotX, pivotY ) );
             }
         } else {
             var step: Float = hi/sections;
-            var dim = { x: wid, y: -step };
+            var dim = { x: wid, y: step };
             for( i in 0...loops ){
-                var pos = { x: left, y: top - i*step };
+                var pos = { x: left, y: top + i*step };
                 triangles.pushPair( TriangleGradient.quadGradient( id_, pos, dim, 0, colors[ i ], colors[ i + 1 ], horizontal_, theta, pivotX, pivotY ) );
             }
         }
