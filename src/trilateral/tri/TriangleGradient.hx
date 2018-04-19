@@ -60,11 +60,16 @@ abstract TriangleGradient( Triangle ) from Triangle to Triangle {
                 ,    t1:  new TriangleGradient( id_, line.B, line.C, line.D, depth_, colorID2_, colorID_, 0 ) };
         }
     }
+    // converts normal tween equation for use with gradient
+    public static function gradientFunction( tweenEquation: Float->Float->Float->Float->Float ): Float->Float {
+        return function( t: Float ): Float { return tweenEquation( t, 0, 1, 1 ); }
+    }
     public static inline function multiGradient(    id_:    Int,    horizontal_:    Bool
                                                 ,   x_:     Float,  y_:             Float
                                                 ,   wid_:   Float,  hi_:            Float
                                                 ,   triangles: TriangleArray
                                                 ,   colors: Array<Int>
+                                                ,   func: Float -> Float = null
                                                 ,   ?theta:  Float = 0.
                                                 ,   ?pivotX: Float = 0.
                                                 ,   ?pivotY: Float = 0.
@@ -77,18 +82,23 @@ abstract TriangleGradient( Triangle ) from Triangle to Triangle {
         if( colors.length == 1 ) colors.push( colors[ 0 ] );
         var sections = colors.length - 1;
         var loops = colors.length - 1;
+        if( func == null ) func = function( v: Float ): Float{ return v; }
         if( horizontal_ ){
-            var step: Float = wid/sections;
-            var dim = { x: step, y: hi };
+            var step: Float = 1/sections;
+            var x0: Float;
+            var x1: Float;
             for( i in 0...loops ){
-                var pos = { x: left + i*step, y: top };
+                x0 = func( i*step );
+                x1 = func( (i+1)*step );
+                var pos = { x: left + x0*wid, y: top };
+                var dim = { x: wid*(x1-x0), y: hi };
                 triangles.pushPair( TriangleGradient.quadGradient( id_, pos, dim, 0, colors[ i ], colors[ i + 1 ], horizontal_, theta, pivotX, pivotY ) );
             }
         } else {
-            var step: Float = hi/sections;
-            var dim = { x: wid, y: step };
+            var step: Float = 1/sections;
+            var dim = { x: wid, y: hi*func( step ) };
             for( i in 0...loops ){
-                var pos = { x: left, y: top + i*step };
+                var pos = { x: left, y: top + func( i*step )*hi };
                 triangles.pushPair( TriangleGradient.quadGradient( id_, pos, dim, 0, colors[ i ], colors[ i + 1 ], horizontal_, theta, pivotX, pivotY ) );
             }
         }
