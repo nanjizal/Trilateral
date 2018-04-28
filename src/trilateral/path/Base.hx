@@ -83,6 +83,65 @@ class Base implements IPathContext {
         }
         return points;
     }
+    public function pointsRewound(): Array<Array<Float>> {
+        var p: Array<Float>;
+        var l: Int;
+        var j = 0;
+        var pointsClean = new Array<Array<Float>>();
+        for( i in 0...points.length ){
+            p = points[ i ];
+            if( p.length > 2 ) pointsClean[ j++ ] = p; // remove empty arrays by only storing full ones.
+        }
+        points = pointsClean;
+        
+        for( i in 0...points.length ){
+            p = points[ i ];
+            l = p.length;
+            
+            var repeat = ( p[ 0 ] == p[ l - 2 ] && p[ 1 ] == p[ l - 1 ] );
+            if( repeat ){
+                points[ i ].pop();
+                points[ i ].pop();
+                l -= 2;
+            }
+            
+            var cc = 0.;
+            var k = 0;
+            var x1: Float;
+            var y1: Float;
+            var x2: Float;
+            var y2: Float;
+            var last = l-2;
+            while( k < l ){
+                x1 = p[ k ];
+                y1 = p[ k + 1 ];
+                if( k == last ){
+                    x2 = p[ 0 ];
+                    y2 = p[ 1 ];
+                } else {
+                    x2 = p[ k + 2 ];
+                    y2 = p[ k + 3 ];
+                }
+                cc += ( x2 - x1 ) * ( y2 + y1 ); //(x1 * y2 - x2 * y1)
+                k += 2;
+            }
+            var reverse = cc > 0;
+            if( reverse ){
+                k = 0;
+                while( k < l ){
+                    x1 = p[ k ];
+                    p[ k ] = p[ k + 1 ];
+                    p[ k + 1 ] = x1;
+                    k += 2;
+                }
+            }
+            
+            p.reverse();
+            points[ i ] = p;
+        }
+        return points;
+    }
+    
     inline function initDim(): Dim{
         return { minX: Math.POSITIVE_INFINITY, maxX: Math.NEGATIVE_INFINITY, minY: Math.POSITIVE_INFINITY, maxY: Math.NEGATIVE_INFINITY };
     }

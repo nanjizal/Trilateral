@@ -39,11 +39,14 @@ class SvgPath{
                         lastX = store.s0;
                         lastY = store.s1;
                         pathContext.moveTo( lastX, lastY );
-                    } else if( store.length() > 2 ){ // when multiple moves ... very unlikely
-                        while( store.length() > 1 ) { 
+                    } else if( store.length() > 2 ){ // when multiple moves ... these are actually lineTo, weird!
                             lastX = store.shift();
                             lastY = store.shift();
                             pathContext.moveTo( lastX, lastY );
+                        while( store.length() > 1 ) { 
+                            lastX = store.shift();
+                            lastY = store.shift();
+                            pathContext.lineTo( lastX, lastY );
                         }
                     } // when second parameter missing!
                 case 'm'.code:
@@ -53,10 +56,13 @@ class SvgPath{
                         lastY = store.s1 + lastY;
                         pathContext.moveTo( lastX, lastY );
                     } else if( store.length() > 2 ){
-                        while( store.length() > 1 ){
                             lastX = store.shift() + lastX;
                             lastY = store.shift() + lastY;
                             pathContext.moveTo( lastX, lastY );
+                        while( store.length() > 1 ){
+                            lastX = store.shift() + lastX;
+                            lastY = store.shift() + lastY;
+                            pathContext.lineTo( lastX, lastY );
                         }
                     } // when second parameter missing!
                 case 'L'.code:
