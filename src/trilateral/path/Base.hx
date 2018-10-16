@@ -29,6 +29,13 @@ class Base implements IPathContext {
         points[0] = new Array<Float>();
         dim = new Array<Dim>();
     }
+    public function reset(){
+        trilateralArray = new TrilateralArray();
+        contour = new Contour( trilateralArray, endLine );
+        points = [];
+        points[0] = new Array<Float>();
+        dim = new Array<Dim>();
+    }
     public function pointsNoEndOverlap(): Array<Array<Float>> {
         var p: Array<Float>;
         var l: Int;
