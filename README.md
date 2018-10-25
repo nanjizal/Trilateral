@@ -6,7 +6,7 @@ Example code can be found at:
 
 Some functionality has now been moved to:
 [TrilateralXtra](https://github.com/nanjizal/TrilateralXtra/)
-( for instance 7 segment and FXG )
+( for instance 7 segment, FXG and code related to integration with alternate fill Algorithms )
 
 And the demos in TrilateralBazaar repo:
 
