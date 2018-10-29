@@ -2,8 +2,7 @@ package trilateral.angle;
 import trilateral.angle.Fraction;
 @forward
 abstract Pi2pi( Float ) to Float {
-    // private can't create directly
-    inline 
+    inline // private can't create directly
     function new( f: Float ){
         this = f;
     }
@@ -19,67 +18,40 @@ abstract Pi2pi( Float ) to Float {
     @:op(A <= B) static function lte( a:Pi2pi, b:Pi2pi ) : Bool;
     @:op(A + B)
     public function additionPi( b: Pi2pi ): Pi2pi {
-        var f: Float = this + b;
-        var p: Pi2pi = f;
-        return f; 
+        return ( this: Float ) + ( b: Float );
     }
     @:op(A - B)
     public function subtractionPi( b: Pi2pi ): Pi2pi {
-        var f: Float = this;
-        var f2: Float = b;
-        f -= f2;
-        var p: Pi2pi = f;
-        return f;
+        return ( this: Float ) - ( b: Float );
     }
     @:op(A / B)
     public function dividePi( b: Pi2pi ): Pi2pi {
-        var f: Float = this;
-        var f2: Float = b;
-        f /= f2;
-        var p: Pi2pi = f;
-        return f; 
+        return ( this: Float ) / ( b: Float ); 
     }
     @:op(A * B)
     public function timesPi( b: Pi2pi ): Pi2pi {
-        var f: Float = this;
-        var f2: Float = b;
-        f *= f2;
-        var p: Pi2pi = f;
-        return f; 
+        return ( this: Float ) * ( b: Float ); 
     }
     @:op(A + B)
     public function addition( b: Float ): Pi2pi {
-        var f: Float = this;
-        f += b;
-        var p: Pi2pi = f;
-        return f; 
+        return ( this: Float ) + b; 
     }
     @:op(A - B)
     public function subtraction( b: Float ): Pi2pi {
-        var f: Float = this;
-        f -= b;
-        var p: Pi2pi = f;
-        return f; 
+        return ( this: Float ) - b; 
     }
     @:op(A / B)
     public function divide( b: Float ): Pi2pi {
-        var f: Float = this;
-        f /= b;
-        var p: Pi2pi = f;
-        return f; 
+        return ( this: Float )/b; 
     }
     @:op(A * B)
     public function times( b: Float ): Pi2pi {
-        var f: Float = this;
-        f *= b;
-        var p: Pi2pi = f;
-        return f; 
+        return ( this: Float )*b; 
     }
     public var degrees( get, set ): Float;
     public inline 
     function get_degrees(): Float{
-        var f: Float = this;
-        return f*180/Math.PI;
+        return ( this: Float )*180/Math.PI;
     }
     public inline 
     function set_degrees( val:Float ): Float {
@@ -89,18 +61,21 @@ abstract Pi2pi( Float ) to Float {
     @:from
     inline static
     function fromFraction( val: Fraction ):Pi2pi {
-        return new Pi2pi( val.toFloat()*Math.PI );
+        return val.toFloat()*Math.PI;
     }
     @:to
     inline function tofraction(): Fraction {
-        var f: Float = this;
-        var frac: Fraction = this/Math.PI;
-        return frac;
+        return ( this: Float )/Math.PI;
     }
     @:from
     inline static
     function fromString( val: String ):Pi2pi {
         var frac: Fraction = val;
-        return new Pi2pi( frac.toFloat()*Math.PI );
+        return frac.toFloat()*Math.PI;
+    }
+    @:to
+    inline public
+    function toString(): String {
+        return Std.string( ( this: Float ) );
     }
 }
