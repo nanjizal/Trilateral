@@ -373,13 +373,13 @@ class Contour {
         by = by_;
         computeDE();
         switch( endLineCurve ){
-            case no: 
+            case EndLineCurve.no: 
                 // don't draw ends
-            case begin: 
+            case EndLineCurve.begin: 
                 addPie( ax_, ay_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
-            case end:
+            case EndLineCurve.end:
                 addPie( bx_, by_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
-            case both:
+            case EndLineCurve.both:
                 addPie( ax_, ay_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
                 addPie( bx_, by_, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
         }
