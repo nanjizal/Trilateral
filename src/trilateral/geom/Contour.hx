@@ -110,12 +110,12 @@ class Contour {
     }
     //TODO: create lower limit for width   0.00001; ?
     public var count = 0;
-    public function new( triArr_: TrilateralArray, ?endLine_: EndLineCurve = no ){
+    public function new( triArr_: TrilateralArray, endLine_: EndLineCurve = no ){
         triArr = triArr_;
         endLine = endLine_;
     }
     public inline
-    function triangleJoin( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, ?curveEnds: Bool = false, ?overlap: Bool = false ){
+    function triangleJoin( ax_: Float, ay_: Float, bx_: Float, by_: Float, width_: Float, curveEnds: Bool = false, overlap: Bool = false ){
         var oldAngle = ( dx != null )? angle1: null;  // I am not sure I can move this to curveJoins because angle1 is set by computeDE
         halfA = Math.PI/2;
         //if( dxOld != null ){  // this makes it a lot faster but a bit of path in some instance disappear needs more thought to remove....
@@ -198,11 +198,11 @@ class Contour {
         triArr.addArray( trilateralArray );
     }
     inline 
-    function addTri( ax_: Float, ay_: Float, bx_: Float, by_: Float, cx_: Float, cy_: Float, ?mark_: Int = 0 ){
+    function addTri( ax_: Float, ay_: Float, bx_: Float, by_: Float, cx_: Float, cy_: Float, mark_: Int = 0 ){
         triArr.add( new Trilateral( ax_, ay_, bx_, by_, cx_, cy_, mark_ ) );
     }
     inline
-    function addPie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ){
+    function addPie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, mark: Int = 0, ?sides: Int = 36 ){
         triArr.addArray( Poly.pie( ax, ay, radius, beta, gamma, prefer, mark, sides ) );
     }
     inline
