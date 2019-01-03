@@ -11,6 +11,7 @@ class FillDraw {
     public var count        = 0;
     public var colors       = new Array<Int>();
     public var triangles    = new TriangleArray();
+    public var contours:    Array<Array<Float>>;
     public var width:   Int;
     public var height:  Int;
     public
@@ -20,14 +21,16 @@ class FillDraw {
     }
     public
     function fill( p: Array<Array<Float>>, colorID: Int ){
+        contours = p;
         var fillDatas = fillFunc( p );
-        return iterFill( fillDatas.vert, fillDatas.tri, colorID );
+        iterFill( fillDatas.vert, fillDatas.tri, colorID );
     }
     // used to help show random fills
     public
     function fillRnd( p: Array<Array<Float>>, rnd: Int ){
+        contours = p;
         var fillDatas = fillFunc( p );
-        return iterFill( fillDatas.vert, fillDatas.tri, rnd, true );
+        iterFill( fillDatas.vert, fillDatas.tri, rnd, true );
     }
     public
     function fillFunc( p: Array<Array<Float>> ):TfillDatas {
