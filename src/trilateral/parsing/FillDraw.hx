@@ -12,6 +12,7 @@ class FillDraw {
     public var colors       = new Array<Int>();
     public var triangles    = new TriangleArray();
     public var contours:    Array<Array<Float>>;
+    public var contourColors: Array<Int>;
     public var width:   Int;
     public var height:  Int;
     public
@@ -23,11 +24,13 @@ class FillDraw {
     function fill( p: Array<Array<Float>>, colorID: Int ){
         if( contours == null ){
             contours = p;
+            contourColors = [ colorID ];
         } else {
             var l = contours.length;
             for( i in 0...p.length ){
                 contours[ l + i ] = p[ i ]; 
             }
+            contourColors[ contourColors.length ] = colorID;
         }
         var fillDatas = fillFunc( p );
         iterFill( fillDatas.vert, fillDatas.tri, colorID );
@@ -37,6 +40,7 @@ class FillDraw {
     function fillRnd( p: Array<Array<Float>>, rnd: Int ){
         if( contours == null ){
             contours = p;
+            contourColors = [];
         } else {
             var l = contours.length;
             for( i in 0...p.length ){
@@ -70,6 +74,7 @@ class FillDraw {
                                 , { x: vert[ b ], y: vert[ b + 1 ] }
                                 , { x: vert[ c ], y: vert[ c + 1 ] }, id );
         }
+        count++;
     }
     public inline
     function colorId( color: Int ): Int {
