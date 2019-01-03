@@ -48,7 +48,7 @@ class FillDraw {
             var a: Int = Std.int( tri.a*3 );
             var b: Int = Std.int( tri.b*3 );
             var c: Int = Std.int( tri.c*3 );
-            id = ( ifRnd )? colorID: rndInt( colorID );
+            id = ( ifRnd )? rndInt( colorID ): colorID;
             triangles.drawTriangle(  count, { x: vert[ a ], y: vert[ a + 1 ] }
                                 , { x: vert[ b ], y: vert[ b + 1 ] }
                                 , { x: vert[ c ], y: vert[ c + 1 ] }, id );
