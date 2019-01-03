@@ -21,14 +21,28 @@ class FillDraw {
     }
     public
     function fill( p: Array<Array<Float>>, colorID: Int ){
-        contours = p;
+        if( contours == null ){
+            contours = p;
+        } else {
+            var l = contours.length;
+            for( i in 0...p.length ){
+                contours[ l + i ] = p[ i ]; 
+            }
+        }
         var fillDatas = fillFunc( p );
         iterFill( fillDatas.vert, fillDatas.tri, colorID );
     }
     // used to help show random fills
     public
     function fillRnd( p: Array<Array<Float>>, rnd: Int ){
-        contours = p;
+        if( contours == null ){
+            contours = p;
+        } else {
+            var l = contours.length;
+            for( i in 0...p.length ){
+                contours[ l + i ] = p[ i ]; 
+            }
+        }
         var fillDatas = fillFunc( p );
         iterFill( fillDatas.vert, fillDatas.tri, rnd, true );
     }
