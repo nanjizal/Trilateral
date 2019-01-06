@@ -75,6 +75,7 @@ class Contour {
     public var theta: Float;
     public var angle1: Null<Float>;  // triangleJoin checks null
     public var angle2: Float;
+    inline static var smallDotScale = 0.07;
     
     public function reset(){
         angleA = 0; //null;
@@ -159,9 +160,9 @@ class Contour {
             // straight line between lines    
                 if( count != 0 ){
                     if( overlap ){ // just draw down to a as overlapping quads
-                        connectQuadsWhenQuadsOverlay( clockWise );
+                        connectQuadsWhenQuadsOverlay( clockWise, width_ );
                     } else {
-                        connectQuads( clockWise );
+                        connectQuads( clockWise, width_ );
                     }
                 }
             }
@@ -172,7 +173,7 @@ class Contour {
                 addInitialQuads( clockWise );
             }
             storeLastQuads();
-        if( curveEnds && !overlap && count != 0 ) addSmallTriangles( clockWise );
+        if( curveEnds && !overlap && count != 0 ) addSmallTriangles( clockWise, width_ );
         jxOld = jx;
         jyOld = jy;
         lastClock = clockWise;
@@ -202,7 +203,7 @@ class Contour {
         triArr.add( new Trilateral( ax_, ay_, bx_, by_, cx_, cy_, mark_ ) );
     }
     inline
-    function addPie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, mark: Int = 0, ?sides: Int = 36 ){
+    function addPie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ){
         triArr.addArray( Poly.pie( ax, ay, radius, beta, gamma, prefer, mark, sides ) );
     }
     inline
@@ -220,50 +221,52 @@ class Contour {
         addArray( Poly.circleMarked( x, y, 0.008, color ) );
     }
     inline
-    function addSmallTriangles( clockWise: Bool ){
+    function addSmallTriangles( clockWise: Bool, width_: Float ){
         if( clockWise ){
             addTri( ax, ay, dxOld,  dyOld,  jx, jy #if trilateral_debug ,1 #end );
             addTri( ax, ay, exPrev, eyPrev, jx, jy #if trilateral_debug ,3 #end );
-            #if trilateral_debugPoints addTriangleCorners( dxOld, dyOld, exPrev, eyPrev ); #end
+            #if trilateral_debugPoints addTriangleCorners( dxOld, dyOld, exPrev, eyPrev, width_ ); #end
         } else {
             addTri( ax, ay, exOld, eyOld, jx, jy #if trilateral_debug ,1 #end );
             addTri( ax, ay, dxPrev, dyPrev, jx, jy #if trilateral_debug ,3 #end );
-            #if trilateral_debugPoints addTriangleCorners( exOld, eyOld, dxPrev, dyPrev ); #end
+            #if trilateral_debugPoints addTriangleCorners( exOld, eyOld, dxPrev, dyPrev, width_ ); #end
         }
     }
     inline
-    function addTriangleCorners( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float ){
-        addArray( Poly.circleMarked( oldx_, oldy_, 0.01 , 4 ) );
-        addArray( Poly.circleMarked( prevx_, prevy_, 0.01 , 3 ) );
-        addArray( Poly.circleMarked( ax, ay, 0.01 , 10 ) );
-        addArray( Poly.circleMarked( jx, jy, 0.01 , 5 ) );
+    function addTriangleCorners( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float, width_: Float ){
+        var w = width_ * smallDotScale;
+        addArray( Poly.circleMarked( oldx_, oldy_, w, 4 ) );
+        addArray( Poly.circleMarked( prevx_, prevy_, w, 3 ) );
+        addArray( Poly.circleMarked( ax, ay, w, 10 ) );
+        addArray( Poly.circleMarked( jx, jy, w, 5 ) );
     }
     inline
-    function addTriangleCornersLess( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float ){
-        addArray( Poly.circleMarked( oldx_, oldy_, 0.01 , 4 ) );
-        addArray( Poly.circleMarked( prevx_, prevy_, 0.01 , 3 ) );
-        addArray( Poly.circleMarked( jx, jy, 0.01 , 5 ) );
+    function addTriangleCornersLess( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float, width_: Float ){
+        var w = width_ * smallDotScale;
+        addArray( Poly.circleMarked( oldx_, oldy_, w , 4 ) ); // 0.01
+        addArray( Poly.circleMarked( prevx_, prevy_, w, 3 ) );
+        addArray( Poly.circleMarked( jx, jy, w, 5 ) );
     }
     // The triangle between quads
     inline
-    function connectQuadsWhenQuadsOverlay( clockWise: Bool ){
+    function connectQuadsWhenQuadsOverlay( clockWise: Bool, width_: Float ){
         if( clockWise ){
             addTri( dxOld, dyOld, exPrev, eyPrev, ax, ay );
-            #if trilateral_debugPoints addTriangleCornersLess( dxOld, dyOld, exPrev, eyPrev ); #end
+            #if trilateral_debugPoints addTriangleCornersLess( dxOld, dyOld, exPrev, eyPrev, width_ ); #end
         } else {
             addTri( exOld, eyOld, dxPrev, dyPrev, ax, ay );
-            #if trilateral_debugPoints addTriangleCornersLess( exOld, eyOld, dxPrev, dyPrev ); #end
+            #if trilateral_debugPoints addTriangleCornersLess( exOld, eyOld, dxPrev, dyPrev, width_ ); #end
         }
     }
     // The triangle between quads
     inline
-    function connectQuads( clockWise: Bool ){
+    function connectQuads( clockWise: Bool, width_: Float ){
         if( clockWise ){
             addTri( dxOld, dyOld, exPrev, eyPrev, jx, jy );
-            #if trilateral_debugPoints addTriangleCornersLess( dxOld, dyOld, exPrev, eyPrev ); #end
+            #if trilateral_debugPoints addTriangleCornersLess( dxOld, dyOld, exPrev, eyPrev, width_ ); #end
         } else {
             addTri( exOld, eyOld, dxPrev, dyPrev, jx, jy );
-            #if trilateral_debugPoints addTriangleCornersLess( exOld, eyOld, dxPrev, dyPrev ); #end
+            #if trilateral_debugPoints addTriangleCornersLess( exOld, eyOld, dxPrev, dyPrev, width_ ); #end
         }
     }
     // these are Quads that don't use the second inner connection so they overlap at the end
