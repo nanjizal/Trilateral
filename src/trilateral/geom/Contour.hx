@@ -8,7 +8,10 @@ import trilateral.angle.Pi2pi;
 import trilateral.angle.Fraction;
 //import trilateral.angle.ZeroTo2pi;
 import trilateral.angle.Angles;
-
+#if trilateral_includeSegments
+import trilateralXtra.segment.SixteenSeg;
+import trilateralXtra.segment.SevenSeg;
+#end
 @:enum
 abstract EndLineCurve( Int ){
     var no = 0;
@@ -17,6 +20,8 @@ abstract EndLineCurve( Int ){
     var both = 3;
 }
 class Contour {
+    var pointsA: Array<Point> = [];
+    var pointsB: Array<Point> = [];
     var triArr: TrilateralArray;
     var endLine: EndLineCurve;
     var ax: Float; // 0
@@ -169,14 +174,24 @@ class Contour {
             if( overlap ){
                 overlapQuad(); // not normal
             }else {
-                if( count != 0 ) addQuads( clockWise );
-                addInitialQuads( clockWise );
+                if( count != 0 ) addQuads( clockWise, width_ );
+                addInitialQuads( clockWise, width_ );
             }
             storeLastQuads();
+            
+            
         if( curveEnds && !overlap && count != 0 ) addSmallTriangles( clockWise, width_ );
+        #if trilateral_includeSegments
+        #if trilateral_debugNumbers
+            addNumbering( jx, jy, counter, width_ );
+            counter++;
+        #end
+        #end
+        
+        
         jxOld = jx;
         jyOld = jy;
-        lastClock = clockWise;
+        lastClock = clockWise;        
         count++;
         return triArr;
     }
@@ -209,7 +224,7 @@ class Contour {
     inline
     function computeJ( width_: Float, theta0: Float, dif: Float ){
         var gamma = Math.abs( dif )/2;
-        var h = ( width_ ) * Math.sin( gamma );
+        var h = ( width_/2 )/Math.cos( gamma );
         var start: Pi2pi = theta0;
         var start2: Float = start;
         var delta = start2 + dif/2 + Math.PI;
@@ -217,9 +232,28 @@ class Contour {
         jy = ay + h * Math.cos( delta );
     }
     inline 
-    function addDot( x: Float, y: Float, color: Int ){
-        addArray( Poly.circleMarked( x, y, 0.008, color ) );
+    function addDot( x: Float, y: Float, color: Int, width_: Float ){
+        var w = width_ * smallDotScale;
+        addArray( Poly.circleMarked( x, y, w, color ) );
     }
+    #if trilateral_debug
+    inline
+    function addDebugLine( x0: Float, y0: Float, x1: Float, y1: Float, width_: Float, col: Int, colStart: Int = 1 ){
+        var w = width_*smallDotScale/2;
+        var dx = (x1 - x0);
+        var dy = (y1 - y0);
+        var len = Std.int( Math.min( 100, Math.max( dx, dy ) ) );
+        dx = dx/len;
+        dy = dy/len;
+        for( i in 0...len ){
+            if( i < 5 ){
+                addArray( Poly.circleMarked( x0 + dx*i, y0 + dy*i, w*2, colStart ) );
+            } else {
+                addArray( Poly.circleMarked( x0 + dx*i, y0 + dy*i, w, col ) );
+            }
+        }
+    }
+    #end
     inline
     function addSmallTriangles( clockWise: Bool, width_: Float ){
         if( clockWise ){
@@ -243,7 +277,7 @@ class Contour {
     inline
     function addTriangleCornersLess( oldx_: Float, oldy_: Float, prevx_: Float, prevy_: Float, width_: Float ){
         var w = width_ * smallDotScale;
-        addArray( Poly.circleMarked( oldx_, oldy_, w , 4 ) ); // 0.01
+        addArray( Poly.circleMarked( oldx_, oldy_, w , 4 ) );
         addArray( Poly.circleMarked( prevx_, prevy_, w, 3 ) );
         addArray( Poly.circleMarked( jx, jy, w, 5 ) );
     }
@@ -272,7 +306,7 @@ class Contour {
     // these are Quads that don't use the second inner connection so they overlap at the end
     // draw these first and replace them?
     inline 
-    function addInitialQuads( clockWise ){
+    function addInitialQuads( clockWise: Bool, width_: Float ){
         //These get replaced as drawing only to leave the last one
         quadIndex = triArr.length;
         if( count == 0 ){ // first line
@@ -297,32 +331,60 @@ class Contour {
             }
         }
     }
+    #if trilateral_includeSegments
+    inline
+    function addNumbering( x0: Float, y0: Float, num: Int, width_: Float ){
+        var w = width_*smallDotScale*4;
+        var seven = new SevenSeg( w, (12/8)*w );
+        seven.addNumber( num, x0 - width_/3, y0 );
+        addArray( seven.triArr );
+    }
+    #end
+    var counter = 0;
     // replace the section quads with quads with both inner points
     inline 
-    function addQuads( clockWise: Bool ){
+    function addQuads( clockWise: Bool, width_: Float ){
+        
         if( clockWise && !lastClock ){
             if( count == 1 ){ // deals with first case
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
+                // untested
+                // addDebugLine( nbx, nby, ncx, ncy, width_, 3 );   
             } else {
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, jxOld, jyOld #if trilateral_debug ,7 #end );
+                //addDebugLine( nbx, nby,jxOld, jyOld, width_, 3 );
+                //addDebugLine( jxOld, jyOld, nbx, nby, width_, 3 );
             }
             triArr[ quadIndex ] = new Trilateral( kax, kay, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
+            //addDebugLine( jx, jy, kax, kay, width_, 4 );
+            //addDebugLine( kax, kay, jx, jy, width_, 4 );
         }
+        
         if( clockWise && lastClock ){
             if( count == 1 ){
                 triArr[ quadIndex ] = new Trilateral( kax, kay, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
+                // addDebugLine( kbx, kby, jx, jy, width_, 4 ); //NOT USED STILL TO TEST
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
                 triArr[ quadIndex ] = new Trilateral( jxOld, jyOld, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
+                // used reverse 3,4kax, kay,
+                //addDebugLine( jx, jy, jxOld, jyOld, width_, 4 );
                 triArr[ quadIndex + 1 ] = new Trilateral( jxOld, jyOld, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
+                // used reverse 3,4,5 ... does not go right in other direction
+                //addDebugLine( nbx, nby, ncx, ncy , width_, 3 );
             }
         }
+        
         if( !clockWise && !lastClock ){
             triArr[ quadIndex ] = new Trilateral( kax, kay, jx, jy, kcx, kcy #if trilateral_debug ,6 #end );
+            // used 1,2,3 reverse 1, 2  correct :)
+            //addDebugLine( kax, kay, kcx, kcy, width_, 4 );
             if( count == 1 ){
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
+                //addDebugLine( ncx, ncy, jx, jy, width_, 3 );
             } else {
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, jxOld, jyOld #if trilateral_debug ,7 #end );
+                //addDebugLine( jxOld, jyOld, jx, jy, width_, 3 );
             }
         }
         if( !clockWise && lastClock ){
