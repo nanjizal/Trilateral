@@ -17,15 +17,19 @@ class Base implements IPathContext {
     public var width:               Float = 0.01;
     public var widthFunction:       Float->Float->Float->Float->Float->Float;
     var tempArr:                    Array<Float>;
-    var contour:                    Contour;
+    public var contour:                    Contour;
     var endLine:                    EndLineCurve;
     public var points:              Array<Array<Float>>;
+    public var pointsClock:         Array<Array<Float>>;
+    public var pointsAnti:          Array<Array<Float>>;
     public var dim:                 Array<Dim>;
     public function new( ?contour_: Contour, ?trilateralArray_: TrilateralArray, ?endLine_: EndLineCurve = no ){
         trilateralArray = ( trilateralArray_ == null )? new TrilateralArray(): trilateralArray_;
         contour = ( contour_ == null )? new Contour( trilateralArray, endLine_ ): contour_;
         endLine = endLine_;
         points = [];
+        pointsClock = [];
+        pointsAnti = [];
         points[0] = new Array<Float>();
         dim = new Array<Dim>();
     }
@@ -33,6 +37,8 @@ class Base implements IPathContext {
         trilateralArray = new TrilateralArray();
         contour = new Contour( trilateralArray, endLine );
         points = [];
+        pointsClock = [];
+        pointsAnti = [];
         points[0] = new Array<Float>();
         dim = new Array<Dim>();
     }
@@ -167,9 +173,23 @@ class Base implements IPathContext {
         points[ l ] = new Array<Float>();
         points[ l ][0] = x_;
         points[ l ][1] = y_;
+        //if( contour.pointsClock.length != 0 ) {
+            // contour.endEdges();
+            pointsClock[ pointsClock.length ] = contour.pointsClock.copy();
+            pointsAnti[ pointsAnti.length ] = contour.pointsAnti.copy();
+            //}
         dim[ dim.length ] = initDim();
         updateDim( x_, y_ );
         contour.reset(); // TODO: needs improving
+    }
+    public inline
+    function lastClock(){
+        if( contour.pointsClock.length != 0 ) {
+            // contour.endEdges();
+            pointsClock[ pointsClock.length ] = contour.pointsClock.copy();
+            pointsAnti[ pointsAnti.length ] = contour.pointsAnti.copy();
+        }
+        // contour.reset();?
     }
     public inline 
     function lineTo( x_: Float, y_: Float ): Void{
