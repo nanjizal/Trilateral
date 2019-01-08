@@ -20,8 +20,19 @@ abstract EndLineCurve( Int ){
     var both = 3;
 }
 class Contour {
-    var pointsA: Array<Point> = [];
-    var pointsB: Array<Point> = [];
+    // only relevant if debug parameters are set.
+    // public var debugOn:         Bool;
+    public var pointsClock:     Array<Float> = [];
+    public var pointsAnti:      Array<Float> = [];
+    public var penultimateCX:   Float;
+    public var penultimateCY:   Float;
+    public var lastClockX:      Float;
+    public var lastClockY:      Float;
+    public var penultimateAX:   Float;
+    public var penultimateAY:   Float;
+    public var lastAntiX:       Float;
+    public var lastAntiY:       Float; 
+    
     var triArr: TrilateralArray;
     var endLine: EndLineCurve;
     var ax: Float; // 0
@@ -113,6 +124,13 @@ class Contour {
         fy = null;
         gx = null;
         gy = null;*/
+        #if ( haxe_ver < "4.0.0" )
+            pointsClock = [];
+            pointsAnti = [];
+        #else
+            pointsClock.resize( 0 );
+            pointsAnti.resize( 0 );
+        #end
     }
     //TODO: create lower limit for width   0.00001; ?
     public var count = 0;
@@ -156,11 +174,15 @@ class Contour {
             var dif = Angles.differencePrefer( theta0, theta1, SMALL );
             if( !overlap && count != 0 ) computeJ( width_, theta0, dif ); // don't calculate j if your just overlapping quads
             
-            if( count == 0 && ( endLine == begin || endLine == both ) ) addPie( ax, ay, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
-            
+            if( count == 0 && ( endLine == begin || endLine == both ) ) addPieXstart( ax, ay, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 + Math.PI, SMALL );
+            /*
             if( curveEnds ){
                 //joinArc
-                addArray( Poly.pieDif( ax_, ay_, width_/2, theta0, dif ) );
+                if( clockWise ){
+                    addArray( Poly.pieDifX( ax_, ay_, width_/2, theta0, dif, pointsClock ) );
+                } else {
+                    addArray( Poly.pieDifX( ax_, ay_, width_/2, theta0, dif, pointsAnti ) );
+                }
             } else {
             // straight line between lines    
                 if( count != 0 ){
@@ -171,12 +193,33 @@ class Contour {
                     }
                 }
             }
+            */
             if( overlap ){
                 overlapQuad(); // not normal
             }else {
                 if( count != 0 ) addQuads( clockWise, width_ );
                 addInitialQuads( clockWise, width_ );
             }
+            
+            if( curveEnds ){
+                //joinArc
+                if( clockWise ){
+                    addArray( Poly.pieDifX( ax_, ay_, width_/2, theta0, dif, pointsClock ) );
+                } else {
+                    addArray( Poly.pieDifX( ax_, ay_, width_/2, theta0, dif, pointsAnti ) );
+                }
+            } else {
+            // straight line between lines    
+                if( count != 0 ){
+                    if( overlap ){ // just draw down to a as overlapping quads
+                        connectQuadsWhenQuadsOverlay( clockWise, width_ );
+                    } else {
+                        connectQuads( clockWise, width_ );
+                    }
+                }
+            }
+            
+            
             storeLastQuads();
             
             
@@ -203,7 +246,8 @@ class Contour {
     // call to add round end to line
     public inline
     function end( width_: Float ){
-        addPie( bx, by, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
+        endEdges();
+        addPieX( bx, by, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
     }
     inline
     function add( trilateral: Trilateral ){
@@ -217,6 +261,40 @@ class Contour {
     function addTri( ax_: Float, ay_: Float, bx_: Float, by_: Float, cx_: Float, cy_: Float, mark_: Int = 0 ){
         triArr.add( new Trilateral( ax_, ay_, bx_, by_, cx_, cy_, mark_ ) );
     }
+    inline
+    function addPieXstart( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ){
+        var temp = new Array<Float>();
+        triArr.addArray( Poly.pieX( ax, ay, radius, beta, gamma, prefer, temp, mark, sides ) );
+        var pA = pointsAnti.length;
+        var len = Std.int( temp.length/2 );
+        var p4 = Std.int( temp.length/4 );
+        for( i in 0...p4 ){
+            pointsAnti[ pA++ ] = temp[ len - 2*i + 1];
+            pointsAnti[ pA++ ] = temp[ len - 2*i ];
+        }
+        var pC = pointsClock.length;
+        for( i in 0...p4 ){
+            pointsClock[ pC++ ] = temp[ i*2 + len + 1];
+            pointsClock[ pC++ ] = temp[ i*2 + len ];
+        }
+    }
+    
+    inline
+    function addPieX( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ){
+        var temp = new Array<Float>();
+        triArr.addArray( Poly.pieX( ax, ay, radius, beta, gamma, prefer, temp, mark, sides ) );
+        var pA = pointsAnti.length;
+        var len = Std.int( temp.length/2 );
+        for( i in 0...len + 2 ){
+            pointsAnti[ pA++ ] = temp[ i ];
+        }
+        var pC = pointsClock.length;
+        for( i in 1...Std.int( len/2 + 1 ) ){
+            pointsClock[ pC++ ] = temp[ temp.length - 2*i ];
+            pointsClock[ pC++ ] = temp[ temp.length - 2*i - 1 ];
+        }
+    }
+    
     inline
     function addPie( ax: Float, ay: Float, radius: Float, beta: Float, gamma: Float, prefer: DifferencePreference, ?mark: Int = 0, ?sides: Int = 36 ){
         triArr.addArray( Poly.pie( ax, ay, radius, beta, gamma, prefer, mark, sides ) );
@@ -310,27 +388,86 @@ class Contour {
         //These get replaced as drawing only to leave the last one
         quadIndex = triArr.length;
         if( count == 0 ){ // first line
+            penultimateAX = dxPrev;
+            penultimateAY = dyPrev;
+            lastAntiX     = ex;
+            lastAntiY     = ey; 
+            penultimateCX = dx;
+            penultimateCY = dy;
+            lastClockX    = exPrev;
+            lastClockY    = eyPrev;
             addTri( dxPrev, dyPrev, dx, dy, ex, ey #if trilateral_debug ,8 #end );
             addTri( dxPrev, dyPrev, dx, dy, exPrev, eyPrev #if trilateral_debug ,12 #end );
         } else {
             if( clockWise && !lastClock ){
+                penultimateAX = jx;
+                penultimateAY = jy;
+                lastAntiX     = ex;
+                lastAntiY     = ey;
+                penultimateCX = dx;
+                penultimateCY = dy;
+                lastClockX    = exPrev;
+                lastClockY    = eyPrev;
+                // FIXED
                 addTri( jx, jy, dx, dy, ex, ey #if trilateral_debug ,8 #end );
                 addTri( jx, jy, dx, dy, exPrev, eyPrev #if trilateral_debug ,12 #end );
             }
             if( clockWise && lastClock ){
+                penultimateAX = jx;
+                penultimateAY = jy;
+                lastAntiX     = ex;
+                lastAntiY     = ey;
+                penultimateCX = dx;
+                penultimateCY = dy;
+                lastClockX    = exPrev;
+                lastClockY    = eyPrev;
+                // FIXED 
                 addTri( jx, jy, dx, dy, ex, ey #if trilateral_debug ,8 #end );
                 addTri( jx, jy, dx, dy, exPrev, eyPrev #if trilateral_debug ,12 #end );
             }
             if( !clockWise && !lastClock ){
+                penultimateCX = dx;
+                penultimateCY = dy;
+                lastClockX    = jx;
+                lastClockY    = jy;
+                penultimateAX = dxPrev;
+                penultimateAY = dyPrev;
+                lastAntiX     = ex;
+                lastAntiY     = ey;
+                // FIXED 
                 addTri( dxPrev, dyPrev, dx, dy, jx, jy #if trilateral_debug ,8 #end );
                 addTri( dxPrev, dyPrev, dx, dy, ex, ey #if trilateral_debug ,12 #end );
             }
-            if( !clockWise && lastClock ){
+            if( !clockWise && lastClock ){                
+                penultimateAX = dxPrev;
+                penultimateAY = dyPrev;
+                lastAntiX     = ex;
+                lastAntiY     = ey;
+                
+                penultimateCX = jx;
+                penultimateCY = jy;
+                lastClockX    = dx;
+                lastClockY    = dy;
+                
                 addTri( jx, jy, dx, dy, ex, ey #if trilateral_debug ,8 #end );
                 addTri( dxPrev, dyPrev, jx, jy, ex, ey #if trilateral_debug ,12 #end );
             }
         }
     }
+    
+    public function endEdges(){
+        var pC = pointsClock.length;
+        var pA = pointsAnti.length;
+        pointsClock[ pC++ ] = penultimateCX;
+        pointsClock[ pC++ ] = penultimateCY;
+        pointsClock[ pC++ ] = lastClockX;
+        pointsClock[ pC++ ] = lastClockY;
+        pointsAnti[  pA++ ] = penultimateAX;
+        pointsAnti[  pA++ ] = penultimateAY;
+        pointsAnti[  pA++ ] = lastAntiX;
+        pointsAnti[  pA++ ] = lastAntiY; 
+    }
+    
     #if trilateral_includeSegments
     inline
     function addNumbering( x0: Float, y0: Float, num: Int, width_: Float ){
@@ -342,15 +479,39 @@ class Contour {
     #end
     var counter = 0;
     // replace the section quads with quads with both inner points
-    inline 
+    // inline 
     function addQuads( clockWise: Bool, width_: Float ){
-        
+        //return;
+        // 7 = clock side
+        // 6 = antiClock side
+        var pC = 0;
+        var pA = 0;
         if( clockWise && !lastClock ){
             if( count == 1 ){ // deals with first case
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = kax;
+                pointsAnti[ pA++ ] = kay;
+                pointsAnti[ pA++ ] = jx;
+                pointsAnti[ pA++ ] = jy;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = nbx;
+                pointsClock[ pC++ ] = nby;
+                pointsClock[ pC++ ] = ncx;
+                pointsClock[ pC++ ] = ncy; 
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
                 // untested
-                // addDebugLine( nbx, nby, ncx, ncy, width_, 3 );   
+                // addDebugLine( nbx, nby, ncx, ncy, width_, 3 ); 
             } else {
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = kax;
+                pointsAnti[ pA++ ] = kay;
+                pointsAnti[ pA++ ] = jx;
+                pointsAnti[ pA++ ] = jy;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = jxOld;
+                pointsClock[ pC++ ] = jyOld;
+                pointsClock[ pC++ ] = nbx;
+                pointsClock[ pC++ ] = nby;
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, jxOld, jyOld #if trilateral_debug ,7 #end );
                 //addDebugLine( nbx, nby,jxOld, jyOld, width_, 3 );
                 //addDebugLine( jxOld, jyOld, nbx, nby, width_, 3 );
@@ -359,13 +520,33 @@ class Contour {
             //addDebugLine( jx, jy, kax, kay, width_, 4 );
             //addDebugLine( kax, kay, jx, jy, width_, 4 );
         }
-        
         if( clockWise && lastClock ){
             if( count == 1 ){
+                // to check
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = jx;
+                pointsAnti[ pA++ ] = jy;
+                pointsAnti[ pA++ ] = kbx;
+                pointsAnti[ pA++ ] = kby;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = nax;
+                pointsClock[ pC++ ] = nay;
+                pointsClock[ pC++ ] = nbx;
+                pointsClock[ pC++ ] = nby;
                 triArr[ quadIndex ] = new Trilateral( kax, kay, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
                 // addDebugLine( kbx, kby, jx, jy, width_, 4 ); //NOT USED STILL TO TEST
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = jxOld;
+                pointsAnti[ pA++ ] = jyOld;
+                pointsAnti[ pA++ ] = jx;
+                pointsAnti[ pA++ ] = jy;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = ncx;
+                pointsClock[ pC++ ] = ncy;
+                pointsClock[ pC++ ] = nbx;
+                pointsClock[ pC++ ] = nby;
                 triArr[ quadIndex ] = new Trilateral( jxOld, jyOld, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
                 // used reverse 3,4kax, kay,
                 //addDebugLine( jx, jy, jxOld, jyOld, width_, 4 );
@@ -380,22 +561,64 @@ class Contour {
             // used 1,2,3 reverse 1, 2  correct :)
             //addDebugLine( kax, kay, kcx, kcy, width_, 4 );
             if( count == 1 ){
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = kax;
+                pointsAnti[ pA++ ] = kay;
+                pointsAnti[ pA++ ] = kcx;
+                pointsAnti[ pA++ ] = kcy;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = ncx;
+                pointsClock[ pC++ ] = ncy;
+                pointsClock[ pC++ ] = jx;
+                pointsClock[ pC++ ] = jy;
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
                 //addDebugLine( ncx, ncy, jx, jy, width_, 3 );
             } else {
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = kax;
+                pointsAnti[ pA++ ] = kay;
+                pointsAnti[ pA++ ] = kcx;
+                pointsAnti[ pA++ ] = kcy;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = jxOld;
+                pointsClock[ pC++ ] = jyOld;
+                pointsClock[ pC++ ] = jx;
+                pointsClock[ pC++ ] = jy;
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, jxOld, jyOld #if trilateral_debug ,7 #end );
                 //addDebugLine( jxOld, jyOld, jx, jy, width_, 3 );
             }
         }
+        // NO IDEA IF THIS ONE WORKS!!!
         if( !clockWise && lastClock ){
             if( count == 1 ){
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = kay;
+                pointsAnti[ pA++ ] = kax;
+                pointsAnti[ pA++ ] = kcx;
+                pointsAnti[ pA++ ] = kcy;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = jx;
+                pointsClock[ pC++ ] = jy;
+                pointsClock[ pC++ ] = ncx;
+                pointsClock[ pC++ ] = ncy;
                 triArr[ quadIndex ] = new Trilateral( kax, kay, jx, jy, kcx, kcy #if trilateral_debug ,6 #end );
                 triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
+                pA = pointsAnti.length;//6
+                pointsAnti[ pA++ ] = jxOld;
+                pointsAnti[ pA++ ] = jyOld;
+                pointsAnti[ pA++ ] = kcx;
+                pointsAnti[ pA++ ] = kcy;
+                pC = pointsClock.length;//7
+                pointsClock[ pC++ ] = jx;
+                pointsClock[ pC++ ] = jy;
+                pointsClock[ pC++ ] = ncx;
+                pointsClock[ pC++ ] = ncy;
                 triArr[ quadIndex ] = new Trilateral( jxOld, jyOld, jx, jy, kcx, kcy #if trilateral_debug ,6 #end );
                 triArr[ quadIndex + 1 ] = new Trilateral( jxOld, jyOld, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
             }
         }
+        
     }
     inline function storeLastQuads(){
         nax = dxPrev;
