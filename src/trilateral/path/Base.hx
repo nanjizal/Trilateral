@@ -191,6 +191,35 @@ class Base implements IPathContext {
         }
         // contour.reset();?
     }
+    // collates edges
+    public inline
+    function getEdges(): Array<Array<Float>> {
+        var edges = new Array<Array<Float>>();// ideally consider sizing this?
+        var no    = pointsClock.length;
+        if( no > pointsAnti.length ) no = pointsAnti.length;
+        var pClock: Array<Float>;
+        var pAnti:  Array<Float>;
+        var shape:  Array<Float>;
+        for( s in 0...no ){
+            pClock      = pointsClock[ s ];
+            pAnti       = pointsAnti[ s ];
+            var lc      = pClock.length;
+            var la      = pAnti.length;
+            edges[ s ]  = new Array<Float>();// ideally consider sizing this? lc + la
+            shape       = edges[ s ];
+            for( i in 0...lc ) shape[ i ] = pClock[ i ];
+            var j       = shape.length;
+            var l5      = Std.int( la/2 );
+            for( i in 0...l5 ){ // add in reverse order
+                shape[ j + i*2 ]     = pAnti[ la - i*2 - 1 ]; // put x below y
+                shape[ j + i*2 + 1 ] = pAnti[ la - i*2 ];
+            }
+            j = shape.length;
+            shape[ j++ ] = pClock[ 0 ];  // join up would be better to put Anti on front?
+            shape[ j   ] = pClock[ 1 ];
+        }
+        return edges;
+    }
     public inline 
     function lineTo( x_: Float, y_: Float ): Void{
         var repeat = ( x == x_ && y == y_ ); // added for poly2tryhx it does not like repeat points!
