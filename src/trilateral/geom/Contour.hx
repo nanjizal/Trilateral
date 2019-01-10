@@ -247,7 +247,7 @@ class Contour {
     public inline
     function end( width_: Float ){
         endEdges();
-        addPieX( bx, by, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
+        if( count != 0 ) addPieX( bx, by, width_/2, -angle1 - Math.PI/2, -angle1 - Math.PI/2 - Math.PI, SMALL );
     }
     inline
     function add( trilateral: Trilateral ){
