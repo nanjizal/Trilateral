@@ -71,10 +71,6 @@ class Contour {
     var kby: Float;
     var kcx: Float;
     var kcy: Float;
-    var nax: Float;
-    var nay: Float;
-    var nbx: Float;
-    var nby: Float;
     var ncx: Float;
     var ncy: Float;
     var quadIndex: Int;
@@ -102,10 +98,6 @@ class Contour {
         kby = 0; //null;
         kcx = 0; //null; 
         kcy = 0; //null;
-        nax = 0; //null;
-        nay = 0; //null;
-        nbx = 0; //null;
-        nby = 0; //null;
         ncx = 0; //null;
         ncy = 0; //null;
         ax = 0; //null;
@@ -494,13 +486,13 @@ class Contour {
                 pointsAnti[ pA++ ] = jx;
                 pointsAnti[ pA++ ] = jy;
                 pC = pointsClock.length;//7
-                pointsClock[ pC++ ] = nbx;
-                pointsClock[ pC++ ] = nby;
+                pointsClock[ pC++ ] = kbx;
+                pointsClock[ pC++ ] = kby;
                 pointsClock[ pC++ ] = ncx;
                 pointsClock[ pC++ ] = ncy; 
-                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( kax, kay, kbx, kby, ncx, ncy #if trilateral_debug ,7 #end );
                 // untested
-                // addDebugLine( nbx, nby, ncx, ncy, width_, 3 ); 
+                // addDebugLine( kbx, kby, ncx, ncy, width_, 3 ); 
             } else {
                 pA = pointsAnti.length;//6
                 pointsAnti[ pA++ ] = kax;
@@ -510,11 +502,11 @@ class Contour {
                 pC = pointsClock.length;//7
                 pointsClock[ pC++ ] = jxOld;
                 pointsClock[ pC++ ] = jyOld;
-                pointsClock[ pC++ ] = nbx;
-                pointsClock[ pC++ ] = nby;
-                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, jxOld, jyOld #if trilateral_debug ,7 #end );
-                //addDebugLine( nbx, nby,jxOld, jyOld, width_, 3 );
-                //addDebugLine( jxOld, jyOld, nbx, nby, width_, 3 );
+                pointsClock[ pC++ ] = kbx;
+                pointsClock[ pC++ ] = kby;
+                triArr[ quadIndex + 1 ] = new Trilateral( kax, kay, kbx, kby, jxOld, jyOld #if trilateral_debug ,7 #end );
+                //addDebugLine( kbx, kby,jxOld, jyOld, width_, 3 );
+                //addDebugLine( jxOld, jyOld, kbx, kby, width_, 3 );
             }
             triArr[ quadIndex ] = new Trilateral( kax, kay, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
             //addDebugLine( jx, jy, kax, kay, width_, 4 );
@@ -529,13 +521,13 @@ class Contour {
                 pointsAnti[ pA++ ] = kbx;
                 pointsAnti[ pA++ ] = kby;
                 pC = pointsClock.length;//7
-                pointsClock[ pC++ ] = nax;
-                pointsClock[ pC++ ] = nay;
-                pointsClock[ pC++ ] = nbx;
-                pointsClock[ pC++ ] = nby;
+                pointsClock[ pC++ ] = kax;
+                pointsClock[ pC++ ] = kay;
+                pointsClock[ pC++ ] = kbx;
+                pointsClock[ pC++ ] = kby;
                 triArr[ quadIndex ] = new Trilateral( kax, kay, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
                 // addDebugLine( kbx, kby, jx, jy, width_, 4 ); //NOT USED STILL TO TEST
-                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( kax, kay, kbx, kby, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
                 pA = pointsAnti.length;//6
                 pointsAnti[ pA++ ] = jxOld;
@@ -545,14 +537,14 @@ class Contour {
                 pC = pointsClock.length;//7
                 pointsClock[ pC++ ] = ncx;
                 pointsClock[ pC++ ] = ncy;
-                pointsClock[ pC++ ] = nbx;
-                pointsClock[ pC++ ] = nby;
+                pointsClock[ pC++ ] = kbx;
+                pointsClock[ pC++ ] = kby;
                 triArr[ quadIndex ] = new Trilateral( jxOld, jyOld, kbx, kby, jx, jy #if trilateral_debug ,6 #end );
                 // used reverse 3,4kax, kay,
                 //addDebugLine( jx, jy, jxOld, jyOld, width_, 4 );
-                triArr[ quadIndex + 1 ] = new Trilateral( jxOld, jyOld, nbx, nby, ncx, ncy #if trilateral_debug ,7 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( jxOld, jyOld, kbx, kby, ncx, ncy #if trilateral_debug ,7 #end );
                 // used reverse 3,4,5 ... does not go right in other direction
-                //addDebugLine( nbx, nby, ncx, ncy , width_, 3 );
+                //addDebugLine( kbx, kby, ncx, ncy , width_, 3 );
             }
         }
         
@@ -571,7 +563,7 @@ class Contour {
                 pointsClock[ pC++ ] = ncy;
                 pointsClock[ pC++ ] = jx;
                 pointsClock[ pC++ ] = jy;
-                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( kax, kay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
                 //addDebugLine( ncx, ncy, jx, jy, width_, 3 );
             } else {
                 pA = pointsAnti.length;//6
@@ -584,7 +576,7 @@ class Contour {
                 pointsClock[ pC++ ] = jyOld;
                 pointsClock[ pC++ ] = jx;
                 pointsClock[ pC++ ] = jy;
-                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, jxOld, jyOld #if trilateral_debug ,7 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( kax, kay, jx, jy, jxOld, jyOld #if trilateral_debug ,7 #end );
                 //addDebugLine( jxOld, jyOld, jx, jy, width_, 3 );
             }
         }
@@ -602,7 +594,7 @@ class Contour {
                 pointsClock[ pC++ ] = ncx;
                 pointsClock[ pC++ ] = ncy;
                 triArr[ quadIndex ] = new Trilateral( kax, kay, jx, jy, kcx, kcy #if trilateral_debug ,6 #end );
-                triArr[ quadIndex + 1 ] = new Trilateral( nax, nay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
+                triArr[ quadIndex + 1 ] = new Trilateral( kax, kay, jx, jy, ncx, ncy #if trilateral_debug ,7 #end );
             } else {
                 pA = pointsAnti.length;//6
                 pointsAnti[ pA++ ] = jxOld;
@@ -621,16 +613,12 @@ class Contour {
         
     }
     inline function storeLastQuads(){
-        nax = dxPrev;
-        nay = dyPrev;
-        nbx = dx;
-        nby = dy;
-        ncx = exPrev;
-        ncy = eyPrev;
         kax = dxPrev;
         kay = dyPrev;
         kbx = dx;
         kby = dy;
+        ncx = exPrev;
+        ncy = eyPrev;
         kcx = ex;
         kcy = ey;
     }
