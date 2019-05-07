@@ -51,7 +51,7 @@ class Angles{
         var fa: Float = za;
         var fb: Float = zb;
         var theta = Math.abs( fa - fb );
-        var clockwise = fa < fb;
+        var clockwise = a < b;
         return ( clockwise )? theta: -theta;
     }    
     public inline static function differenceClockWise( a: Float, b: Float ): Float {
@@ -69,7 +69,7 @@ class Angles{
         var fb: Float = zb;
         var theta = Math.abs( fa - fb );
         var smallest = ( theta <= Math.PI ); // smallest or equal!
-        var clockwise = fa < fb;
+        var clockwise = a < b;
         var dif = ( clockwise )? theta: -theta;
         return if( smallest ) {
             dif;
@@ -84,7 +84,7 @@ class Angles{
         var fb: Float = zb;
         var theta = Math.abs( fa - fb );
         var largest = ( theta > Math.PI );
-        var clockwise = fa < fb;
+        var clockwise = a < b;
         var dif = ( clockwise )? theta: -theta;
         return if( largest ) {
             dif;
@@ -99,7 +99,7 @@ class Angles{
         var fb: Float = zb;
         var theta = Math.abs( fa - fb );
         var smallest = ( theta <= Math.PI ); // smallest or equal!
-        var clockwise = fa < fb;
+        var clockwise = a < b;
         var dif = ( clockwise )? theta: -theta;
         var other = ( clockwise )? -( 2 * Math.PI - theta ): 2 * Math.PI - theta;
         return if( smallest ) {
