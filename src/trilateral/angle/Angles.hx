@@ -48,10 +48,10 @@ class Angles{
     public inline static function difference( a: Float, b: Float ): Float {
         var za: ZeroTo2pi = a;
         var zb: ZeroTo2pi = b;
-        var fa: Float = a;
-        var fb: Float = b;
-        var theta = Math.abs( a - b );
-        var clockwise = a < b;
+        var fa: Float = za;
+        var fb: Float = zb;
+        var theta = Math.abs( fa - fb );
+        var clockwise = fa < fb;
         return ( clockwise )? theta: -theta;
     }    
     public inline static function differenceClockWise( a: Float, b: Float ): Float {
@@ -65,11 +65,11 @@ class Angles{
     public inline static function differenceSmall( a: Float, b: Float ): Float {
         var za: ZeroTo2pi = a;
         var zb: ZeroTo2pi = b;
-        var fa: Float = a;
-        var fb: Float = b;
-        var theta = Math.abs( a - b );
+        var fa: Float = za;
+        var fb: Float = zb;
+        var theta = Math.abs( fa - fb );
         var smallest = ( theta <= Math.PI ); // smallest or equal!
-        var clockwise = a < b;
+        var clockwise = fa < fb;
         var dif = ( clockwise )? theta: -theta;
         return if( smallest ) {
             dif;
@@ -80,11 +80,11 @@ class Angles{
     public inline static function differenceLarge( a: Float, b: Float ): Float {
         var za: ZeroTo2pi = a;
         var zb: ZeroTo2pi = b;
-        var fa: Float = a;
-        var fb: Float = b;
-        var theta = Math.abs( a - b );
+        var fa: Float = za;
+        var fb: Float = zb;
+        var theta = Math.abs( fa - fb );
         var largest = ( theta > Math.PI );
-        var clockwise = a < b;
+        var clockwise = fa < fb;
         var dif = ( clockwise )? theta: -theta;
         return if( largest ) {
             dif;
@@ -95,11 +95,11 @@ class Angles{
     public inline static function differenceSmallLarge( a: Float, b: Float ):{ small: Float, large: Float }{
         var za: ZeroTo2pi = a;
         var zb: ZeroTo2pi = b;
-        var fa: Float = a;
-        var fb: Float = b;
-        var theta = Math.abs( a - b );
+        var fa: Float = za;
+        var fb: Float = zb;
+        var theta = Math.abs( fa - fb );
         var smallest = ( theta <= Math.PI ); // smallest or equal!
-        var clockwise = a < b;
+        var clockwise = fa < fb;
         var dif = ( clockwise )? theta: -theta;
         var other = ( clockwise )? -( 2 * Math.PI - theta ): 2 * Math.PI - theta;
         return if( smallest ) {
