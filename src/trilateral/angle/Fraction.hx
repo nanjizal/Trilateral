@@ -101,7 +101,7 @@ abstract Fraction( Fractional ) to Fractional from Fractional {
         var dif: Float;
         var l = arr.length;
         var fracFloat: Float;
-        var frac = Fraction;
+        var frac: Fraction;
         var fracStore = arr[0];
         // finds closest
         for( i in 0...l  ){
